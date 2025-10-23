@@ -8,11 +8,11 @@ import Events from "./features/Events";
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      <aside className="w-64 flex-none bg-gray-900 text-white">
+      <aside className="w-64 flex-none">
         <NavBar />
       </aside>
 
-      <main className="flex-1 min-w-0 p-6 bg-gray-100">
+      <main className="flex-1 min-w-0 p-6 bg-transparent">
         <Routes>
           <Route path="/features/feed" element={<Feed />} />
           <Route path="/features/profile" element={<Profile />} />

@@ -7,19 +7,7 @@
   font-style: normal;
   font-display: swap;
 }
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
 
-  color: rgba(0, 0, 0, 0.87);
-  background-color: #f3f3eb;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 
 a {
   font-weight: 500;
@@ -30,45 +18,79 @@ a:hover {
   color: #535bf2;
 }
 
+:root{
+  --page-bg: #E8E8E4;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--page-bg);
 }
 
-/* optional app root helper in case you want a container class */
-.app-root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-h1 {
-  font-size: 3.2em;
+/* TEXT STYLES */
+.feature-names {
+  font-size: 4em;
   line-height: 1.1;
   font-family: 'funnel display', sans-serif;
-  
+  padding-bottom: 20px;
+  background-color: #863C5E;
+  padding: 10px;
+  width: 60vw;
+  border-radius: 20px 0 20px 0 ;
+  color: #E8E8E4;
+  display: flex;
+  align-items: center;     
+  justify-content: center;
 }
 
-button {
+.long-text {
+  font-size: 1em;
+  line-height: 1.5;
+  color: #333333;
+  padding-bottom: 25px;
+}
+/* BUTTON STYLES */
+.primary-button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: bold;
+  font-family: 'funnel display', sans-serif;
+  background-color: #569c74de;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: #E8E8E4;
+}
+.primary-button:hover {
+    background-color: #569C74;
+}
+.primary-button:focus,
+.primary-button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.secondary-button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #fc8084bb;
   cursor: pointer;
   transition: border-color 0.25s;
+  color: #1f1f1fca;
 }
-button:hover {
-  border-color: #646cff;
+.secondary-button:hover {
+    background-color: #FC8085;
 }
-button:focus,
-button:focus-visible {
+.secondary-button:focus,
+.secondary-button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -82,10 +104,11 @@ button:focus-visible {
   }
 }
 
+/* NAVIGATION STYLES */
 nav{
   background: #FC8085;
   padding: 0px;
-  height:100%;
+  height:100vh;
 }
 
 .navbuttons {
@@ -115,21 +138,19 @@ nav{
 }
 
 .nav-link:hover{
-  background: rgba(193, 68, 177, 0.08);
+  background: rgba(193, 68, 177, 0.2);
   color: #DF540D;
 }
 .nav-link.active{
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.3);
   color: #FC8085;
 }
-
-
 
 .shape {
   height: 15em;
   width: 100%;
   border-radius: 0 0 0% 50%;
-  background-color:#f3f3eb;
+  background-color: var(--page-bg);
 }
 
 .logo-top-left {
@@ -138,4 +159,124 @@ nav{
   position: absolute;
   top: 0;
   left: 0.6em;
+}
+
+/*PAGE STYLES*/
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  gap: 16px;
+  padding: 24px;
+  
+}
+
+.page-wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
+  padding-top: 30px;
+  background-color: var(--page-bg);
+}
+
+/* ensure main content area uses same page background by default */
+main{
+  background-color: var(--page-bg);
+}
+
+/* POST STYLES */
+.post {
+  position: relative; 
+  padding: 24px 30px 30px 30px; 
+  display: flex;
+  flex-direction: column;
+  background-color: #f2f2ef;
+  border: 2px solid #FCC82B;
+  border-radius: 0 20px 0 20px ;
+  box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
+  width: 60vw;
+  align-self: center;
+  margin: 0; 
+}
+.user-info {
+  margin-top: 28px; 
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.name{
+  font-weight: bold;
+  font-size: 20px;
+  font-family: 'Funnel Display', sans-serif;
+}
+
+.timestamp {  
+  color: #888888;
+  font-size: 0.9rem;
+}
+.post-meeting-time {
+position: absolute;
+  top: 0;
+  left: 0;
+  color: #1f1f1fe9;
+  font-size: 0.9rem;
+  background-color: #fcc82bce;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 18px;
+  padding-right: 18px;
+  border-radius: 0 0 8px 0 ;
+}
+.post-meeting-time:hover {
+  cursor: pointer;
+  background-color: #FCC82B;
+}
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+.content {
+  font-size: 1.25em;
+  padding: 25px 0px 0px 0px;
+  line-height: 1.5;
+  color: #1F1F1F;
+  flex: 1;
+  margin-left: 16px;
+  display: flex;
+  flex-direction: row;
+}
+.actions {
+  margin-top: auto;
+  display: flex;
+  gap: 12px;
+  align-self: flex-end;
+  align-items: center;
+}
+.content{
+  flex: 1;
+  flex-direction: row;
+  margin-left: 16px;
+}
+
+.comment-row {
+  display: flex;
+  gap: 8px;             
+  align-items: center;
+  margin-top: 12px;      
+}
+
+
+.comment-input {
+  flex: 1;              
+  min-width: 0;          
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  gap: 8px;
+  box-sizing: border-box;
 }
