@@ -1,5 +1,5 @@
 import React from "react";
-import Post from "../components/Post.jsx";
+import Post from "../reusable-components/Post.jsx";
 export default function Feed() {
   return (
     <div className="page-wrapper">

@@ -1,3 +1,9 @@
+import Comment from "./Comment.jsx";
+import CommentButton from "./CommentButton.jsx";
+import ImInButton from "./ImInButton.jsx";
+
+const [joined, setJoined] = useState(false);
+
 function Post() {
   return (
     <div className="post">
@@ -25,9 +31,16 @@ function Post() {
           placeholder="Write a comment..."
         ></input>
         <div className="actions">
-          <button className="secondary-button">Comment</button>
-          <button className="primary-button">I'm in!</button>
+          <CommentButton />
+          <ImInButton
+            joined={joined}
+            onToggle={(newVal) => setJoined(newVal)}
+          />
         </div>
+      </div>
+      <div className="comment-section">
+        <Comment />
+        <Comment />
       </div>
     </div>
   );
