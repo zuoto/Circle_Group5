@@ -5,10 +5,9 @@ export default function Feed() {
     <div className="page-wrapper">
       <div className="feature-names">Feed</div>
       <div className="main-content">
-        <Post />
-        <Post />
-        <Post />
-        <Post />
+         {mockPosts.map((post) => (
+          <Post key={post.id} post={post} />
+        ))}
       </div>
     </div>
   );
