@@ -12,9 +12,11 @@
 a {
   font-weight: 500;
   color: #863C5E;
+  color: #863C5E;
   text-decoration: inherit;
 }
 a:hover {
+  color: #863C5E;
   color: #863C5E;
 }
 
@@ -32,6 +34,10 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: var(--page-bg);
+}
+
+.min-h-screen.flex {
+  min-height: 100vh;
 }
 
 .min-h-screen.flex {
@@ -103,6 +109,7 @@ body {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
+    background-color: var(--page-bg);
     background-color: var(--page-bg);
   }
   a:hover {
@@ -291,6 +298,158 @@ position: absolute;
   box-sizing: border-box;
 }
 
+
+/* GROUPS STYLES */
+.group-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 60vw;
+  align-self: center;
+}
+
+.group-card {
+  position: relative;
+  padding: 24px 30px 30px 30px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f2f2ef;
+  border: 2px solid #FCC82B;
+  border-radius: 0 20px 0 20px;
+  box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
+  margin: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.group-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(20, 20, 20, 0.1);
+}
+
+.group-card-content {
+  padding-top: 10px;
+}
+
+.group-card h3 {
+  font-weight: bold;
+  font-size: 20px;
+  font-family: "Funnel Display", sans-serif;
+  margin-bottom: 8px;
+}
+
+.group-card p {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+.group-card span {
+  color: #888888;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.group-detail-layout {
+  display: flex;
+  gap: 24px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.group-main-content {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.group-sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 8px ;
+  width: 100%;
+  align-self: center;
+  margin-bottom: 16px; 
+}
+.comment-user-info {
+  display:flex;
+  align-items:center;
+  gap:3px;
+}
+.comment-name{
+  font-weight: bold;
+  font-size: 15px;
+  font-family: 'Funnel Display', sans-serif;
+}
+
+.comment-timestamp {  
+  color: #888888;
+  font-size: 0.7rem;
+}
+
+.comment-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.comment-content {
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.comment-actions span {
+  color: #863C5E; 
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.sidebar-box {
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+
+.photos-box {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  font-weight: bold;
+  color: #863C5E;
+}
+
+.meetup-box {
+  background-color: #863C5E;
+  color: white;
+  padding: 24px 20px;
+}
+
+.meetup-box span {
+  display: block;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.meetup-box strong {
+  display: block;
+  font-size: 1.2rem;
+  margin-top: 4px;
+}
 
 /* GROUPS STYLES */
 .group-card-link {
