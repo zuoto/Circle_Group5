@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import NavBar from "./components/NavBar";
+import NavBar from "./reusable-components/NavBar";
 import Feed from "./features/Feed";
 import Profile from "./features/Profile";
 import Groups from "./features/Groups";
@@ -14,10 +14,10 @@ export default function App() {
 
       <main className="flex-1 min-w-0 p-6 bg-transparent">
         <Routes>
-          <Route path="/features/feed" element={<Feed />} />
-          <Route path="/features/profile" element={<Profile />} />
-          <Route path="/features/groups" element={<Groups />} />
-          <Route path="/features/events" element={<Events />} />
+          <Route path="/" element={<Feed />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/groups" element={<Groups />} />
+          <Route path="/events" element={<Events />} />
         </Routes>
       </main>
     </div>

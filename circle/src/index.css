@@ -49,7 +49,6 @@ body {
   font-size: 1em;
   line-height: 1.5;
   color: #333333;
-  padding-bottom: 25px;
 }
 /* BUTTON STYLES */
 .primary-button {
@@ -64,6 +63,21 @@ body {
   transition: border-color 0.25s;
   color: #E8E8E4;
 }
+
+.primary-button-joined {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: bold;
+  font-family: 'funnel display', sans-serif;
+  background-color: #DF540D;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: #E8E8E4;
+}
+
+
 .primary-button:hover {
     background-color: #569C74;
 }
@@ -106,22 +120,31 @@ body {
 
 /* NAVIGATION STYLES */
 nav{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 16rem;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 40;
   background: #FC8085;
-  padding: 0px;
-  height:100vh;
+  padding: 0;
+  -ms-overflow-style: none; 
+  scrollbar-width: none;   
 }
 
 .navbuttons {
   list-style: none;
-  padding: 50px;
+  padding: 4rem; 
   width: 100%;
-  height: 100%;
   background-color: #E8E0C7;
-  align-items: center;
   display: flex;
   flex-direction: column;
-  row-gap: 15px;
-  border-radius: 0px 120px 0px 0px ;
+  gap: 15px;
+  height: 78vh;
+  align-items: center;
+  box-sizing: border-box;
+  border-radius: 0px 120px 0px 0px;
 }
 
 
@@ -165,10 +188,9 @@ nav{
 .main-content {
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   gap: 16px;
-  padding: 24px;
-  
+  padding-top: 20px;
 }
 
 .page-wrapper{
@@ -204,7 +226,7 @@ main{
   margin-top: 28px; 
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:5px;
 }
 .name{
   font-weight: bold;
@@ -217,7 +239,7 @@ main{
   font-size: 0.9rem;
 }
 .post-meeting-time {
-position: absolute;
+  position: absolute;
   top: 0;
   left: 0;
   color: #1f1f1fe9;
@@ -241,13 +263,13 @@ position: absolute;
 }
 .content {
   font-size: 1.25em;
-  padding: 25px 0px 0px 0px;
+  padding-top: 0.5em;
   line-height: 1.5;
   color: #1F1F1F;
   flex: 1;
-  margin-left: 16px;
   display: flex;
   flex-direction: row;
+  margin-left: 7px;
 }
 .actions {
   margin-top: auto;
@@ -255,11 +277,6 @@ position: absolute;
   gap: 12px;
   align-self: flex-end;
   align-items: center;
-}
-.content{
-  flex: 1;
-  flex-direction: row;
-  margin-left: 16px;
 }
 
 .comment-row {
@@ -279,4 +296,79 @@ position: absolute;
   border-radius: 4px;
   gap: 8px;
   box-sizing: border-box;
+}
+
+.attendees {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 8px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  min-width: 200px;
+  z-index: 10;
+}
+
+.attendees-header {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.tooltip-attendee {
+  padding: 4px 0;
+  color: #666;
+}
+
+/* COMMENTS */
+.comment-section {
+  padding-top: 20px;
+}
+
+.comment{
+  position: relative; 
+  padding: 15px 25px 15px 25px; 
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 8px ;
+  width: 100%;
+  align-self: center;
+  margin-bottom: 16px; 
+}
+.comment-user-info {
+  display:flex;
+  align-items:center;
+  gap:3px;
+}
+.comment-name{
+  font-weight: bold;
+  font-size: 15px;
+  font-family: 'Funnel Display', sans-serif;
+}
+
+.comment-timestamp {  
+  color: #888888;
+  font-size: 0.7rem;
+}
+
+.comment-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.comment-content {
+  font-size: 1em;
+  line-height: 1.5;
+  color: #1F1F1F;
+  flex: 1;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: row;
 }
