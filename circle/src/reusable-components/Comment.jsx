@@ -1,21 +1,32 @@
+const formatTimeAgo = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  
+  if (diffHours < 1) return "Just now";
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  return `${diffDays} days ago`;
+};
+
 export default function Comment({comment}) {
   return (
     <div className="comment">
       <div className="comment-user-info">
         <img
-          src="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
+          src={comment.author?.avatar}
           alt="User Avatar"
           className="comment-avatar"
         />
         <div className="name-and-timestamp-wrapper">
-          <div className="comment-name">John Doe</div>
-          <div className="comment-timestamp">2 hours ago</div>
+          <div className="comment-name">{comment.author?.name} {comment.author?.surname}</div>
+          <div className="comment-timestamp">{formatTimeAgo(comment.createdAt)}</div>
         </div>
       </div>
       <div className="comment-content">
         <div className="long-text">
-          Sure thing! I would love to hang out this week. I was thinking of
-          going to the cinema to see Dune!
+          {comment.content}
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function ImInButton({ initial = false, onToggle }) {
+export default function ImInButton({ initial = false, onToggle, onMouseEnter, onHover, onMouseLeave }) {
   const [joined, setJoined] = useState(initial);
 
   function handleClick() {
@@ -17,6 +17,8 @@ export default function ImInButton({ initial = false, onToggle }) {
       className={joined ? "primary-button-joined" : "primary-button"}
       onClick={handleClick}
       aria-pressed={joined}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {joined ? "You're in!" : "I'm in!"}
     </button>

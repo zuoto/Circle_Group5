@@ -2,8 +2,8 @@ import { useState } from "react";
 import Comment from "./Comment.jsx";
 import CommentButton from "./CommentButton.jsx";
 import ImInButton from "./ImInButton.jsx";
-
-// Helper time formatting functions (keep these outside)
+import { users } from '../mock-data/mock-data-user/MockDataUsers.jsx';
+// Helper time formatting functions
 const formatMeetupTime = (dateString) => {
   const date = new Date(dateString);
   const time = date.toLocaleTimeString('en-US', { 
@@ -33,7 +33,11 @@ const formatTimeAgo = (dateString) => {
 
 function Post({ post }) {
   const [joined, setJoined] = useState(false); 
-
+  const author = users.find(u => u.id === post.authorId);
+  const [showAttendees, setShowAttendees] = useState(false);
+  const attendees = post.imIns?.map(id => 
+    users.find(u => u.id === id)
+  ).filter(Boolean) || [];
   return (
     <div>
       <div className="post">
@@ -44,13 +48,13 @@ function Post({ post }) {
 
         <div className="user-info">
           <img
-            src={post.author?.avatar}
+            src={author?.avatar}
             alt="User Avatar"
             className="avatar"
           />
           <div className="name-and-timestamp-wrapper">
             <div className="name">
-              {post.author?.name} {post.author?.surname}
+              {author?.name} {author?.surname}
             </div>
             <div className="timestamp">
               {formatTimeAgo(post.createdAt)}
@@ -74,7 +78,19 @@ function Post({ post }) {
             <ImInButton
               joined={joined}
               onToggle={(newVal) => setJoined(newVal)}
-            />
+              onHover={() => setShowAttendees(true)}            />
+              {showAttendees && attendees.length > 0 && (
+                <div className="attendees">
+                  <div className="attendees-header">
+                    {attendees.length} {attendees.length === 1 ? 'person' : 'people'} in:
+                  </div>
+                  {attendees.map(attendee => (
+                    <div key={attendee.id} className="tooltip-attendee">
+                      {attendee.name} {attendee.surname}
+                    </div>
+                  ))}
+                  </div>
+              )}
           </div>
         </div>
 

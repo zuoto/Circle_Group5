@@ -1,5 +1,6 @@
 import React from "react";
 import Post from "../reusable-components/Post.jsx";
+import {mockPosts} from '../mock-data/feed-mock-data/mock-posts-and-comments.jsx';
 export default function Feed() {
   return (
     <div className="page-wrapper">
