@@ -1,4 +1,3 @@
-
 @import "tailwindcss";
 @font-face {
   font-family: "Funnel Display";
@@ -10,17 +9,17 @@
 
 a {
   font-weight: 500;
-  color: #863C5E;
-  color: #863C5E;
+  color: #863c5e;
+  color: #863c5e;
   text-decoration: inherit;
 }
 a:hover {
-  color: #863C5E;
-  color: #863C5E;
+  color: #863c5e;
+  color: #863c5e;
 }
 
-:root{
-  --page-bg: #E8E8E4;
+:root {
+  --page-bg: #e8e8e4;
 }
 
 .page-content.bg {
@@ -125,7 +124,7 @@ body {
     background-color: var(--page-bg);
   }
   a:hover {
-    color: #863C5E;
+    color: #863c5e;
   }
   button {
     background-color: #f9f9f9;
@@ -310,7 +309,6 @@ main {
   box-sizing: border-box;
 }
 
-
 /* GROUPS STYLES */
 .group-card-link {
   text-decoration: none;
@@ -326,7 +324,7 @@ main {
   display: flex;
   flex-direction: column;
   background-color: #f2f2ef;
-  border: 2px solid #FCC82B;
+  border: 2px solid #fcc82b;
   border-radius: 0 20px 0 20px;
   box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
   margin: 0;
@@ -379,18 +377,19 @@ main {
 
 .group-sidebar {
   flex: 1;
-.attendees {
-  position: absolute;
-  bottom: 100%;
-  right: 0;
-  margin-bottom: 8px;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-width: 200px;
-  z-index: 10;
+  .attendees {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 8px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    z-index: 10;
+  }
 }
 
 .attendees-header {
@@ -421,6 +420,7 @@ main {
   align-self: center;
   margin-bottom: 16px;
 }
+
 .comment-user-info {
   display: flex;
   align-items: center;
@@ -459,7 +459,7 @@ main {
 }
 
 .comment-actions span {
-  color: #863C5E; 
+  color: #863c5e;
   font-weight: bold;
   cursor: pointer;
 }
@@ -475,11 +475,11 @@ main {
   background-color: #f9f9f9;
   border: 1px solid #e0e0e0;
   font-weight: bold;
-  color: #863C5E;
+  color: #863c5e;
 }
 
 .meetup-box {
-  background-color: #863C5E;
+  background-color: #863c5e;
   color: white;
   padding: 24px 20px;
 }
@@ -511,7 +511,7 @@ main {
   display: flex;
   flex-direction: column;
   background-color: #f2f2ef;
-  border: 2px solid #FCC82B;
+  border: 2px solid #fcc82b;
   border-radius: 0 20px 0 20px;
   box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
   margin: 0;
@@ -580,7 +580,7 @@ main {
 .group-header h1 {
   font-family: "Funnel Display", sans-serif;
   font-size: 2.8rem;
-  color: #1F1F1F;
+  color: #1f1f1f;
 }
 
 .group-actions {
@@ -589,8 +589,8 @@ main {
 }
 
 .group-actions .primary-button {
-  background-color: #863C5E;
-  color: #E8E8E4;
+  background-color: #863c5e;
+  color: #e8e8e4;
 }
 
 .group-description-box {
@@ -612,7 +612,7 @@ main {
 }
 
 .read-more {
-  color: #863C5E;
+  color: #863c5e;
   font-weight: bold;
   cursor: pointer;
 }
@@ -637,7 +637,7 @@ main {
 }
 
 .group-comment .name {
-  font-size: 18px; 
+  font-size: 18px;
 }
 
 .comment-text {
@@ -656,7 +656,7 @@ main {
 }
 
 .comment-actions span {
-  color: #863C5E; 
+  color: #863c5e;
   font-weight: bold;
   cursor: pointer;
 }
@@ -672,11 +672,11 @@ main {
   background-color: #f9f9f9;
   border: 1px solid #e0e0e0;
   font-weight: bold;
-  color: #863C5E;
+  color: #863c5e;
 }
 
 .meetup-box {
-  background-color: #863C5E;
+  background-color: #863c5e;
   color: white;
   padding: 24px 20px;
 }
@@ -691,31 +691,95 @@ main {
   display: block;
   font-size: 1.2rem;
   margin-top: 4px;
-  color: #1F1F1F;
+  color: #1f1f1f;
   flex: 1;
   padding-top: 10px;
   display: flex;
   flex-direction: row;
 }
 
-  /* PROFILE */
+/* AVATAR SIZE MODIFIERS*/
+.avatar-large {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-right: 0;
+}
 
-  .profile-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 40px;
-    padding: 20px;
-  }
+/* USER PROFILE */
+.profile-content-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+  width: 60vw;
+  max-width: 1000px;
+  margin-top: 40px;
+}
 
-  .profile-picture {
-    width: 176px;
-    max-height: 176px;
-    border-radius: 50%;
-  }
+.profile-card {
+  width: 100%;
+}
 
-  .profile-name {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-top: 10px;
-  }
+/* PROFILE - FRIENDS LIST LAYOUT */
+/* flex container for horizontal list of friends/avatars */
+.card-content-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: flex-start;
+}
+
+/* style for individual friend item */
+.friend-item {
+  text-align: center;
+  width: 70px;
+}
+
+.friend-item .name {
+  font-size: 0.85em;
+  font-family: inherit;
+  font-weight: normal;
+  margin-top: 5px;
+}
+
+/* PROFILE - GROUP CARD */
+.group-card-compact {
+  padding: 10px 15px;
+  background-color: #f2f2ef;
+  border: 2px solid #fcc82b;
+  border-radius: 0 10px 0 10px;
+  box-shadow: 0 2px 5px rgba(20, 20, 20, 0.05);
+  transition: background-color 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.group-card-compact:hover {
+  background-color: #e0e0e0;
+}
+.group-card-link-compact {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* PROFILE BARS*/
+.profile-main-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-sidebar-column {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-main-column .group-card,
+.profile-sidebar-column .group-card {
+  width: 100%;
+}
