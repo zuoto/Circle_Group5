@@ -1,13 +1,11 @@
-
 @import "tailwindcss";
 @font-face {
   font-family: "Funnel Display";
- src:url("/fonts/FunnelDisplay-VariableFont_wght.ttf") format("truetype");
+  src: url("/fonts/FunnelDisplay-VariableFont_wght.ttf") format("truetype");
   font-weight: 300 800;
   font-style: normal;
   font-display: swap;
 }
-
 
 a {
   font-weight: 500;
@@ -18,8 +16,8 @@ a:hover {
   color: #535bf2;
 }
 
-:root{
-  --page-bg: #E8E8E4;
+:root {
+  --page-bg: #e8e8e4;
 }
 
 body {
@@ -33,15 +31,15 @@ body {
 .feature-names {
   font-size: 4em;
   line-height: 1.1;
-  font-family: 'funnel display', sans-serif;
+  font-family: "funnel display", sans-serif;
   padding-bottom: 20px;
-  background-color: #863C5E;
+  background-color: #863c5e;
   padding: 10px;
   width: 60vw;
-  border-radius: 20px 0 20px 0 ;
-  color: #E8E8E4;
+  border-radius: 20px 0 20px 0;
+  color: #e8e8e4;
   display: flex;
-  align-items: center;     
+  align-items: center;
   justify-content: center;
 }
 
@@ -57,11 +55,11 @@ body {
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: bold;
-  font-family: 'funnel display', sans-serif;
+  font-family: "funnel display", sans-serif;
   background-color: #569c74de;
   cursor: pointer;
   transition: border-color 0.25s;
-  color: #E8E8E4;
+  color: #e8e8e4;
 }
 
 .primary-button-joined {
@@ -70,16 +68,15 @@ body {
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: bold;
-  font-family: 'funnel display', sans-serif;
-  background-color: #DF540D;
+  font-family: "funnel display", sans-serif;
+  background-color: #df540d;
   cursor: pointer;
   transition: border-color 0.25s;
-  color: #E8E8E4;
+  color: #e8e8e4;
 }
 
-
 .primary-button:hover {
-    background-color: #569C74;
+  background-color: #569c74;
 }
 .primary-button:focus,
 .primary-button:focus-visible {
@@ -99,7 +96,7 @@ body {
   color: #1f1f1fca;
 }
 .secondary-button:hover {
-    background-color: #FC8085;
+  background-color: #fc8085;
 }
 .secondary-button:focus,
 .secondary-button:focus-visible {
@@ -119,7 +116,7 @@ body {
 }
 
 /* NAVIGATION STYLES */
-nav{
+nav {
   position: fixed;
   top: 0;
   left: 0;
@@ -127,17 +124,17 @@ nav{
   height: 100vh;
   overflow-y: auto;
   z-index: 40;
-  background: #FC8085;
+  background: #fc8085;
   padding: 0;
-  -ms-overflow-style: none; 
-  scrollbar-width: none;   
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .navbuttons {
   list-style: none;
-  padding: 4rem; 
+  padding: 4rem;
   width: 100%;
-  background-color: #E8E0C7;
+  background-color: #e8e0c7;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -147,26 +144,24 @@ nav{
   border-radius: 0px 120px 0px 0px;
 }
 
-
-.nav-link{
-  font-family: 'Funnel Display', sans-serif;
+.nav-link {
+  font-family: "Funnel Display", sans-serif;
   font-size: x-large;
   display: block;
   padding: 0.6rem 1rem;
   width: 100%;
   text-decoration: none;
   border-radius: 6px;
-   color: #569C74;
-
+  color: #569c74;
 }
 
-.nav-link:hover{
+.nav-link:hover {
   background: rgba(193, 68, 177, 0.2);
-  color: #DF540D;
+  color: #df540d;
 }
-.nav-link.active{
+.nav-link.active {
   background: rgba(255, 255, 255, 0.3);
-  color: #FC8085;
+  color: #fc8085;
 }
 
 .shape {
@@ -193,7 +188,7 @@ nav{
   padding-top: 20px;
 }
 
-.page-wrapper{
+.page-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -204,37 +199,37 @@ nav{
 }
 
 /* ensure main content area uses same page background by default */
-main{
+main {
   background-color: var(--page-bg);
 }
 
 /* POST STYLES */
 .post {
-  position: relative; 
-  padding: 24px 30px 30px 30px; 
+  position: relative;
+  padding: 24px 30px 30px 30px;
   display: flex;
   flex-direction: column;
   background-color: #f2f2ef;
-  border: 2px solid #FCC82B;
-  border-radius: 0 20px 0 20px ;
+  border: 2px solid #fcc82b;
+  border-radius: 0 20px 0 20px;
   box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
   width: 60vw;
   align-self: center;
-  margin: 0; 
+  margin: 0;
 }
 .user-info {
-  margin-top: 28px; 
-  display:flex;
-  align-items:center;
-  gap:5px;
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
-.name{
+.name {
   font-weight: bold;
   font-size: 20px;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
 }
 
-.timestamp {  
+.timestamp {
   color: #888888;
   font-size: 0.9rem;
 }
@@ -249,11 +244,11 @@ main{
   padding-bottom: 8px;
   padding-left: 18px;
   padding-right: 18px;
-  border-radius: 0 0 8px 0 ;
+  border-radius: 0 0 8px 0;
 }
 .post-meeting-time:hover {
   cursor: pointer;
-  background-color: #FCC82B;
+  background-color: #fcc82b;
 }
 .avatar {
   width: 50px;
@@ -265,7 +260,7 @@ main{
   font-size: 1.25em;
   padding-top: 0.5em;
   line-height: 1.5;
-  color: #1F1F1F;
+  color: #1f1f1f;
   flex: 1;
   display: flex;
   flex-direction: row;
@@ -281,15 +276,14 @@ main{
 
 .comment-row {
   display: flex;
-  gap: 8px;             
+  gap: 8px;
   align-items: center;
-  margin-top: 12px;      
+  margin-top: 12px;
 }
 
-
 .comment-input {
-  flex: 1;              
-  min-width: 0;          
+  flex: 1;
+  min-width: 0;
   padding: 10px;
   font-size: 1em;
   border: 1px solid #ccc;
@@ -307,7 +301,7 @@ main{
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   min-width: 200px;
   z-index: 10;
 }
@@ -328,30 +322,30 @@ main{
   padding-top: 20px;
 }
 
-.comment{
-  position: relative; 
-  padding: 15px 25px 15px 25px; 
+.comment {
+  position: relative;
+  padding: 15px 25px 15px 25px;
   display: flex;
   flex-direction: column;
   background-color: transparent;
   border: 1px solid #ddd;
-  border-radius: 8px ;
+  border-radius: 8px;
   width: 100%;
   align-self: center;
-  margin-bottom: 16px; 
+  margin-bottom: 16px;
 }
 .comment-user-info {
-  display:flex;
-  align-items:center;
-  gap:3px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
-.comment-name{
+.comment-name {
   font-weight: bold;
   font-size: 15px;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
 }
 
-.comment-timestamp {  
+.comment-timestamp {
   color: #888888;
   font-size: 0.7rem;
 }
@@ -366,9 +360,31 @@ main{
 .comment-content {
   font-size: 1em;
   line-height: 1.5;
-  color: #1F1F1F;
+  color: #1f1f1f;
   flex: 1;
   padding-top: 10px;
   display: flex;
   flex-direction: row;
+
+  /* PROFILE */
+
+  .profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    padding: 20px;
+  }
+
+  .profile-picture {
+    width: 176px;
+    max-height: 176px;
+    border-radius: 50%;
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 10px;
+  }
 }
