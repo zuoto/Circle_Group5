@@ -10,7 +10,7 @@ export default function NavBar() {
       <ul className="navbuttons">
         <li className="nav-item">
           <NavLink
-            to="/features/feed"
+            to="/"
             className={({ isActive }) =>
               isActive ? "nav-link active" : "nav-link"
             }
@@ -20,7 +20,7 @@ export default function NavBar() {
         </li>
         <li className="nav-item">
           <NavLink
-            to="/features/groups"
+            to="/groups"
             className={({ isActive }) =>
               isActive ? "nav-link active" : "nav-link"
             }
@@ -30,7 +30,7 @@ export default function NavBar() {
         </li>
         <li className="nav-item">
           <NavLink
-            to="/features/events"
+            to="/events"
             className={({ isActive }) =>
               isActive ? "nav-link active" : "nav-link"
             }
@@ -40,7 +40,7 @@ export default function NavBar() {
         </li>
         <li className="nav-item">
           <NavLink
-            to="/features/profile"
+            to="/profile"
             className={({ isActive }) =>
               isActive ? "nav-link active" : "nav-link"
             }
