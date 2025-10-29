@@ -22,6 +22,15 @@ export default function Events() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  useEffect(() => {
+    if (selected) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+    return () => document.body.classList.remove("modal-open");
+  }, [selected]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return events;
