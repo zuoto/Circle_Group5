@@ -114,6 +114,7 @@ body.modal-open {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-bottom: 8px;
 }
 
 .event-avatar {
@@ -122,35 +123,43 @@ body.modal-open {
   border-radius: 50%;
   object-fit: cover;
 }
+.event-meta {
+  font-size: 14px;
+  color: #4b5563;
+  margin-bottom: 4px;
+}
 
 .event-title {
-  font-weight: 600;
-  font-size: 16px;
-  color: #111827;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 4px;
 }
 
 .event-location {
-  font-size: 14px;
-  color: #4b5563;
+  font-size: 17px;
+  color: #6b7280;
+  margin-bottom: 12px;
 }
 
-.event-description {
-  font-size: 14px;
+.event-description,
+.event-details {
+  font-size: 15px;
   color: #374151;
-  margin: 0;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.event-details li {
+  margin-left: 18px;
+  list-style-type: disc;
 }
 
 .event-footer {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
   gap: 6px;
   row-gap: 4px;
-  margin-top: 4px;
-  padding-top: 6px;
-  border-top: 1px solid #eee;
-  font-size: 13.5px;
-  color: #4b5563;
+  margin-top: 16px;
 }
 
 .event-tag {

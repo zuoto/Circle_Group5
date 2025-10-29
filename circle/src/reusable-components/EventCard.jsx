@@ -3,55 +3,53 @@ import { users } from "../mock-data/mock-data-user/MockDataUsers.jsx";
 import ImInButton from "./ImInButton.jsx"; 
 
 const formatMeetupTime = (dateString) => {
-  const date = new Date(dateString);
-  const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-  const day = date.toLocaleDateString("en-US", { day: "2-digit", month: "2-digit", year: "numeric" });
-  return `${time} on ${day}`;
+    const date = new Date(dateString);
+    const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+    const day = date.toLocaleDateString("en-US", { day: "2-digit", month: "2-digit", year: "numeric" });
+    return `${time} on ${day}`;
 };
 
 export default function EventCard({ event, currentUserId, onToggleAttend }) {
-  const host = users.find((u) => u.id === event.hostId);
-  const isAttending = event.attendees.includes(currentUserId);
+    if (!event) return null;
+    const host = users.find((u) => u.id === event.hostId);
+    const attendees = Array.isArray(event.attendees) ? event.attendees : [];
+    const details = Array.isArray(event.details) ? event.details : [];
+    const isAttending = currentUserId ? attendees.includes(currentUserId) : false;
+
 
   return (
     <div className="post">
-      {event.cover && (
-        <img src={event.cover} alt={event.title} className="event-cover" />
-      )}
-
-      <div className="user-info event-header">
-        <img
-          src={host?.avatar || "/avatar/default.jpg"}
-          alt={host?.name || "Host"}
-          className="avatar"
+        {event.cover ? 
+        <img src={event.cover} alt={event.title || "Event"} className="event-cover" /> : null}
+    
+        <div className="user-info event-header">
+            <img
+                src={host?.avatar || "/avatar/default.jpg"}
+                alt={host?.name || "Host"}
+                className="avatar"
         />
-        <div className="name-and-timestamp-wrapper">
-          <div className="name">{event.title}</div>
-          <div className="timestamp">
-            Hosted by <strong>{host?.name || "Unknown"}</strong> ·{" "}
-            {formatMeetupTime(event.date)}
+        <div>
+            <div className="event-title">{event.title || "Untitled event"}</div>
+            <div className="event-meta">
+                Hosted by <strong>{host?.name || "Unknown"}</strong> · {formatMeetupTime(event.date)}
           </div>
-          <div className="timestamp">📍 {event.location}</div>
+          {event.location && <div className="event-location">📍 {event.location}</div>}
         </div>
       </div>
 
-      <p className="long-text">{event.description}</p>
+      <p className="event-desccription">{event.description}</p>
 
-      {event.details && (
-        <ul className="long-text">
-          {event.details.map((d, i) => (
+      {details.length > 0 && (
+        <ul className="event.details">
+          {details.map((d, i) => (
             <li key={i}>{d}</li>
           ))}
         </ul>
       )}
 
-      <ImInButton
-        isAttending={isAttending}
-        onClick={onToggleAttend}
-      />
-
       <div className="event-footer">
-        {event.attendees.length} going
+        <ImInButton isAttending={isAttending} onClick={onToggleAttend} />
+        <div>{attendees.length} going</div>
       </div>
     </div>
   );
