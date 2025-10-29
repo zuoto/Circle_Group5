@@ -32,19 +32,21 @@ const formatTimeAgo = (dateString) => {
   return `${diffDays} days ago`;
 };
 
-function Post({ post }) {
-  const [joined, setJoined] = useState(false);
-  const author = users.find((u) => u.id === post.authorId);
+function Post({ post, isGroupPost }) {
+  const [joined, setJoined] = useState(false); 
+  const author = users.find(u => u.id === post.authorId);
   const [showAttendees, setShowAttendees] = useState(false);
   const attendees =
     post.imIns?.map((id) => users.find((u) => u.id === id)).filter(Boolean) ||
     [];
   return (
-    <div>
+    <>
       <div className="post">
-        <div className="post-meeting-time">
+        {!(isGroupPost && post.meetup) && (
+          <div className="post-meeting-time">
           {formatMeetupTime(post.meetup.date)}
         </div>
+        )}
 
         <div className="user-info">
           <img src={author?.avatar} alt="User Avatar" className="avatar" />
@@ -65,13 +67,16 @@ function Post({ post }) {
           <div className="actions">
             <CommentButton />
             <div className="wrapper-relative">
+              {!isGroupPost && (
               <ImInButton
                 joined={joined}
                 onToggle={(newVal) => setJoined(newVal)}
                 onMouseEnter={() => setShowAttendees(true)}
                 onMouseLeave={() => setShowAttendees(false)}
-              />
+              />          
+            )}
             </div>
+    
             {showAttendees && attendees.length > 0 && (
               <div className="attendees">
                 <div className="attendees-header">
@@ -94,7 +99,7 @@ function Post({ post }) {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
