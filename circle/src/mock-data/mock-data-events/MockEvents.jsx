@@ -1,6 +1,3 @@
-// src/mock-data/MockEvents.jsx
-import { users } from "../mock-data-user/MockDataUsers.jsx";
-
 export const mockEvents = [
   {
     id: "e1",
@@ -19,7 +16,7 @@ export const mockEvents = [
     hostId: "u2",
     attendees: ["u1", "u3", "u6"],
     tags: ["music", "party", "disco", "70s"],
-    cover: "/images/events/disco.jpg",
+    cover: "/events/disco.jpeg",
   },
   {
     id: "e2",
@@ -36,7 +33,7 @@ export const mockEvents = [
     hostId: "u1",
     attendees: ["u2", "u4", "u5"],
     tags: ["social", "games", "cozy"],
-    cover: "/images/events/boardgames.jpg",
+    cover: "/events/boardgames.jpeg",
   },
   {
   id: "e3",
@@ -54,16 +51,6 @@ export const mockEvents = [
   hostId: "u3",
   attendees: ["u1", "u2", "u5", "u7"],
   tags: ["cinema", "cult", "social", "nightlife"],
-  cover: "/images/events/cult-marathon.jpg",
+  cover: "/events/cult_marathon.jpeg",
 }
 ];
-
-
-// helper to attach people objects (host + attendees) 
-export const withPeople = (event) => ({
-  ...event,
-  host: users.find((u) => u.id === event.hostId),
-  attendeeObjects: event.attendees
-    .map((id) => users.find((u) => u.id === id))
-    .filter(Boolean),
-});

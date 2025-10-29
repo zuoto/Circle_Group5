@@ -1,27 +1,27 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { mockEvents } from "../mock-data/mock-data-events/MockEvents.jsx";
 import { users } from "../mock-data/mock-data-user/MockDataUsers.jsx";
+import EventTile from "../reusable-components/EventTile.jsx";
 import EventCard from "../reusable-components/EventCard.jsx";
-
 
 const withPeople = (event) => ({
   ...event,
   host: users.find((u) => u.id === event.hostId),
-  attendeeObjects: event.attendees
-    .map((id) => users.find((u) => u.id === id))
-    .filter(Boolean),
+  attendeeObjects: event.attendees.map((id) => users.find((u) => u.id === id)).filter(Boolean),
 });
 
 export default function Events() {
-
   const currentUserId = "u1";
-
-  // Prepare enriched events (attach host/attendee objects once)
   const [events, setEvents] = useState(mockEvents.map(withPeople));
-  console.log("Events mounted. mockEvents:", mockEvents);
-  console.log("Events state:", events);
-  // Simple search across text fields + tags + location
   const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState(null);
+
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && setSelected(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return events;
@@ -34,7 +34,6 @@ export default function Events() {
     );
   }, [events, query]);
 
-  // Toggle "I'm in" — mirrors Post/ImInButton behavior
   const toggleAttend = (id) => {
     setEvents((prev) =>
       prev
@@ -48,32 +47,64 @@ export default function Events() {
               : [...e.attendees, currentUserId],
           };
         })
-        // Re-attach host/attendee objects so the footer stays correct
         .map(withPeople)
     );
+    // keep modal open and synced if open
+    setSelected((curr) => (curr && curr.id === id ? withPeople(
+      {
+        ...events.find(e => e.id === id),
+        attendees: (events.find(e => e.id === id).attendees.includes(currentUserId)
+          ? events.find(e => e.id === id).attendees.filter(uid => uid !== currentUserId)
+          : [...events.find(e => e.id === id).attendees, currentUserId]
+        )
+      }
+    ) : curr));
   };
 
   return (
     <div className="page-wrapper">
-      {/* Matches Feed’s section header */}
       <div className="feature-names">Events</div>
 
+      {/* simple search bar (optional) */}
+      <div className="main-content" style={{ marginBottom: 12 }}>
+        <input
+          className="comment-input"
+          placeholder="Search events by title, tags or location…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={{ width: "100%" }}
+        />
+      </div>
 
-      {/* Same content wrapper as Feed */}
       <div className="main-content">
         {filtered.map((e) => (
-          <EventCard
-            key={e.id}
-            event={e}
-            isAttending={e.attendees.includes(currentUserId)}
-            onToggleAttend={() => toggleAttend(e.id)}
-          />
+          <div key={e.id} className="post-card">
+            <EventTile event={e} onOpen={setSelected} />
+          </div>
         ))}
-
-        {/* Empty state */}
         {!filtered.length && <p className="long-text">No events match your search.</p>}
       </div>
+
+      {/* Modal with EventCard (detail) */}
+      {selected && (
+        <div className="modal-backdrop" onClick={() => setSelected(null)}>
+          <div
+            className="modal-body"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+          >
+            <EventCard
+              event={selected}
+              currentUserId={currentUserId}
+              onToggleAttend={() => toggleAttend(selected.id)}
+            />
+            <button className="secondary-button" onClick={() => setSelected(null)} style={{ marginTop: 8 }}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-

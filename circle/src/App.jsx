@@ -4,6 +4,7 @@ import Feed from "./features/Feed";
 import Profile from "./features/Profile";
 import Groups from "./features/Groups";
 import Events from "./features/Events";
+import "./App.css";
 
 export default function App() {
   return (
