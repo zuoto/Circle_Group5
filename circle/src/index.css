@@ -131,6 +131,21 @@ a:hover {
 .secondary-button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: var(--page-bg);
+    background-color: var(--page-bg);
+  }
+  a:hover {
+    color: #863c5e;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* NAVIGATION STYLES */
 
 .new-post-button {
   font-size: 4em;
@@ -167,7 +182,7 @@ nav {
   height: 100vh;
   overflow-y: auto;
   z-index: 40;
-  background: #FC8085;
+  background: #fc8085;
   padding: 0;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -200,12 +215,12 @@ nav {
 
 .nav-link:hover {
   background: rgba(193, 68, 177, 0.2);
-  color: #DF540D;
+  color: #df540d;
 }
 
 .nav-link.active {
   background: rgba(255, 255, 255, 0.3);
-  color: #FC8085;
+  color: #fc8085;
 }
 
 .shape {
@@ -247,7 +262,7 @@ nav {
   gap: 16px;
   padding-top: 20px;
 /* ensure main content area uses same page background by default */
-main{
+main {
   background-color: var(--page-bg) !important;
   min-height: 100%;
 }
@@ -277,7 +292,7 @@ main{
 .name {
   font-weight: bold;
   font-size: 20px;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
 }
 
 .timestamp {
@@ -298,6 +313,7 @@ main{
 }
 
 .post-meeting-time:hover {
+  cursor: pointer;
   background-color: #FCC82B;
 }
 
@@ -312,7 +328,7 @@ main{
   font-size: 1.25em;
   padding-top: 0.5em;
   line-height: 1.5;
-  color: #1F1F1F;
+  color: #1f1f1f;
   flex: 1;
   display: flex;
   flex-direction: row;
@@ -344,7 +360,6 @@ main{
   box-sizing: border-box;
 }
 
-
 /* GROUPS STYLES */
 .group-card-link {
   text-decoration: none;
@@ -360,7 +375,7 @@ main{
   display: flex;
   flex-direction: column;
   background-color: #f2f2ef;
-  border: 2px solid #FCC82B;
+  border: 2px solid #fcc82b;
   border-radius: 0 20px 0 20px;
   box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
   margin: 0;
@@ -465,7 +480,7 @@ main{
 .comment-name {
   font-weight: bold;
   font-size: 15px;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
 }
 
 .comment-timestamp {
@@ -496,7 +511,7 @@ main{
 }
 
 .comment-actions span {
-  color: #863C5E; 
+  color: #863c5e;
   font-weight: bold;
   cursor: pointer;
 }
@@ -512,11 +527,11 @@ main{
   background-color: #f9f9f9;
   border: 1px solid #e0e0e0;
   font-weight: bold;
-  color: #863C5E;
+  color: #863c5e;
 }
 
 .meetup-box {
-  background-color: #863C5E;
+  background-color: #863c5e;
   color: white;
   padding: 24px 20px;
 }
@@ -548,7 +563,7 @@ main{
   display: flex;
   flex-direction: column;
   background-color: #f2f2ef;
-  border: 2px solid #FCC82B;
+  border: 2px solid #fcc82b;
   border-radius: 0 20px 0 20px;
   box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
   margin: 0;
@@ -617,7 +632,7 @@ main{
 .group-header h1 {
   font-family: "Funnel Display", sans-serif;
   font-size: 2.8rem;
-  color: #1F1F1F;
+  color: #1f1f1f;
 }
 
 .group-actions {
@@ -626,8 +641,8 @@ main{
 }
 
 .group-actions .primary-button {
-  background-color: #863C5E;
-  color: #E8E8E4;
+  background-color: #863c5e;
+  color: #e8e8e4;
 }
 
 .group-description-box {
@@ -649,7 +664,7 @@ main{
 }
 
 .read-more {
-  color: #863C5E;
+  color: #863c5e;
   font-weight: bold;
   cursor: pointer;
 }
@@ -674,7 +689,7 @@ main{
 }
 
 .group-comment .name {
-  font-size: 18px; 
+  font-size: 18px;
 }
 
 .comment-text {
@@ -693,7 +708,7 @@ main{
 }
 
 .comment-actions span {
-  color: #863C5E; 
+  color: #863c5e;
   font-weight: bold;
   cursor: pointer;
 }
@@ -709,11 +724,11 @@ main{
   background-color: #f9f9f9;
   border: 1px solid #e0e0e0;
   font-weight: bold;
-  color: #863C5E;
+  color: #863c5e;
 }
 
 .meetup-box {
-  background-color: #863C5E;
+  background-color: #863c5e;
   color: white;
   padding: 24px 20px;
 }
@@ -728,12 +743,97 @@ main{
   display: block;
   font-size: 1.2rem;
   margin-top: 4px;
-  color: #1F1F1F;
+  color: #1f1f1f;
   flex: 1;
   display: flex;
   flex-direction: row;
 }
 
+/* AVATAR SIZE MODIFIERS*/
+.avatar-large {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-right: 0;
+}
+
+/* USER PROFILE */
+.profile-content-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+  width: 60vw;
+  max-width: 1000px;
+  margin-top: 40px;
+}
+
+.profile-card {
+  width: 100%;
+}
+
+/* PROFILE - FRIENDS LIST LAYOUT */
+/* flex container for horizontal list of friends/avatars */
+.card-content-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: flex-start;
+}
+
+/* style for individual friend item */
+.friend-item {
+  text-align: center;
+  width: 70px;
+}
+
+.friend-item .name {
+  font-size: 0.85em;
+  font-family: inherit;
+  font-weight: normal;
+  margin-top: 5px;
+}
+
+/* PROFILE - GROUP CARD */
+.group-card-compact {
+  padding: 10px 15px;
+  background-color: #f2f2ef;
+  border: 2px solid #fcc82b;
+  border-radius: 0 10px 0 10px;
+  box-shadow: 0 2px 5px rgba(20, 20, 20, 0.05);
+  transition: background-color 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.group-card-compact:hover {
+  background-color: #e0e0e0;
+}
+.group-card-link-compact {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* PROFILE BARS*/
+.profile-main-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-sidebar-column {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-main-column .group-card,
+.profile-sidebar-column .group-card {
+  width: 100%;
+}
 /* Modal overlay */
 .modal-overlay {
   position: fixed;
