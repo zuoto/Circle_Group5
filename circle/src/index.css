@@ -412,7 +412,7 @@ main{
 }
 
 .group-sidebar {
-  flex: 1;
+  flex: 1;}
 .attendees {
   position: absolute;
   bottom: 155px;
@@ -820,4 +820,5 @@ main{
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
+}
 }
