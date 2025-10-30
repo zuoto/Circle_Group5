@@ -260,7 +260,7 @@ nav {
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding-top: 20px;
+  padding-top: 20px;} 
 /* ensure main content area uses same page background by default */
 main {
   background-color: var(--page-bg) !important;
@@ -427,7 +427,7 @@ main {
 }
 
 .group-sidebar {
-  flex: 1;
+  flex: 1;}
 .attendees {
   position: absolute;
   bottom: 155px;
