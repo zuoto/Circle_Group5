@@ -3,8 +3,16 @@ import { users } from "../mock-data/mock-data-user/MockDataUsers.jsx";
 
 const formatMeetupTime = (dateString) => {
   const d = new Date(dateString);
-  const time = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-  const day = d.toLocaleDateString("en-US", { day: "2-digit", month: "2-digit", year: "numeric" });
+  const time = d.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+  const day = d.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
   return `${time} on ${day}`;
 };
 
@@ -45,7 +53,9 @@ export default function EventTile({ event, onOpen }) {
       <div className="event-footer">
         <span>{attendees.length} going</span>
         {tags.map((t) => (
-          <span key={t} className="event-tag">{t}</span>
+          <span key={t} className="event-tag">
+            {t}
+          </span>
         ))}
         <span className="view-details">View details →</span>
       </div>
