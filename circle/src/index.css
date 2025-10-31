@@ -413,6 +413,7 @@ main {
   min-height: 150px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
+  width: 60vw;
 }
 
 .group-card-cover-photo {
@@ -840,6 +841,8 @@ main {
   resize: vertical;
   font-family: inherit;
   box-sizing: border-box;
+  vertical-align: top;
+  text-align: left;
 }
 
 .post-textarea:focus {
@@ -847,10 +850,16 @@ main {
   border-color: #569C74;
 }
 
-.form-actions {
+input.post-textarea {
+  min-height: initial;
+  height: 40px;
+}
+
+.new-post-form .form-actions {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
+  margin-top: 20px;
 }
 
 /* AVATAR SIZE MODIFIERS*/
