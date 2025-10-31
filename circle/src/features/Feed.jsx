@@ -20,12 +20,13 @@ export default function Feed() {
         <div className="feature-names">Feed</div>
         <NewPostButton onClick={handleOpenModal} />
       </div>
-
+      
       <div className="main-content">
         {mockPosts.map((post) => (
           <Post key={post.id} post={post} />
         ))}
-      </div>
+    
+    </div>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <NewPostForm onSubmit={handleSubmitPost} onCancel={handleCloseModal} />
       </Modal>
