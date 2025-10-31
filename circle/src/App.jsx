@@ -5,6 +5,7 @@ import Profile from "./features/Profile";
 import Groups from "./features/Groups";
 import GroupDetail from "./features/GroupDetail";
 import Events from "./features/Events";
+import "./App.css";
 
 export default function App() {
   return (
