@@ -59,7 +59,7 @@ a {
   padding: 10px;
   width: 100%;
   margin: 0;
-  border-radius: 20px 0 20px 0 ;
+  border-radius: 20px 0 0 0 ;
   color: #E8E8E4;
   display: flex;
   align-items: center;
@@ -272,7 +272,6 @@ nav {
   background-color: var(--page-bg);
 }
 
-
 .feed-content-wrapper, .groups-content-wrapper {
   max-width: 800px;
   width: 100%;
@@ -307,6 +306,7 @@ main {
   flex-direction: column;
   align-self: center;
   margin: 0; 
+  text-align: left;
 }
 
 .user-info {
@@ -314,6 +314,7 @@ main {
   display: flex;
   align-items: center;
   gap: 5px;
+  justify-content: flex-start;
 }
 
 .name {
@@ -361,6 +362,7 @@ main {
   display: flex;
   flex-direction: row;
   margin-left: 7px;
+  justify-content: flex-start;
 }
 
 .actions {
@@ -438,6 +440,7 @@ main {
 
 .group-card-content {
   padding-top: 0 30px;
+  text-align: left;
 }
 
 .group-card h3 {
@@ -534,6 +537,7 @@ main {
   color: #863C5E;
   position: relative;
   margin-top: 5px;
+  text-align: left;
 }
 
 .group-actions {
@@ -566,6 +570,7 @@ main {
   border: 1px solid #E8E8E4;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  text-align: left;
 }
 
 .group-description-box h3 {
@@ -656,7 +661,7 @@ main {
   display: block;
   font-size: 1.2rem;
   margin-top: 4px;
-  color: #1f1f1f;
+  color: white;
   flex: 1;
   display: flex;
   flex-direction: row;
