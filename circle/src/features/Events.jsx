@@ -62,7 +62,7 @@ export default function Events() {
       <div className="feature-header" style={{ justifyContent: "space-between", width: "60vw" }}>
       {/* Header */}
       <div className="feature-names">Events</div>
-        <NewPostButton onClick={() => setShowComposer(true)} />
+        <NewPostButton onClick={() => setShowComposer(true)} hoverText="add an event" />
       </div>
 
       <div style={{ margin: "1rem auto", width: "60vw" }}>

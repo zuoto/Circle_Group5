@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function NewPostButton({ onClick }) {
+export default function NewPostButton({ onClick, hoverText = "add a post" }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -10,7 +10,7 @@ export default function NewPostButton({ onClick }) {
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
     >
-      {isHovered ? "add a post" : "+"}
+      {isHovered ? hoverText : "+"}
     </button>
   );
 }

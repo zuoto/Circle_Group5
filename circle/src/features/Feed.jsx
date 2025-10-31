@@ -18,7 +18,7 @@ export default function Feed() {
     <div className="page-wrapper">
       <div className="feature-header">
         <div className="feature-names">Feed</div>
-        <NewPostButton onClick={handleOpenModal} />
+        <NewPostButton onClick={handleOpenModal} hoverText="add a post" />
       </div>
       
       <div className="main-content">
