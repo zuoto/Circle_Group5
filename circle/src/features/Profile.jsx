@@ -16,7 +16,7 @@ function Profile() {
     bio: "Ava | Student at ITU | Copenhagen | D&D, arts & crafts",
     friends: users.filter((u) => u.id !== "u5").slice(0, 4),
     groups: [
-      { id: "1", name: "D&D Group", memberCount: 12 },
+      { id: "1", name: "The Fellowship of the Chaotic Dice", memberCount: 12 },
       { id: "2", name: "DIY Group", memberCount: 9 },
     ],
   };
@@ -93,12 +93,15 @@ function Profile() {
               {user.groups.map((group) => (
                 <Link
                   key={group.id}
-                  to={`/groups/${group.id}`}
+                  to={`/features/groups/${group.id}`}
                   className="group-card-link-compact"
                 >
                   <div className="group-card-compact">
                     <h3 style={{ margin: 0 }}>{group.name}</h3>
-                    <span>{group.memberCount} members</span>
+                    <div className="member-count-box">
+                      <span className="member-count-number">{group.memberCount}</span>
+                      <span className="member-count-text">members</span>
+                    </div>
                   </div>
                 </Link>
               ))}

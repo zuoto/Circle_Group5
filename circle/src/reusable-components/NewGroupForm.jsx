@@ -15,7 +15,7 @@ export default function NewGroupForm({ onSubmit, onCancel }) {
         <h2>Start a New Group</h2>
         <form onSubmit={handleSubmit}>
             <input
-                
+                type="text"
                 placeholder="Group Name"
                 className="post-textarea"
                 value={groupName}
