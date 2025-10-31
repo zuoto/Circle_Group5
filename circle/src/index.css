@@ -251,30 +251,26 @@ nav {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   min-height: 100%;
-  padding-top: 10px;
+  padding-top: 30px;
   background-color: var(--page-bg);
-  position: relative;
-  padding-left: 50px;
 }
+
 
 .feed-content-wrapper, .groups-content-wrapper {
   max-width: 800px;
   width: 100%;
   margin: 0;
-  align-self: flex-start;
-}
+  align-self: center;
+} 
 
 .main-content {
   display: flex;
   flex-direction: column;
-  max-width: 100%;
-  width: 100%;
-  align-items: flex-start;
+  align-items: center;
   gap: 16px;
   padding-top: 20px;
-  margin: 0;
 }
 
 /* ensure main content area uses same page background by default */
@@ -292,9 +288,9 @@ main{
   border: 2px solid #FCC82B;
   border-radius: 0 20px 0 20px;
   box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
-  width: 100%;
-  max-width: 100%;
-  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
   margin: 0; 
 }
 
