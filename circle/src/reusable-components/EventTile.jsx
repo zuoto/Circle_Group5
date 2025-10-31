@@ -24,7 +24,7 @@ export default function EventTile({ event, onOpen }) {
   return (
     <button
       type="button"
-      className="event-tile"
+      className="event-tile group-card"
       onClick={() => onOpen(event)}
       aria-label={`Open event ${event.title}`}
     >
