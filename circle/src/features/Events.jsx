@@ -1,158 +1,112 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { mockEvents } from "../mock-data/mock-data-events/MockEvents.jsx";
-import { users } from "../mock-data/mock-data-user/MockDataUsers.jsx";
 import EventTile from "../reusable-components/EventTile.jsx";
 import EventCard from "../reusable-components/EventCard.jsx";
-import CreateEvent from "../reusable-components/CreateEvent.jsx";
+import NewPostButton from "../reusable-components/NewPostButton.jsx";
+import NewEventForm from "../reusable-components/NewEventForm.jsx";
+import "../index.css";
 
 
-const withPeople = (event) => ({
-  ...event,
-  host: users.find((u) => u.id === event.hostId),
-  attendeeObjects: event.attendees.map((id) => users.find((u) => u.id === id)).filter(Boolean),
-});
+const withDefaults = (e) => ({ ...e, attendees: e.attendees || [], tags: e.tags || [] });
 
 export default function Events() {
   const currentUserId = "u1";
-  const [events, setEvents] = useState(mockEvents.map(withPeople));
+  const [events, setEvents] = useState(mockEvents.map(withDefaults));
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(null);
-  const [showCreate, setShowCreate] = useState(false);
+  const [showComposer, setShowComposer] = useState(false);
 
   useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && setSelected(null);
+    const onKey = (e) => {
+      if (e.key === "Escape") { 
+        setSelected(null);
+        setShowComposer(false);
+      }
+      };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  useEffect(() => {
-  const open = Boolean(selected) || showCreate;
-  document.body.classList.toggle("modal-open", open);
-  return () => document.body.classList.remove("modal-open");
-  }, [selected, showCreate]);
+  const handleCreate = (newEvent) => {
+  const id = "e" + (events.length + 1); 
+    setEvents([{ id, hostId: currentUserId, cover: null, ...newEvent }, ...events]);
+    setShowComposer(false);
+  };
 
-  const handleCreate = (evt) => {
-  setEvents(prev => [withPeople(evt), ...prev]);
-  setShowCreate(false);
-  setSelected(withPeople(evt));
-};
-
-  const filtered = useMemo(() => {
+  const toggleAttend = (eventId) => {
+    setEvents((prev) =>
+      prev.map((e) =>
+        e.id === eventId
+          ? {
+              ...e,
+              attendees: e.attendees.includes(currentUserId)
+                ? e.attendees.filter((uid) => uid !== currentUserId)
+                : [...e.attendees, currentUserId],
+            }
+          : e
+      )
+    );
+  };
+  const visibleEvents = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return events;
-    return events.filter(
-      (e) =>
-        e.title.toLowerCase().includes(q) ||
-        e.description.toLowerCase().includes(q) ||
-        e.location.toLowerCase().includes(q) ||
-        e.tags.some((t) => t.toLowerCase().includes(q))
+    return events.filter((e) =>
+      e.title.toLowerCase().includes(q) ||
+      (e.location || "").toLowerCase().includes(q) ||
+      (e.description || "").toLowerCase().includes(q)
     );
   }, [events, query]);
 
-  const toggleAttend = (id) => {
-    setEvents((prev) =>
-      prev
-        .map((e) => {
-          if (e.id !== id) return e;
-          const isIn = e.attendees.includes(currentUserId);
-          return {
-            ...e,
-            attendees: isIn
-              ? e.attendees.filter((uid) => uid !== currentUserId)
-              : [...e.attendees, currentUserId],
-          };
-        })
-        .map(withPeople)
-    );
-    // keep modal open and synced if open
-    setSelected((curr) => (curr && curr.id === id ? withPeople(
-      {
-        ...events.find(e => e.id === id),
-        attendees: (events.find(e => e.id === id).attendees.includes(currentUserId)
-          ? events.find(e => e.id === id).attendees.filter(uid => uid !== currentUserId)
-          : [...events.find(e => e.id === id).attendees, currentUserId]
-        )
-      }
-    ) : curr));
-  };
   return (
-    <div className="page-wrapper">
-
+    <main className="page-wrapper">
+      <div className="feature-header" style={{ justifyContent: "space-between", width: "60vw" }}>
       {/* Header */}
-      <div className="feature-names" style={{ marginBottom: 8 }}>
-        <h2 style={{ margin: 0, textAlign: "center" }}>Events</h2>
+      <div className="feature-names">Events</div>
+        <NewPostButton onClick={() => setShowComposer(true)} />
       </div>
 
-      {/* Search bar + Create button row */}
-      <div
-        className="main-content"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          marginBottom: "16px",
-        }}
-      >
+      <div style={{ margin: "1rem auto", width: "60vw" }}>
         <input
-          className="comment-input"
-          placeholder="Search events by title, tags or location…"
+          type="text"
+          placeholder="Search events..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          style={{ flexGrow: 1 }}
+          style={{
+            width: "100%",
+            padding: "0.5rem 0.75rem",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+          }}
         />
-        <button
-          className="create-button"
-          onClick={() => setShowCreate(true)}
-        >
-          + Create
-        </button>
       </div>
 
-      {/* Event tiles */}
-      <div className="main-content">
-        {filtered.map((e) => (
-          <div key={e.id} className="post-card">
-            <EventTile event={e} onOpen={setSelected} />
-          </div>
+      <section className="main-content" style={{ width: "60vw" }}>
+        {events.map((ev) => (
+          <EventTile key={ev.id} event={ev} onOpen={setSelected} />
         ))}
-        {!filtered.length && (
-          <p className="long-text">No events match your search.</p>
-        )}
-      </div>
-
-      {/* Event details modal */}
+        </section>
       {selected && (
         <div className="modal-backdrop" onClick={() => setSelected(null)}>
           <div
             className="modal-body"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-          >
+            onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setSelected(null)} aria-label="Close">×</button>
             <EventCard
               event={selected}
               currentUserId={currentUserId}
               onToggleAttend={() => toggleAttend(selected.id)}
             />
-            <button
-              className="secondary-button"
-              onClick={() => setSelected(null)}
-              style={{ marginTop: 8 }}
-            >
-              Close
-            </button>
+            </div>
+        </div>
+      )}
+      {showComposer && (
+        <div className="modal-backdrop" onClick={() => setShowComposer(false)}>
+          <div className="modal-body" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowComposer(false)} aria-label="Close">×</button>
+            <NewEventForm onSubmit={handleCreate} onCancel={() => setShowComposer(false)} />
           </div>
         </div>
       )}
-
-      {/* Create Event modal */}
-      {showCreate && (
-        <CreateEvent
-          defaultHostId={currentUserId}
-          onSave={handleCreate}
-          onClose={() => setShowCreate(false)}
-        />
-      )}
-    </div> 
-  ); 
-} 
+    </main>
+  );
+}

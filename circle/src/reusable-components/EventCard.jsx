@@ -52,10 +52,10 @@ export default function EventCard({ event, currentUserId, onToggleAttend }) {
         </div>
       </div>
 
-      <p className="event-desccription">{event.description}</p>
+      <p className="event-description">{event.description}</p>
 
       {details.length > 0 && (
-        <ul className="event.details">
+        <ul className="event-details">
           {details.map((d, i) => (
             <li key={i}>{d}</li>
           ))}
