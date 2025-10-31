@@ -20,7 +20,7 @@
     background-color: #ffffff;
   }
   a:hover {
-    color: #747bff;
+    color: #863C5E;
   }
   button {
     background-color: #f9f9f9;
@@ -45,12 +45,8 @@ main {
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #863C5E;
   text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
 }
 
 /* TEXT STYLES */
@@ -503,118 +499,6 @@ main{
   gap: 20px;
 }
 
-.sidebar-header {
-  font-family: "Funnel Display", sans-serif;
-  font-size: 1.5rem;
-  color: #1F1F1F;
-  margin-bottom: 15px;
-  text-align: left;
-  padding-left: 10px;
-}
-
-.card-footer-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 10px;
-}
-
-
-.attendees {
-  position: absolute;
-  bottom: 155px;
-  right: 30px;
-  margin-bottom: 8px;
-  min-width: 200px;
-  background: #f2f2ef;
-  border: 2px solid #569c74de;
-  border-radius: 20px 0px 20px 0px;
-  padding: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 2000;
-}
-
-.attendees-header {
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-.tooltip-attendee {
-  padding: 4px 0;
-  color: #666;
-}
-
-/* COMMENTS */
-.comment-section {
-  padding-top: 20px;
-}
-
-.comment {
-  position: relative;
-  padding: 15px 25px;
-  width: 100%;
-  background-color: transparent;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-self: center;
-  margin-bottom: 16px;
-}
-
-.comment-user-info {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.comment-name {
-  font-weight: bold;
-  font-size: 15px;
-  font-family: 'Funnel Display', sans-serif;
-}
-
-.comment-timestamp {
-  color: #888888;
-  font-size: 0.7rem;
-}
-
-.comment-avatar {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.comment-content {
-  font-size: 1em;
-  padding-top: 10px;
-  line-height: 1.5;
-}
-
-.comment-actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.comment-actions span {
-  color: #863C5E; 
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.sidebar-box {
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  text-align: center;
-}
-
 .group-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(20, 20, 20, 0.1);
@@ -722,8 +606,26 @@ main{
   cursor: pointer;
 }
 
+/* Group details sidebar */
+
+.sidebar-box {
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+
+.sidebar-header {
+  font-family: "Funnel Display", sans-serif;
+  font-size: 1.5rem;
+  color: #1F1F1F;
+  margin-bottom: 15px;
+  text-align: left;
+  padding-left: 10px;
+}
+
 .meetup-box {
-  background-color: #df530d9f;
+  background-color: #D9854D;
   color: white;
   padding: 24px 20px;
 }
@@ -743,6 +645,103 @@ main{
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+
+.card-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+}
+
+
+.attendees {
+  position: absolute;
+  bottom: 155px;
+  right: 30px;
+  margin-bottom: 8px;
+  min-width: 200px;
+  background: #f2f2ef;
+  border: 2px solid #569c74de;
+  border-radius: 20px 0px 20px 0px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 2000;
+}
+
+.attendees-header {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.tooltip-attendee {
+  padding: 4px 0;
+  color: #666;
+}
+
+/* COMMENTS */
+.comment-section {
+  padding-top: 20px;
+}
+
+.comment {
+  position: relative;
+  padding: 15px 25px;
+  width: 100%;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  margin-bottom: 16px;
+}
+
+.comment-user-info {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.comment-name {
+  font-weight: bold;
+  font-size: 15px;
+  font-family: 'Funnel Display', sans-serif;
+}
+
+.comment-timestamp {
+  color: #888888;
+  font-size: 0.7rem;
+}
+
+.comment-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.comment-content {
+  font-size: 1em;
+  padding-top: 10px;
+  line-height: 1.5;
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.comment-actions span {
+  color: #863C5E; 
+  font-weight: bold;
+  cursor: pointer;
 }
 
 /* Modal overlay */

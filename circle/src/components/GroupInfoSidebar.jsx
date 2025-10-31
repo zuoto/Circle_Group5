@@ -1,11 +1,16 @@
 import React from "react";
 
-function GroupInfoSidebar() {
+function GroupInfoSidebar({ meetup }) {
+
+    if (!meetup || !meetup.time || !meetup.location) {
+        return <p>No upcoming meetings planned</p>
+    }
+
     return(
         <>
         <div className="sidebar-box meetup-box">
-            <span>Monday 20:00-22:00</span>
-            <strong>Meet Up @ David's</strong>
+            <span>{meetup.time}</span>
+            <strong>{meetup.location}</strong>
         </div>
         </>
     );

@@ -7,6 +7,7 @@ export const mockGroups = [
       description: "Deep within the cluttered confines of a local game shop's back room (or perhaps the dimly lit corner of someone's basement), a group of unlikely adventurers gathers weekly to embark on epic quests, roll dice, and argue over the definition of 'sneak attack.' Meet the party!",
       memberCount: 12,
       coverPhotoUrl: '/covers/close-up-yahtzee-game-white-table.jpg',
+      nextMeetup: { time: "Monday 20:00-22:00", location: "Meet Up @ David's" },
       posts: [
         { id: 'p-group-1', 
           authorId: 'u2', 
@@ -23,6 +24,7 @@ export const mockGroups = [
       description: "Let's do some arts & crafts together!",
       memberCount: 9,
       coverPhotoUrl: '/covers/pexels-deeanacreates-1576210.jpg',
+      nextMeetup: { time: "Thursday 18:00-21:00", location: "Crocheting @ Ava's" },
       posts: [
         { id: 'p-group-2', 
             authorId: 'u7', 
@@ -46,6 +48,7 @@ export const mockGroups = [
       description: "Join for a run every Sunday, the destination is a new bakery every week. We run 5K, then reward ourselves with the best local pastries and coffee. No pressure, just fun.",
       memberCount: 18,
       coverPhotoUrl: '/covers/side-view-fit-friends-outdoors.jpg',
+      nextMeetup: { time: "Sunday 9:00 AM", location: "Meet Up @ Enghave Plads" },
       posts: [
         // No comments/posts yet
         ]
@@ -56,6 +59,7 @@ export const mockGroups = [
       description: "Badminton every Wednesday at 18. We focus on fun and light competition. Bring your own racket if you have one!",
       memberCount: 15,
       coverPhotoUrl: '/covers/badminton-concept-with-racket-shuttlecock.jpg',
+      nextMeetup: { time: "Tuesday 19:00-20:00", location: "Frederiksberg Badminton Club" },
       posts: [
         { id: 'p-group-4', 
             authorId: 'u5', 

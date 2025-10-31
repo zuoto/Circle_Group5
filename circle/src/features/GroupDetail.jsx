@@ -54,7 +54,7 @@ export default function GroupDetail() {
             </div>
             <div className="group-sidebar">
                 <h3 className="sidebar-header">Upcoming group meetings:</h3>
-                <GroupInfoSidebar />
+                <GroupInfoSidebar meetup={group.nextMeetup} />
             </div>
         </div>
     </div>
