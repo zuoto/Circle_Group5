@@ -341,10 +341,10 @@ main{
   padding-top: 0.5em;
   line-height: 1.5;
   color: #1F1F1F;
-  /* flex: 1;
+  flex: 1;
   display: flex;
   flex-direction: row;
-  margin-left: 7px;*/
+  margin-left: 7px;
 }
 
 .actions {
@@ -484,6 +484,11 @@ main{
   flex-direction: column;
   gap: 24px;
   position: relative;
+}
+
+.group-main-content .post {
+  width: 100%;
+  align-self: flex-start;
 }
 
 .group-sidebar {
