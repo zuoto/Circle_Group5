@@ -1,24 +1,13 @@
 import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import JoinButton from "../reusable-components/JoinButton";
 
 function GroupCard({ id, name, description, memberCount, isUserJoined, coverPhotoUrl }) {
 
-    const Checkmark = () => <span role="img" aria-label="checkmark">✔️</span>;
-    const [isJoined, setIsJoined] = useState(isUserJoined || false);
-
-    const handleJoinClick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsJoined(!isJoined);
+    const handleGroupCardJoin = (e) => {
+        console.log(`User toggled join state for group ID: ${id}`);
     };
-
-    const joinButtonText = isJoined ? (
-        <>
-        <Checkmark >Joined</Checkmark>
-        </>
-    ) : "Join";
-    const joinButtonClass = isJoined ? "joined-button" : 'primary-button';
 
     return(
         <Link to={`/groups/${id}`} className="group-card-link">
@@ -35,7 +24,10 @@ function GroupCard({ id, name, description, memberCount, isUserJoined, coverPhot
                 <span>{memberCount}</span>
                 <div className="group-card-actions">
                     <button className="secondary-button" onClick={(e) => { e.preventDefault(); e.stopPropagation();}}>Share</button>
-                    <button className={joinButtonClass} onClick={handleJoinClick}>{joinButtonText}</button>
+                    <JoinButton
+                        isUserJoined={isUserJoined}
+                        onClick={handleGroupCardJoin}
+                    />
                 </div>
                 </div>
             </div>
