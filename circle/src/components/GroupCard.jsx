@@ -21,7 +21,7 @@ function GroupCard({ id, name, description, memberCount, isUserJoined, coverPhot
     const joinButtonClass = isJoined ? "joined-button" : 'primary-button';
 
     return(
-        <Link to={`/features/groups/${id}`} className="group-card-link">
+        <Link to={`/groups/${id}`} className="group-card-link">
             <div className="group-card">
                 {coverPhotoUrl && (
                     <div className="group-card-cover-photo"
