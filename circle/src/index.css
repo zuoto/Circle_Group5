@@ -1298,10 +1298,10 @@ body.modal-open {
 }
 
 .logout-button {
-  position: absolute;
+  position: bottom-left;
   top: 10px;
   right: 10px;
-  background-color: #DF540D;
+  background-color: #FC8085;
   color: #E8E8E4;
   border: none;
   border-radius: 8px;
