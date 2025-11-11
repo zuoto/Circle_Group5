@@ -11,7 +11,7 @@
 
 /* ROOT & THEME */
 :root {
-  --page-bg: #E8E8E4;
+  --page-bg: #e8e8e4;
 }
 
 @media (prefers-color-scheme: light) {
@@ -20,7 +20,7 @@
     background-color: #ffffff;
   }
   a:hover {
-    color: #863C5E;
+    color: #863c5e;
   }
   button {
     background-color: #f9f9f9;
@@ -45,7 +45,7 @@ main {
 
 a {
   font-weight: 500;
-  color: #863C5E;
+  color: #863c5e;
   text-decoration: inherit;
 }
 
@@ -53,14 +53,13 @@ a {
 .feature-names {
   font-size: 4em;
   line-height: 1.1;
-  font-family: 'Funnel Display', sans-serif;
-  background-color: #863C5E;
-  color: #E8E8E4;
+  font-family: "Funnel Display", sans-serif;
+  background-color: #863c5e;
+  color: #e8e8e4;
   padding: 10px;
   width: 100%;
   margin: 0;
-  border-radius: 20px 0 0 0 ;
-  color: #E8E8E4;
+  border-radius: 20px 0 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,15 +78,15 @@ a {
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: bold;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
   background-color: #569c74de;
-  color: #E8E8E4;
+  color: #e8e8e4;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 
 .primary-button:hover {
-  background-color: #569C74;
+  background-color: #569c74;
 }
 
 .primary-button:focus,
@@ -101,9 +100,9 @@ a {
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: bold;
-  font-family: 'Funnel Display', sans-serif;
-  background-color: #DF540D;
-  color: #E8E8E4;
+  font-family: "Funnel Display", sans-serif;
+  background-color: #df540d;
+  color: #e8e8e4;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -122,7 +121,7 @@ a {
 }
 
 .secondary-button:hover {
-  background-color: #FC8085;
+  background-color: #fc8085;
 }
 
 .searchbutton {
@@ -165,7 +164,7 @@ a {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  color: #863C5E;
+  color: #863c5e;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
@@ -174,33 +173,32 @@ a {
 }
 
 .back-button:hover {
-  color: #DF540D;
+  color: #df540d;
 }
-
 
 .new-post-button {
   font-size: 4em;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
   font-weight: bold;
   padding: 10px 30px;
   border-radius: 0 0 20px 0;
-  background-color: #D9854D;
-  color: #E8E8E4;
+  background-color: #d9854d;
+  color: #e8e8e4;
   border: none;
   cursor: pointer;
   display: flex;
-  min-width: 110px; 
-  min-height: 90.5px; 
-  max-width: 110px; 
-  max-height: 90.5px; 
+  min-width: 110px;
+  min-height: 90.5px;
+  max-width: 110px;
+  max-height: 90.5px;
   align-items: center;
   justify-content: center;
   line-height: 1.1;
-  overflow-wrap: break-word; 
+  overflow-wrap: break-word;
 }
 
 .new-post-button:hover {
-  background-color: #DF540D;
+  background-color: #df540d;
   font-size: 1em;
 }
 
@@ -224,7 +222,7 @@ nav {
   padding: 4rem;
   width: 100%;
   height: 78vh;
-  background-color: #E8E0C7;
+  background-color: #e8e0c7;
   border-radius: 0px 120px 0px 0px;
   display: flex;
   flex-direction: column;
@@ -234,14 +232,14 @@ nav {
 }
 
 .nav-link {
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
   font-size: x-large;
   display: block;
   padding: 0.6rem 1rem;
   width: 100%;
   text-decoration: none;
   border-radius: 6px;
-  color: #569C74;
+  color: #569c74;
 }
 
 .nav-link:hover {
@@ -286,12 +284,13 @@ nav {
   background-color: var(--page-bg);
 }
 
-.feed-content-wrapper, .groups-content-wrapper {
+.feed-content-wrapper,
+.groups-content-wrapper {
   max-width: 800px;
   width: 100%;
   margin: 0;
   align-self: center;
-} 
+}
 
 .main-content {
   display: flex;
@@ -313,13 +312,13 @@ main {
   padding: 24px 30px 30px 30px;
   width: 60vw;
   background-color: #f2f2ef;
-  border: 2px solid #FCC82B;
+  border: 2px solid #fcc82b;
   border-radius: 0 20px 0 20px;
   box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
   display: flex;
   flex-direction: column;
   align-self: center;
-  margin: 0; 
+  margin: 0;
   text-align: left;
 }
 
@@ -356,7 +355,7 @@ main {
 
 .post-meeting-time:hover {
   cursor: pointer;
-  background-color: #FCC82B;
+  background-color: #fcc82b;
 }
 
 .avatar {
@@ -365,7 +364,6 @@ main {
   border-radius: 50%;
   margin-right: 16px;
 }
-
 
 .content {
   font-size: 1.25em;
@@ -437,7 +435,7 @@ main {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  border-bottom: 2px solid #FCC82B;
+  border-bottom: 2px solid #fcc82b;
   margin-bottom: 20px;
   margin-top: 5px;
 }
@@ -489,8 +487,8 @@ main {
 
 .group-card-actions .primary-button {
   padding: 0.5em 1em;
-  background-color: #863C5E;
-  color: #E8E8E4;
+  background-color: #863c5e;
+  color: #e8e8e4;
 }
 
 .group-card-actions .primary-button:hover {
@@ -542,14 +540,14 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #FCC82B;
+  border-bottom: 2px solid #fcc82b;
   padding-bottom: 16px;
 }
 
 .group-header h1 {
   font-family: "Funnel Display", sans-serif;
   font-size: 2.8rem;
-  color: #863C5E;
+  color: #863c5e;
   position: relative;
   margin-top: 5px;
   text-align: left;
@@ -566,9 +564,9 @@ main {
 }
 
 .joined-button {
-  background-color: #569C74;
+  background-color: #569c74;
   color: white;
-  border: 1px solid #569C74;
+  border: 1px solid #569c74;
   cursor: default;
   padding: 8px 14px;
   border-radius: 8px;
@@ -582,7 +580,7 @@ main {
 .group-description-box {
   background-color: transparent;
   border-radius: 0 0 12px 0;
-  border: 1px solid #E8E8E4;
+  border: 1px solid #e8e8e4;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   text-align: left;
@@ -654,14 +652,14 @@ main {
 .sidebar-header {
   font-family: "Funnel Display", sans-serif;
   font-size: 1.5rem;
-  color: #1F1F1F;
+  color: #1f1f1f;
   margin-bottom: 15px;
   text-align: left;
   padding-left: 10px;
 }
 
 .meetup-box {
-  background-color: #D9854D;
+  background-color: #d9854d;
   color: white;
   padding: 24px 20px;
 }
@@ -682,7 +680,6 @@ main {
   flex-direction: row;
   justify-content: center;
 }
-
 
 .card-footer-row {
   display: flex;
@@ -748,7 +745,7 @@ main {
 .comment-name {
   font-weight: bold;
   font-size: 15px;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
 }
 
 .comment-timestamp {
@@ -779,7 +776,7 @@ main {
 }
 
 .comment-actions span {
-  color: #863C5E; 
+  color: #863c5e;
   font-weight: bold;
   cursor: pointer;
 }
@@ -810,8 +807,7 @@ main {
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  border: 2px solid #FCC82B;
-
+  border: 2px solid #fcc82b;
 }
 
 /* Close button */
@@ -831,7 +827,7 @@ main {
 }
 
 .modal-close:hover {
-  color: #DF540D;
+  color: #df540d;
 }
 
 /* New post form */
@@ -842,11 +838,11 @@ main {
 }
 
 .new-post-form h2 {
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
   font-size: 2em;
   font-weight: bold;
   margin: 0;
-  color: #863C5E;
+  color: #863c5e;
 }
 
 .post-textarea {
@@ -865,7 +861,7 @@ main {
 
 .post-textarea:focus {
   outline: none;
-  border-color: #569C74;
+  border-color: #569c74;
 }
 
 input.post-textarea {
@@ -880,11 +876,49 @@ input.post-textarea {
   margin-top: 20px;
 }
 
+/* File upload field */
+.hidden-file-input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.styled-file-label {
+  width: 100%;
+  min-height: initial;
+  height: 40px;
+  padding: 1rem;
+  font-size: 0.5rem 1.1em;
+  font-size: 1.1em;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  color: #808082;
+}
+
+.styled-file-label:hover {
+  background-color: #f9f9f9;
+  border-color: #863c5e;
+}
+
+.styled-file-label:focus,
+.styled-file-label:active {
+  border-color: #569c74;
+  color: #333;
+}
+
 /* AVATAR SIZE MODIFIERS*/
 .avatar-large {
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
+  object-fit: cover;
   margin-right: 0;
 }
 
@@ -1002,44 +1036,6 @@ input.post-textarea {
   width: 100%;
 }
 
-/* New post form */
-.new-post-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.new-post-form h2 {
-  font-family: 'Funnel Display', sans-serif;
-  font-size: 2em;
-  font-weight: bold;
-  margin: 0;
-  color: #863C5E;
-}
-
-.post-textarea {
-  width: 100%;
-  min-height: 150px;
-  padding: 1rem;
-  font-size: 1.1em;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  resize: vertical;
-  font-family: inherit;
-  box-sizing: border-box;
-}
-
-.post-textarea:focus {
-  outline: none;
-  border-color: #569C74;
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-}
-
 /*LogIn Page*/
 .login-container {
   display: flex;
@@ -1066,7 +1062,7 @@ input.post-textarea {
   text-align: left;
 }
 
-.login-btn{
+.login-btn {
   width: 100%;
 }
 
@@ -1092,7 +1088,7 @@ input.post-textarea {
 
 .form-group input:focus {
   outline: none;
-  border-color: #569C74;
+  border-color: #569c74;
   box-shadow: 0 0 0 3px rgba(86, 156, 116, 0.1);
 }
 
@@ -1111,9 +1107,9 @@ input.post-textarea {
 }
 
 .login-card h1 {
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
   font-size: 2.5em;
-  color: #863C5E;
+  color: #863c5e;
   margin-bottom: 30px;
   text-align: center;
 }
@@ -1132,12 +1128,12 @@ input.post-textarea {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
 }
 
 .login-btn.primary-button {
-  background-color: #569C74;
-  color: #E8E8E4;
+  background-color: #569c74;
+  color: #e8e8e4;
 }
 
 .login-btn.primary-button:hover {
@@ -1149,7 +1145,7 @@ input.post-textarea {
   margin-top: 20px;
   padding: 12px 16px;
   font-size: 0.95em;
-  color: #863C5E;
+  color: #863c5e;
   text-align: center;
   text-decoration: none;
   transition: color 0.2s, background-color 0.2s;
@@ -1163,12 +1159,16 @@ input.post-textarea {
 }
 /* Events.jsx modal container */
 .modal-backdrop {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.35);
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px); 
-  display: flex; align-items: flex-start; justify-content: center;
-  padding: 5vh 16px; z-index: 50;
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5vh 16px;
+  z-index: 50;
 }
 
 /* Events.jsx modal panel */
@@ -1178,8 +1178,8 @@ input.post-textarea {
   padding: 16px;
   max-width: 900px;
   width: 100%;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-  max-height: 90vh;         
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  max-height: 90vh;
   overflow-y: auto;
 }
 
@@ -1304,7 +1304,6 @@ body.modal-open {
   transform: translateY(-1px);
 }*/
 
-
 .error {
   color: red;
   background-color: #fee;
@@ -1319,8 +1318,8 @@ body.modal-open {
   position: bottom-left;
   top: 10px;
   right: 10px;
-  background-color: #FC8085;
-  color: #E8E8E4;
+  background-color: #fc8085;
+  color: #e8e8e4;
   border: none;
   border-radius: 8px;
   padding: 8px 14px;
