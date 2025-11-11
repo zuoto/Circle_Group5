@@ -1,50 +1,62 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import GroupHeader from "../components/GroupHeader";
-import GroupComment from "../components/GroupComment";
 import GroupInfoSidebar from "../components/GroupInfoSidebar"; 
+import Post from "../reusable-components/Post";
+import { mockGroups } from "../mock-data/mock-data-groups/MockGroupsData";
 
 export default function GroupDetail() {
 
     const { groupId } = useParams();
     console.log("Loading details for: ", groupId);
 
-    const groupData = {
-        name: "D&D Group",
-        description: "The Fellowship of the Chaotic Dice",
+    // Back button:
+    const navigate = useNavigate();
+    const handleBackClick = () => {
+        navigate(-1);   // goes one step back on history stack
     };
 
-    const comments = [
-        {
-            author: "Jane Doe",
-            text: "Lots of people mentioned changing the hour of meetup! Should we?",
-        },
-    ];
+    const group = mockGroups.find(g => g.id == groupId);
+
+    if (!group) {
+        return (
+            <div className="page-wrapper">
+                <h1>Group Not Found</h1>
+                <p>Could not find any groups with the search word</p>
+            </div>
+        );
+    }
 
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper group-detail-page-wrapper">
         <div className="group-detail-layout">
             <div className="group-main-content">
-                <GroupHeader name={groupData.name} />
-                <div className="group-description.box">
+                <button 
+                onClick={handleBackClick}
+                className="back-button">← Back</button>
+                {group.coverPhotoUrl && (
+                    <div className="group-detail-cover-photo"
+                    style={{ backgroundImage: `url(${group.coverPhotoUrl})`}}></div>
+                )}
+                <GroupHeader name={group.name}
+                isUserJoined={group.isUserJoined}
+                />
+
+                <div className="group-description-box">
                     <h3>Group Description</h3>
-                    <p>
-                        {groupData.description}{" "}
-                        <span className="read-more">+ Read more</span>
-                    </p>
+                    <p>{group.description}{" "}</p>
                 </div>
-                <div className="group-feed">
-                    {comments.map((comment, index) => (
-                        <GroupComment
+                    {group.posts.map((groupPost, index) => (
+                        <Post
                         key={index}
-                        author={comment.author}
-                        text={comment.text}
+                        post={groupPost}
+                        isGroupPost={true}
                         />
                     ))}
-                </div>
             </div>
             <div className="group-sidebar">
-                <GroupInfoSidebar />
+                <h3 className="sidebar-header">Upcoming group meetings:</h3>
+                <GroupInfoSidebar meetup={group.nextMeetup} />
             </div>
         </div>
     </div>

@@ -1,3 +1,5 @@
+import { users } from "../mock-data/mock-data-user/MockDataUsers";
+
 const formatTimeAgo = (dateString) => {
   const date = new Date(dateString);
   const now = new Date();
@@ -11,16 +13,18 @@ const formatTimeAgo = (dateString) => {
 };
 
 export default function Comment({comment}) {
+const commentAuthor = comment.author ? comment.author : users.find(u => u.id === comment.authorId);
+
   return (
     <div className="comment">
       <div className="comment-user-info">
         <img
-          src={comment.author?.avatar}
+          src={commentAuthor?.avatar}
           alt="User Avatar"
           className="comment-avatar"
         />
         <div className="name-and-timestamp-wrapper">
-          <div className="comment-name">{comment.author?.name} {comment.author?.surname}</div>
+          <div className="comment-name">{commentAuthor?.name} {commentAuthor?.surname}</div>
           <div className="comment-timestamp">{formatTimeAgo(comment.createdAt)}</div>
         </div>
       </div>
