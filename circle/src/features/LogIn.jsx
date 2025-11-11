@@ -70,8 +70,11 @@ export default function LogIn() {
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
-        </form>
+        </form>{" "}
       </div>
+      <a href="/register" className="register-link">
+        Don't have an account? Register
+      </a>
     </div>
   );
 }

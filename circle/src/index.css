@@ -1174,3 +1174,21 @@ input.post-textarea {
 .login-btn.primary-button:hover {
   background-color: #4a8a60;
 }
+
+.register-link {
+  display: block;
+  margin-top: 20px;
+  padding: 12px 16px;
+  font-size: 0.95em;
+  color: #863C5E;
+  text-align: center;
+  text-decoration: none;
+  transition: color 0.2s, background-color 0.2s;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.register-link:hover {
+  color: #df540d;
+  background-color: rgba(223, 84, 13, 0.1);
+}

@@ -6,6 +6,7 @@ import Groups from "./features/Groups";
 import GroupDetail from "./features/GroupDetail";
 import Events from "./features/Events";
 import LogIn from "./features/LogIn";
+import Register from "./features/Register";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import { useAuth } from "./auth/AuthProvider";
 import "./App.css";
@@ -17,6 +18,8 @@ export default function App() {
   if (!auth?.token) {
     return (
       <Routes>
+        <Route path="/login" element={<LogIn />} />
+        <Route path="/register" element={<Register />} />
         <Route path="*" element={<LogIn />} />
       </Routes>
     );
@@ -71,7 +74,6 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/login" element={<LogIn />} />
         </Routes>
       </main>
     </div>

@@ -59,6 +59,16 @@ export default function NavBar() {
             Login
           </NavLink>
         </li>
+        <li className="nav-item">
+          <NavLink
+            to="/register"
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
+            Register
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );
