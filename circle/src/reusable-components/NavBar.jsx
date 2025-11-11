@@ -48,6 +48,17 @@ export default function NavBar() {
             Profile
           </NavLink>
         </li>
+
+        <li className="nav-item">
+          <NavLink
+            to="/login"
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
+            Login
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );

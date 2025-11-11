@@ -15,23 +15,23 @@ export default function Feed() {
   const handleCloseModal = () => setIsModalOpen(false);
   return (
     //returning the feed page with posts and a new post button
-    <div className="page-wrapper">
-      <div className="feature-header">
-        <div className="feature-names">Feed</div>
-        <NewPostButton onClick={handleOpenModal} hoverText="add a post" />
+    <>
+      <div className="page-wrapper">
+        <div className="feature-header">
+          <div className="feature-names">Feed</div>
+          <NewPostButton onClick={handleOpenModal} hoverText="add a post" />
+        </div>
+
+        <div className="main-content">
+          {mockPosts.map((post) => (
+            <Post key={post.id} post={post} />
+          ))}
+          {!mockPosts.length && <p>No posts available.</p>}
+        </div>
       </div>
-      
-      <div className="main-content">
-        {mockPosts.map((post) => (
-          <Post key={post.id} post={post} />
-        ))}
-        {!mockPosts.length && <p>No posts available.</p>}
-      </div>
-    
-    </div>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <NewPostForm onSubmit={handleSubmitPost} onCancel={handleCloseModal} />
       </Modal>
-    </div>
+    </>
   );
 }

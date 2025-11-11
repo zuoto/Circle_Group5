@@ -5,9 +5,24 @@ import Profile from "./features/Profile";
 import Groups from "./features/Groups";
 import GroupDetail from "./features/GroupDetail";
 import Events from "./features/Events";
+import LogIn from "./features/LogIn";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import { useAuth } from "./auth/AuthProvider";
 import "./App.css";
 
 export default function App() {
+  const { auth } = useAuth();
+
+  // If not logged in, show login page
+  if (!auth?.token) {
+    return (
+      <Routes>
+        <Route path="*" element={<LogIn />} />
+      </Routes>
+    );
+  }
+
+  // If logged in, show main app with nav and routes
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       <aside className="w-64 flex-none min-h-full">
@@ -16,11 +31,47 @@ export default function App() {
 
       <main className="flex-1 min-w-0 p-6 page-content-bg">
         <Routes>
-          <Route path="/" element={<Feed />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/groups" element={<Groups />} />
-          <Route path="/groups/:groupId" element={<GroupDetail />} />
-          <Route path="/events" element={<Events />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Feed />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/groups"
+            element={
+              <ProtectedRoute>
+                <Groups />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/groups/:groupId"
+            element={
+              <ProtectedRoute>
+                <GroupDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events"
+            element={
+              <ProtectedRoute>
+                <Events />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<LogIn />} />
         </Routes>
       </main>
     </div>
