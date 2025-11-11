@@ -25,6 +25,8 @@ export default function Feed() {
         {mockPosts.map((post) => (
           <Post key={post.id} post={post} />
         ))}
+        {!mockPosts.length && <p>No posts available.</p>}
+      </div>
     
     </div>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
