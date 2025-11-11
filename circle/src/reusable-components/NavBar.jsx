@@ -73,13 +73,9 @@ export default function NavBar() {
             className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
           />
-          <button
-            className="secondary-button search-go-button"
-            onClick={handleSearch}
-          >
-            Go
+          <button className="searchbutton" onClick={handleSearch}>
+            Search
           </button>
         </li>
       </ul>

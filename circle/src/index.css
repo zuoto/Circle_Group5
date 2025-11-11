@@ -125,6 +125,20 @@ a {
   background-color: #FC8085;
 }
 
+.searchbutton {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #fc8084bb;
+  color: #1f1f1fca;
+  cursor: pointer;
+  border-radius: 0 0px 15px 15px;
+  transition: border-color 0.25s;
+  width: 100%;
+}
 .secondary-button:focus,
 .secondary-button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -1319,7 +1333,7 @@ body.modal-open {
 /* searchbar */
 .search-input {
   width: 100%;
-  border-radius: 8px;
+  border-radius: 15px 15px 0 0;
   border: 1px solid #ddd;
   padding: 0.8em 1.2em;
   font-size: 1em;
