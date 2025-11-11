@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route } from "react-router-dom";
+import NavBar from "./reusable-components/NavBar";
+import Feed from "./features/Feed";
+import Profile from "./features/Profile";
+import Groups from "./features/Groups";
+import GroupDetail from "./features/GroupDetail";
+import Events from "./features/Events";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="min-h-screen flex flex-col md:flex-row">
+      <aside className="w-64 flex-none min-h-full">
+        <NavBar />
+      </aside>
 
-export default App
+      <main className="flex-1 min-w-0 p-6 page-content-bg">
+        <Routes>
+          <Route path="/" element={<Feed />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/groups" element={<Groups />} />
+          <Route path="/groups/:groupId" element={<GroupDetail />} />
+          <Route path="/events" element={<Events />} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
