@@ -2,10 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import "../index.css";
-import { users } from "../mock-data/mock-data-user/MockDataUsers.jsx";
-import Avatar from "../components/Avatar.jsx";
-import Card from "../components/ProfileCard.jsx";
-import GroupCard from "../components/GroupCard.jsx";
 import { Link } from "react-router-dom";
 
 function Profile() {
