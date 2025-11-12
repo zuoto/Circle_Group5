@@ -14,24 +14,31 @@ export default function Feed() {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
   return (
-    //returning the feed page with posts and a new post button
+    <>
+    {/*returning the feed page with posts and a new post button*/}
     <div className="page-wrapper">
-      <div className="feature-header">
-        <div className="feature-names">Feed</div>
-        <NewPostButton onClick={handleOpenModal} hoverText="add a post" />
+        <div className="feature-header">
+          <div className="feature-names">Feed</div>
+          <NewPostButton onClick={handleOpenModal} hoverText="add a post" />
+        </div>
+
+        <div className="main-content">
+          {mockPosts.map((post) => (
+            <Post key={post.id} post={post} />
+          ))}
+          {!mockPosts.length && <p>No posts available.</p>}
+        </div>
       </div>
-      
-      <div className="main-content">
-        {mockPosts.map((post) => (
-          <Post key={post.id} post={post} />
-        ))}
-        {!mockPosts.length && <p>No posts available.</p>}
-      </div>
-    
-    </div>
+
+      {/* CHANGED: Moved the Modal inside the same fragment 
+          (it used to sit outside the main <div> and caused 
+          “Adjacent JSX elements” error). */}
+
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <NewPostForm onSubmit={handleSubmitPost} onCancel={handleCloseModal} />
       </Modal>
-    </div>
+
+      {/* CHANGED: Removed the stray extra </div> that was closing nothing */}
+    </>
   );
 }
