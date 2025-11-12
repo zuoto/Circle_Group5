@@ -1,9 +1,25 @@
-import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { useAuth } from "../auth/AuthProvider";
 
 export default function NavBar() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <nav className="h-screen p-4">
       <div className="shape">
@@ -50,8 +66,21 @@ export default function NavBar() {
             Profile
           </NavLink>
         </li>
-        <li className="nav-item">
-          <input type="text" placeholder="Search..." className="search-input" />
+        <li className="nav-item search-container">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyPress={handleKeyPress}
+          />
+          <button
+            className="secondary-button search-go-button"
+            onClick={handleSearch}
+          >
+            Go
+          </button>
         </li>
       </ul>
       <button className="logout-button" onClick={logout}>
