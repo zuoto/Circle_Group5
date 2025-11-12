@@ -19,7 +19,7 @@ export default function App() {
           <Route path="/" element={<Feed />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/groups" element={<Groups />} />
-          <Route path="/features/groups/:groupId" element={<GroupDetail />} />
+          <Route path="/groups/:groupId" element={<GroupDetail />} />
           <Route path="/events" element={<Events />} />
         </Routes>
       </main>

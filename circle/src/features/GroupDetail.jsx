@@ -38,7 +38,9 @@ export default function GroupDetail() {
                     <div className="group-detail-cover-photo"
                     style={{ backgroundImage: `url(${group.coverPhotoUrl})`}}></div>
                 )}
-                <GroupHeader name={group.name} />
+                <GroupHeader name={group.name}
+                isUserJoined={group.isUserJoined}
+                />
 
                 <div className="group-description-box">
                     <h3>Group Description</h3>

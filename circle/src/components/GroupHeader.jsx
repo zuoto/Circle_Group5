@@ -1,27 +1,21 @@
 import React from "react";
-import { useState } from "react";
+import JoinButton from "../reusable-components/JoinButton";
 
-const Checkmark = () => <span role="img" aria-label="checkmark">✔️</span>;
-
-function GroupHeader({ name }) {
-    const [isJoined, setIsJoined] = useState(false);
-    const handleJoinClick = () => {
-        setIsJoined(!isJoined);
+function GroupHeader({ name, isUserJoined }) {
+    
+    const handleJoinToggle = (e, newIsJoinedState) => {
+        console.log(`User toggled join state to: ${newIsJoinedState}`);
     };
-
-    const buttonChange = isJoined ? "joined-button" : "primary-button";
-    const buttonText = isJoined ? (
-        <>
-        <Checkmark >Joined</Checkmark>
-        </>
-    ) : "Join";
 
     return(
        <div className="group-header">
         <h1>{name}</h1>
         <div className="group-actions">
             <button className="secondary-button share-button">Share</button>
-            <button className={buttonChange} onClick={handleJoinClick}>{buttonText}</button>
+            <JoinButton
+                isUserJoined={isUserJoined}
+                onClick={handleJoinToggle}
+            />
         </div>
        </div>
     );
