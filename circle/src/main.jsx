@@ -3,12 +3,15 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App.jsx";
-import Parse from "parse/types/Parse.js";
+import Parse from "parse";
 
 Parse.initialize(
-  "CUkZhmAmKoe3fzlNZXxQyEKIiHOi1OVdumHzkjF5",
-  "n0HsDaRxmngRSijFPAM3g8XiHkAUUW9DL2LZI0Ck"
+  "qygqOjKKgGQSWK7FXj2ElZD8DqPM8R7CurLav0xl",
+  "zWbrrn1KYSBOnh3VXq5L3T7gxukfj9SoKRFXmZnX"
 );
+
+/*"CUkZhmAmKoe3fzlNZXxQyEKIiHOi1OVdumHzkjF5",
+  "n0HsDaRxmngRSijFPAM3g8XiHkAUUW9DL2LZI0Ck"*/
 
 Parse.serverURL = "https://parseapi.back4app.com";
 
