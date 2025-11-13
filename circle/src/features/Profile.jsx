@@ -2,36 +2,95 @@
 
 import React, { useState, useEffect } from "react";
 import "../index.css";
+import Card from "../components/ProfileCard.jsx";
+import GroupCard from "../components/GroupCard.jsx";
 import { Link } from "react-router-dom";
 import { users } from "../mock-data/mock-data-user/MockDataUsers";
-import Card from "../components/ProfileCard";
 import Avatar from "../components/Avatar";
+import Parse from "parse";
+
+const CURRENT_USER_ID = "GUnnayD58J";
 
 function Profile() {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  //mock data for profile including bio, friends, groups
-  const mockProfileData = {
-    bio: "Ava | Student at ITU | Copenhagen | D&D, arts & crafts",
-    friends: users.filter((u) => u.id !== "u5").slice(0, 4),
-    groups: [
-      { id: "1", name: "The Fellowship of the Chaotic Dice", memberCount: 12 },
-      { id: "2", name: "DIY Group", memberCount: 9 },
-    ],
+  const fetchProfileData = async () => {
+    try {
+      // 1. Define the UserC class and the specific ID to fetch
+      const UserC = Parse.Object.extend("UserC");
+      const query = new Parse.Query(UserC);
+
+      // 2. Fetch the main user object
+      const parseUser = await query.get(CURRENT_USER_ID);
+
+      // --- 3. Fetch Relations (Friends and Groups) ---
+      // Relations require separate queries, we cannot get them with one call.
+
+      // 3a. Fetch Friends (user_friends relation)
+      /*const friendsRelation = parseUser.relation('user_friends');
+      const friendsQuery = friendsRelation.query();
+      const friendsResults = await friendsQuery.find();
+
+      // 3b. Fetch Joined Groups (groups_joined relation)
+      const groupsJoinedRelation = parseUser.relation('groups_joined');
+      const groupsQuery = groupsJoinedRelation.query();
+      // To get the memberCount (or other data) for groups, we may need a more advanced query
+      const groupsResults = await groupsQuery.find();*/
+
+      // 4. Structure the data for the React component
+      const structuredUser = {
+        id: parseUser.id,
+        // Map Parse column names to component prop names (name, surname, bio)
+        name: parseUser.get("user_name"),
+        surname: parseUser.get("user_lastname"),
+        bio: parseUser.get("bio"),
+
+        // Handle File type for profile picture
+        picture: parseUser.get("profile_pic")
+          ? parseUser.get("profile_pic").url()
+          : null,
+
+        // Mock data for friends and groups since relations are commented out
+        friends: [],
+        groups: [],
+
+        /* // Map the relation results
+        friends: friendsResults.map(friend => ({
+          id: friend.id,
+          name: friend.get('user_name'),
+          avatar: friend.get('profile_pic') ? friend.get('profile_pic').url() : null,
+        })),
+
+        groups: groupsResults.map(group => ({
+          id: group.id,
+          name: group.get('group_name'),
+          // Note: memberCount would typically be retrieved by querying the Relation count
+          memberCount: group.get('memberCount') || 0, 
+        })),*/
+      };
+
+      setUser(structuredUser);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching user profile data:", error);
+      // You can set an error state here to show a message to the user
+      setUser(null);
+      setIsLoading(false);
+    }
   };
 
-  function loadUser() {
-    //loops through the set of avatars, sets user and connects them to the profile data
-    const found = users.find((u) => u.id === "u5");
-    setUser({ ...found, ...mockProfileData });
-  }
-
   useEffect(() => {
-    loadUser();
+    // Only fetch if we have a valid ID
+    fetchProfileData();
   }, []);
 
-  if (!user) {
+  if (isLoading) {
     return <div className="page-wrapper">Loading Profile...</div>;
+  }
+
+  if (!user) {
+    return <div className="page-wrapper">Error loading profile.</div>;
   }
 
   return (
@@ -43,8 +102,8 @@ function Profile() {
           <Card>
             <div style={{ textAlign: "center", marginBottom: "15px" }}>
               <Avatar
-                src={user.avatar}
-                alt={`${user.name} avatar`}
+                src={user.picture}
+                alt={`${user.name} picture`}
                 size="large"
               />
             </div>

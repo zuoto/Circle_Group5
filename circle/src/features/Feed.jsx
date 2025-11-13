@@ -28,10 +28,15 @@ export default function Feed() {
           ))}
           {!mockPosts.length && <p>No posts available.</p>}
         </div>
+
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+          <NewPostForm
+            onSubmit={handleSubmitPost}
+            onCancel={handleCloseModal}
+          />
+        </Modal>
       </div>
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <NewPostForm onSubmit={handleSubmitPost} onCancel={handleCloseModal} />
-      </Modal>
+      {/* CHANGED: Removed the stray extra </div> that was closing nothing */}
     </>
   );
 }

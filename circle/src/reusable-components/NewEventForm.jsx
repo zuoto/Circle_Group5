@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../index.css";
 
 export default function NewEventForm({ onSubmit, onCancel }) {
   const [title, setTitle] = useState("");

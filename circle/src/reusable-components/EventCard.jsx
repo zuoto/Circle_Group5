@@ -1,6 +1,7 @@
 import React from "react";
 import { users } from "../mock-data/mock-data-user/MockDataUsers.jsx";
 import ImInButton from "./ImInButton.jsx";
+import "../index.css";
 
 const formatMeetupTime = (dateString) => {
   const date = new Date(dateString);

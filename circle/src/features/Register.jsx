@@ -3,33 +3,46 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
 export default function Register() {
-  const navigate = useNavigate();
-  const { login } = useAuth();
+  const navigate = useNavigate(); //redirects automatically after registration
+  const { login } = useAuth(); //custom hook to access auth methods
   const [form, setForm] = useState({
     name: "",
+    surname: "",
     email: "",
     password: "",
     confirmPassword: "",
+    location: "", //this should be optional?
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  //handle update of form fields
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((s) => ({ ...s, [name]: value }));
   }
 
+  //basic checks if inputs are valid
   function validate() {
-    if (!form.name.trim() || !form.email.trim() || !form.password) {
-      return "All fields are required.";
+    //check if all required fields are filled
+    if (
+      !form.name.trim() ||
+      !form.surname.trim() ||
+      !form.email.trim() ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
+      return "All fields except location are required.";
     }
-    // basic email check
+    // check if email is an email (regex checking for @ and . )
     if (!/^\S+@\S+\.\S+$/.test(form.email)) {
       return "Enter a valid email address.";
     }
+    // check password length is over 6
     if (form.password.length < 6) {
       return "Password must be at least 6 characters.";
     }
+    //check if passwords match
     if (form.password !== form.confirmPassword) {
       return "Passwords do not match.";
     }
@@ -39,6 +52,7 @@ export default function Register() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    //on submit, validate inputs and display relevant error if needed
     const v = validate();
     if (v) {
       setError(v);
@@ -46,9 +60,7 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      // Use the auth provider's login method for registration
-      // In a real app, you'd call a /api/register endpoint instead
-      await login({ email: form.email, password: form.password });
+      await Register({ email: form.email, password: form.password });
       navigate("/", { replace: true });
     } catch (err) {
       setError(err.message || "Registration failed");
@@ -72,6 +84,19 @@ export default function Register() {
               onChange={handleChange}
               placeholder="Enter your name"
               autoComplete="name"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="surname">Surname</label>
+            <input
+              id="surname"
+              name="surname"
+              type="text"
+              value={form.surname}
+              onChange={handleChange}
+              placeholder="Enter your surname"
+              autoComplete="surname"
               required
             />
           </div>
@@ -117,6 +142,19 @@ export default function Register() {
               required
             />
           </div>
+          <div className="form-group">
+            <label htmlFor="location">Location</label>
+            <input
+              id="location"
+              name="location"
+              type="text"
+              value={form.location}
+              onChange={handleChange}
+              placeholder="Enter your location"
+              autoComplete="location"
+              optional
+            />
+          </div>
 
           {error && <p className="error">{error}</p>}
 
@@ -125,7 +163,8 @@ export default function Register() {
             className="login-btn primary-button"
             disabled={loading}
           >
-            {loading ? "Creating..." : "Create Account"}
+            {loading ? "Creating..." : "Create Account"} //change button text
+            when loading
           </button>
         </form>
       </div>
