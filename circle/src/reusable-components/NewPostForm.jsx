@@ -7,9 +7,17 @@ export default function NewPostForm({ onSubmit, onCancel }) {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate inputs
     if (!postContent.trim()) {
-      setError("Post content cannot be empty");
+      setError("Post content is required");
+      return;
+    }
+
+    if (!hangoutTime) {
+      setError("Hangout time is required");
       return;
     }
 
@@ -17,7 +25,9 @@ export default function NewPostForm({ onSubmit, onCancel }) {
     setError(null);
 
     try {
-      await createPost(postContent, hangoutTime);
+      const hangoutDate = new Date(hangoutTime);
+
+      await createPost(postContent, hangoutDate);
       setPostContent("");
       setHangoutTime("");
       onSubmit();
@@ -56,13 +66,15 @@ export default function NewPostForm({ onSubmit, onCancel }) {
           className="secondary-button"
           onClick={onCancel}
           disabled={loading}
+          type="button"
         >
           Cancel
         </button>
         <button
           className="primary-button"
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={loading || !postContent.trim() || !hangoutTime}
+          type="button"
         >
           {loading ? "Posting..." : "Post"}
         </button>

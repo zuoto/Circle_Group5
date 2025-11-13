@@ -1,14 +1,49 @@
 import { useState } from "react";
 
-export default function ImInButton({ initial = false, onToggle, onMouseEnter, onHover, onMouseLeave }) {
-  const [joined, setJoined] = useState(initial);
+export default function ImInButton({
+  postId,
+  initialJoined = false,
+  currentUserId,
+  onToggle,
+  onMouseEnter,
+  onMouseLeave,
+}) {
+  const [joined, setJoined] = useState(initialJoined);
+  const [isLoading, setIsLoading] = useState(false);
 
-  function handleClick() {
-    setJoined((j) => {
-      const next = !j;
-      if (onToggle) onToggle(next);
-      return next;
-    });
+  async function handleClick() {
+    if (isLoading) return;
+
+    if (isLoading) return;
+
+    try {
+      const Parse = window.Parse;
+      const PostClass = Parse.Object.extend("Post");
+      const query = new Parse.Query(PostClass);
+      const post = await query.get(postId);
+
+      const currentUser = Parse.User.current();
+      const participants = post.get("participants") || [];
+
+      if (joined) {
+        const updatedParticipants = participants.filter(
+          (p) => p.id !== currentUser.id
+        );
+        post.set("participants", updatedParticipants);
+      } else {
+        post.addUnique("participants", currentUser);
+      }
+
+      await post.save();
+
+      setJoined(!joined);
+      if (onToggle) onToggle(!joined);
+    } catch (error) {
+      console.error("Error updating participants:", error);
+      alert("Failed to update. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -19,8 +54,9 @@ export default function ImInButton({ initial = false, onToggle, onMouseEnter, on
       aria-pressed={joined}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      disabled={isLoading}
     >
-      {joined ? "You're in!" : "I'm in!"}
+      {isLoading ? "..." : joined ? "You're in!" : "I'm in!"}
     </button>
   );
 }

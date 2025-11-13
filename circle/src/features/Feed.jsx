@@ -34,7 +34,9 @@ export default function Feed() {
   const handleSubmitPost = async () => {
     console.log("Post submitted!");
     handleCloseModal();
+    console.log("Reloading posts...");
     await loadFeedPosts();
+    console.log("Posts reloaded:", posts);
   };
 
   return (

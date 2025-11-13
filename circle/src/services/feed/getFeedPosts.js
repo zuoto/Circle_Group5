@@ -8,35 +8,43 @@ async function getFeedPosts() {
     }
 
     const friends = currentUser.get("friends") || [];
-    const userIds = friends.map((friend) => friend.id);
-    userIds.push(currentUser.id); // including own posts
+    const usersToShow = [...friends, currentUser];
 
     const PostClass = Parse.Object.extend("Post");
     const query = new Parse.Query(PostClass);
-    query.containedIn("author", friends);
+    query.containedIn("author", usersToShow);
     query.include("author");
     query.descending("createdAt");
-    query.limit(20); // maybe more?
+    query.limit(20);
 
     const parsePosts = await query.find();
 
     const postsWithComments = await Promise.all(
       parsePosts.map(async (post) => {
+        const authorPointer = post.get("author");
+        
+        // Fetch the full User object with all fields
+        const userQuery = new Parse.Query(Parse.User);
+        const authorUser = await userQuery.get(authorPointer.id);
+
         const Comment = Parse.Object.extend("Comments");
         const commentQuery = new Parse.Query(Comment);
-        commentQuery.equalTo("post", post);
-        commentQuery.include("author");
+        commentQuery.equalTo("comment_post", post);
+        commentQuery.include("comment_author");
         commentQuery.ascending("createdAt");
 
         const comments = await commentQuery.find();
 
-        return {
+        const postData = {
           id: post.id,
           content: post.get("post_content"),
           hangoutTime: post.get("hangoutTime"),
           author: {
-            id: post.get("author").id,
-            username: post.get("author").get("username"),
+            id: authorUser.id,
+            username: authorUser.get("username"),
+            user_firstname: authorUser.get("user_firstname"),
+            user_surname: authorUser.get("user_surname"),
+            profile_pic: authorUser.get("profile_picture")?._url,
           },
           createdAt: post.get("createdAt"),
           participants: post.get("participants") || [],
@@ -44,12 +52,14 @@ async function getFeedPosts() {
             id: comment.id,
             content: comment.get("text"),
             author: {
-              id: comment.get("comment_author").id,
-              username: comment.get("comment_author").get("username"),
+              id: comment.get("comment_author")?.id,
+              username: comment.get("comment_author")?.get("username"),
             },
             createdAt: comment.get("createdAt"),
           })),
         };
+
+        return postData;
       })
     );
 
