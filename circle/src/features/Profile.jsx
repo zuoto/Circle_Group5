@@ -5,7 +5,6 @@ import "../index.css";
 import Card from "../components/ProfileCard.jsx";
 import GroupCard from "../components/GroupCard.jsx";
 import { Link } from "react-router-dom";
-import Parse from "parse";
 
 const CURRENT_USER_ID = "GUnnayD58J";
 
@@ -48,6 +47,8 @@ function Profile() {
         picture: parseUser.get("profile_pic")
           ? parseUser.get("profile_pic").url()
           : null,
+          friends: [],
+          groups: [],
 
         /* // Map the relation results
         friends: friendsResults.map(friend => ({
