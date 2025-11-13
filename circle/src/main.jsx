@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App.jsx";
-import Parse from "parse";
+import Parse from "parse/dist/parse.min.js";
+
 
 Parse.initialize(
   "qygqOjKKgGQSWK7FXj2ElZD8DqPM8R7CurLav0xl",
