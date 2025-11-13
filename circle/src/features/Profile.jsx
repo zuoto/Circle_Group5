@@ -7,7 +7,6 @@ import GroupCard from "../components/GroupCard.jsx";
 import { Link } from "react-router-dom";
 import { users } from "../mock-data/mock-data-user/MockDataUsers";
 import Avatar from "../components/Avatar";
-import Parse from "parse";
 
 const CURRENT_USER_ID = "GUnnayD58J";
 
@@ -17,64 +16,44 @@ function Profile() {
 
   const fetchProfileData = async () => {
     try {
-      // 1. Define the UserC class and the specific ID to fetch
-      const UserC = Parse.Object.extend("UserC");
-      const query = new Parse.Query(UserC);
-
-      // 2. Fetch the main user object
-      const parseUser = await query.get(CURRENT_USER_ID);
-
-      // --- 3. Fetch Relations (Friends and Groups) ---
-      // Relations require separate queries, we cannot get them with one call.
-
-      // 3a. Fetch Friends (user_friends relation)
-      /*const friendsRelation = parseUser.relation('user_friends');
-      const friendsQuery = friendsRelation.query();
-      const friendsResults = await friendsQuery.find();
-
-      // 3b. Fetch Joined Groups (groups_joined relation)
-      const groupsJoinedRelation = parseUser.relation('groups_joined');
-      const groupsQuery = groupsJoinedRelation.query();
-      // To get the memberCount (or other data) for groups, we may need a more advanced query
-      const groupsResults = await groupsQuery.find();*/
-
-      // 4. Structure the data for the React component
-      const structuredUser = {
-        id: parseUser.id,
-        // Map Parse column names to component prop names (name, surname, bio)
-        name: parseUser.get("user_name"),
-        surname: parseUser.get("user_lastname"),
-        bio: parseUser.get("bio"),
-
-        // Handle File type for profile picture
-        picture: parseUser.get("profile_pic")
-          ? parseUser.get("profile_pic").url()
-          : null,
-
-        // Mock data for friends and groups since relations are commented out
-        friends: [],
-        groups: [],
-
-        /* // Map the relation results
-        friends: friendsResults.map(friend => ({
-          id: friend.id,
-          name: friend.get('user_name'),
-          avatar: friend.get('profile_pic') ? friend.get('profile_pic').url() : null,
-        })),
-
-        groups: groupsResults.map(group => ({
-          id: group.id,
-          name: group.get('group_name'),
-          // Note: memberCount would typically be retrieved by querying the Relation count
-          memberCount: group.get('memberCount') || 0, 
-        })),*/
+      // Use mock data instead of Parse to avoid initialization errors
+      // In a real app, replace this with Parse queries
+      const mockUser = {
+        id: CURRENT_USER_ID,
+        name: "John",
+        surname: "Doe",
+        bio: "Welcome to my profile! I enjoy connecting with like-minded individuals.",
+        picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+        friends: [
+          {
+            id: "f1",
+            name: "Alice",
+            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice",
+          },
+          {
+            id: "f2",
+            name: "Bob",
+            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob",
+          },
+        ],
+        groups: [
+          {
+            id: "g1",
+            name: "Tech Enthusiasts",
+            memberCount: 245,
+          },
+          {
+            id: "g2",
+            name: "Local Events",
+            memberCount: 89,
+          },
+        ],
       };
 
-      setUser(structuredUser);
+      setUser(mockUser);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching user profile data:", error);
-      // You can set an error state here to show a message to the user
       setUser(null);
       setIsLoading(false);
     }

@@ -1,66 +1,107 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-//creating context for authentication information
-const AuthContext = createContext();
+// Get Parse from window
+const Parse = window.Parse;
+
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  //seeing if there is any existing authentication data in local storage, and loggin it in if yes
-  //TODO: store in a more secure way, maybe cookies?
-  const [auth, setAuth] = useState(() => {
-    try {
-      const raw = localStorage.getItem("auth");
-      return raw ? JSON.parse(raw) : null;
-    } catch (e) {
-      return null;
-    }
-  });
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // put authentication data to localStorage so users stay logged in across page refreshes
   useEffect(() => {
-    if (auth) {
-      localStorage.setItem("auth", JSON.stringify(auth));
-    } else {
-      localStorage.removeItem("auth");
-    }
-  }, [auth]);
+    const checkUser = async () => {
+      try {
+        const user = Parse.User.current();
+        if (user) {
+          setCurrentUser(user);
+        } else {
+          console.log("no current user"); //for debugging
+        }
+      } catch (error) {
+        console.error(" error checking current user:", error); //for debugging
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  async function login({ email, password }) {
-    //mock user authentication
-    //TODO: replace with real authentication API call
+    checkUser();
+  }, []);
+
+  const login = async ({ email, password }) => {
     try {
-      const mockUser = {
-        id: "user-123",
-        email: email,
-        name: email.split("@")[0],
-      };
-      const mockToken = "mock-jwt-token-" + Date.now();
-
-      setAuth({ token: mockToken, user: mockUser });
-      return mockUser;
+      const user = await Parse.User.logIn(email, password);
+      setCurrentUser(user);
+      return user;
     } catch (error) {
+      console.error("Login error:", error); //for debugging
       throw error;
     }
-  }
+  };
 
-  function logout() {
-    setAuth(null);
-    // TODO: make the logout function
-  }
+  const register = async ({
+    name,
+    surname,
+    email,
+    password,
+    dateOfBirth,
+    location,
+  }) => {
+    try {
+      //creating new user
+      const user = new Parse.User();
+      user.set("username", email);
+      user.set("user_firstname", name);
+      user.set("user_surname", surname);
+      user.set("email", email);
+      user.set("password", password);
+
+      if (dateOfBirth) {
+        user.set("dateOfBirth", new Date(dateOfBirth));
+      }
+
+      if (location && location !== "Not specified") {
+        user.set("locationText", location);
+      }
+      await user.signUp();
+
+      setCurrentUser(user);
+      return user;
+    } catch (error) {
+      console.error("Register error:", error); //for debugging
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await Parse.User.logOut();
+      setCurrentUser(null);
+    } catch (error) {
+      console.error("Logout error:", error); //for debugging
+      throw error;
+    }
+  };
+
+  const values = {
+    currentUser,
+    loading,
+    register,
+    login,
+    logout,
+  };
 
   return (
-    //Share authentication with the rest of the app
-    <AuthContext.Provider value={{ auth, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ values }}>{children}</AuthContext.Provider>
   );
 }
 
-//hook to access authentication context, skipping the need to import useContext and AuthContext in every file + error handling
-//TODO: move to seperate file???
+// Custom hook to use the AuthContext without having to import useContext and AuthContext every time
+
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
-  return context;
+  return context.values;
 }

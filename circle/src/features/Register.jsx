@@ -3,77 +3,122 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
 export default function Register() {
-  const navigate = useNavigate(); //redirects automatically after registration
-  const { login } = useAuth(); //custom hook to access auth methods
+  const navigate = useNavigate();
+  const { register } = useAuth();
+
   const [form, setForm] = useState({
     name: "",
     surname: "",
     email: "",
     password: "",
     confirmPassword: "",
-    location: "", //this should be optional?
+    location: "",
+    dateOfBirth: "",
   });
-  const [error, setError] = useState("");
+
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  //handle update of form fields
   function handleChange(e) {
     const { name, value } = e.target;
-    setForm((s) => ({ ...s, [name]: value }));
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
+
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
   }
 
-  //basic checks if inputs are valid
-  function validate() {
-    //check if all required fields are filled
-    if (
-      !form.name.trim() ||
-      !form.surname.trim() ||
-      !form.email.trim() ||
-      !form.password ||
-      !form.confirmPassword
-    ) {
-      return "All fields except location are required.";
-    }
-    // check if email is an email (regex checking for @ and . )
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) {
-      return "Enter a valid email address.";
-    }
-    // check password length is over 6
-    if (form.password.length < 6) {
-      return "Password must be at least 6 characters.";
-    }
-    //check if passwords match
-    if (form.password !== form.confirmPassword) {
-      return "Passwords do not match.";
-    }
-    return "";
-  }
-
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    //on submit, validate inputs and display relevant error if needed
-    const v = validate();
-    if (v) {
-      setError(v);
-      return;
-    }
+    setErrors({});
     setLoading(true);
+
+    // validate fields
+    const newErrors = {};
+
+    if (!form.name.trim()) newErrors.name = "Name is required";
+    if (!form.surname.trim()) newErrors.surname = "Surname is required";
+
+    //TODO: MAKE ERROR FOR ACCOUNT ALREADY EXISTS!!
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
+      //email format construction check with regex
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      newErrors.email = "Email is invalid";
+    }
+    if (!form.password) {
+      newErrors.password = "Password is required";
+    } else if (form.password.length < 6) {
+      //password has to be over 6 chars
+      // TODO: should we include more checks??
+      newErrors.password = "Password must be at least 6 characters";
+    }
+    if (!form.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    } else if (form.password !== form.confirmPassword) {
+      //passwords do not match check
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+    if (!form.dateOfBirth) {
+      newErrors.dateOfBirth = "Date of birth is required";
+    } else {
+      const birthDate = new Date(form.dateOfBirth);
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+      ) {
+        age--;
+      }
+
+      // chcek age is above 13
+      // TODO: ask if we should we keep this??
+      if (age < 13) {
+        newErrors.dateOfBirth = "You must be at least 13 years old";
+      }
+
+      //make sure someone is not doing whatever
+      if (birthDate > today) {
+        newErrors.dateOfBirth = "Date of birth cannot be in the future";
+      }
+    }
+
     try {
-      await Register({ email: form.email, password: form.password });
-      navigate("/", { replace: true });
-    } catch (err) {
-      setError(err.message || "Registration failed");
+      await register({
+        name: form.name,
+        surname: form.surname,
+        email: form.email,
+        password: form.password,
+        dateOfBirth: form.dateOfBirth,
+        location: form.location || "Not specified", //since location is optional
+      });
+
+      navigate("/");
+    } catch (error) {
+      setErrors({
+        submit:
+          error.message ||
+          "Registration failed. Please try again. If error persists, contact support.",
+      });
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="login-container">
       <div className="login-card">
         <h1>Register</h1>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input
@@ -86,7 +131,9 @@ export default function Register() {
               autoComplete="name"
               required
             />
+            {errors.name && <p className="error">{errors.name}</p>}
           </div>
+
           <div className="form-group">
             <label htmlFor="surname">Surname</label>
             <input
@@ -96,9 +143,10 @@ export default function Register() {
               value={form.surname}
               onChange={handleChange}
               placeholder="Enter your surname"
-              autoComplete="surname"
+              autoComplete="family-name"
               required
             />
+            {errors.surname && <p className="error">{errors.surname}</p>}
           </div>
 
           <div className="form-group">
@@ -113,6 +161,22 @@ export default function Register() {
               autoComplete="email"
               required
             />
+            {errors.email && <p className="error">{errors.email}</p>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="dateOfBirth">Date of Birth</label>
+            <input
+              id="dateOfBirth"
+              name="dateOfBirth"
+              type="date"
+              value={form.dateOfBirth}
+              onChange={handleChange}
+              required
+            />
+            {errors.dateOfBirth && (
+              <p className="error">{errors.dateOfBirth}</p>
+            )}
           </div>
 
           <div className="form-group">
@@ -127,6 +191,7 @@ export default function Register() {
               autoComplete="new-password"
               required
             />
+            {errors.password && <p className="error">{errors.password}</p>}
           </div>
 
           <div className="form-group">
@@ -141,9 +206,13 @@ export default function Register() {
               autoComplete="new-password"
               required
             />
+            {errors.confirmPassword && (
+              <p className="error">{errors.confirmPassword}</p>
+            )}
           </div>
+
           <div className="form-group">
-            <label htmlFor="location">Location</label>
+            <label htmlFor="location">Location (Optional)</label>
             <input
               id="location"
               name="location"
@@ -151,20 +220,18 @@ export default function Register() {
               value={form.location}
               onChange={handleChange}
               placeholder="Enter your location"
-              autoComplete="location"
-              optional
+              autoComplete="address-level2"
             />
           </div>
 
-          {error && <p className="error">{error}</p>}
+          {errors.submit && <p className="error">{errors.submit}</p>}
 
           <button
             type="submit"
             className="login-btn primary-button"
             disabled={loading}
           >
-            {loading ? "Creating..." : "Create Account"} //change button text
-            when loading
+            {loading ? "Creating..." : "Create Account"}
           </button>
         </form>
       </div>

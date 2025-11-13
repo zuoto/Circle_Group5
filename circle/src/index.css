@@ -1285,3 +1285,29 @@ body.modal-open {
   background: #4338ca;
   transform: translateY(-1px);
 }*/
+
+
+.error {
+  color: red;
+  background-color: #fee;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+  font-size: 14px;
+  border: 1px solid red;
+}
+
+.logout-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #DF540D;
+  color: #E8E8E4;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}

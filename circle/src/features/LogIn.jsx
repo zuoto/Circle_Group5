@@ -1,22 +1,35 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
 export default function LogIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useAuth();
 
-  const from = location.state?.from?.pathname || "/";
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  //TODO: USE TANSTACK MAYBE???
+
+  const from = location.state?.from?.pathname || "/"; //keeping track of where the user came from
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    if (error) setError("");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!email || !password) {
+    if (!form.email || !form.password) {
       setError("Please fill in all fields");
       return;
     }
@@ -25,7 +38,7 @@ export default function LogIn() {
     setLoading(true);
 
     try {
-      await login({ email, password });
+      await login({ email: form.email, password: form.password });
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || "Login failed");
@@ -43,10 +56,12 @@ export default function LogIn() {
             <label htmlFor="email">Email</label>
             <input
               id="email"
+              name="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={form.email}
+              onChange={handleChange}
               placeholder="Enter your email"
+              disabled={loading}
             />
           </div>
 
@@ -54,14 +69,16 @@ export default function LogIn() {
             <label htmlFor="password">Password</label>
             <input
               id="password"
+              name="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={form.password}
+              onChange={handleChange}
               placeholder="Enter your password"
+              disabled={loading}
             />
           </div>
 
-          {error && <p className="error">{error}</p>}
+          {error && <div className="error">{error}</div>}
 
           <button
             type="submit"
@@ -70,11 +87,11 @@ export default function LogIn() {
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
-        </form>{" "}
+        </form>
       </div>
-      <a href="/register" className="register-link">
+      <Link to="/register" className="register-link">
         Don't have an account? Register
-      </a>
+      </Link>
     </div>
   );
 }
