@@ -1,4 +1,7 @@
-import Parse from "parse/dist/parse.min.js";
+import ParseModule from "parse/dist/parse.min.js";
+
+// Handle both possible shapes: default export or direct export
+const Parse = ParseModule.default || ParseModule;
 
 Parse.initialize(
   "qygqOjKKgGQSWK7FXj2ElZD8DqPM8R7CurLav0xl",
