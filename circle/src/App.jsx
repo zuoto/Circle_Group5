@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./reusable-components/NavBar";
-import Feed from "./features/Feed";
+import Feed from "./features/feed.jsx";
 import Profile from "./features/Profile";
 import Groups from "./features/Groups";
 import GroupDetail from "./features/GroupDetail";
