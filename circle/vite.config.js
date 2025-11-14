@@ -12,12 +12,4 @@ export default defineConfig({
       },
     }),
   ],
-  resolve: {
-    alias: {
-      parse: "parse/dist/parse.min.js",
-    },
-  },
-  optimizeDeps: {
-    include: ["parse"],
-  },
 })

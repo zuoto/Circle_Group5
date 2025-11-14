@@ -1286,7 +1286,7 @@ body.modal-open {
   transform: translateY(-1px);
 }*/
 
-
+/* TODO:MAKE IT LOOK BETTER! */
 .error {
   color: red;
   background-color: #fee;
@@ -1297,17 +1297,17 @@ body.modal-open {
   border: 1px solid red;
 }
 
-.logout-button {
-  position: absolute;
+.logout-button { 
+  position: bottom-left;
   top: 10px;
+  font-family: 'Funnel Display', sans-serif;
   right: 10px;
-  background-color: #DF540D;
+  background-color: #fc8084bb;
   color: #E8E8E4;
   border: none;
   border-radius: 8px;
   padding: 8px 14px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 18px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }

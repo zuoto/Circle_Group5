@@ -31,94 +31,44 @@ function mapParseEvent(e) {
 
 export default function Events() {
   const [events, setEvents] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selected, setSelected] = useState(null);
 
   // Load existing events from backend
   useEffect(() => {
     async function load() {
-      try {
-        const EventClass = Parse.Object.extend("Event");
-        const query = new Parse.Query(EventClass);
+      const rows = await getEvents();
 
-        query.include("event_host");
-        query.include("parent_group");
-        query.ascending("event_date");
+      const mapped = rows.map((e) => ({
+        id: e.objectId,
+        title: e.event_name,
+        description: e.event_info,
+        date: e.event_date ? new Date(e.event_date.iso) : null,
+        location: "",
+        hostId: "u2",
+        attendees: [],
+        tags: [],
+      }));
 
-        const rows = await query.find();
-        setEvents(rows.map(mapParseEvent));
-      } catch (err) {
-        console.error("Error loading events:", err);
-      }
+      setEvents(mapped);
+      setSelected(mapped[0] || null);
     }
 
     load();
   }, []);
 
-  // Create new event → save to backend
-  const handleCreateEvent = async (formData) => {
-    try {
-      const EventClass = Parse.Object.extend("Event");
-      const event = new EventClass();
-
-      // Required fields
-      event.set("event_name", formData.title);
-      event.set("event_info", formData.description);
-      event.set("event_date", formData.date); // this is already a JS Date object from your form
-
-      // Host = the logged-in user
-      const host = Parse.User.current();
-      if (host) {
-        event.set("event_host", host);
-      }
-
-      // Skip group selection until UI has group picker
-      // Skip location until UI supports converting text → GeoPoint
-
-      const saved = await event.save();
-
-      // Add it to the UI immediately
-      setEvents((prev) => [...prev, mapParseEvent(saved)]);
-
-      setIsModalOpen(false);
-    } catch (err) {
-      console.error("Error creating event:", err);
-    }
-  };
+  if (events.length === 0) return <p>No events yet</p>;
 
   return (
-    <div className="page-wrapper">
-      {/* Same header as Groups */}
-      <div className="feature-header">
-        <div className="feature-names">Events</div>
-        <NewPostButton
-          onClick={() => setIsModalOpen(true)}
-          hoverText="create event"
-        />
+    <div className="events-layout">
+      <div className="events-list">
+        {events.map((ev) => (
+          <EventTile key={ev.id} event={ev} onOpen={() => setSelected(ev)} />
+        ))}
       </div>
 
-      {/* List of events */}
-      <div className="main-content">
-        {events.length === 0 ? (
-          <p>No events yet</p>
-        ) : (
-          events.map((ev) => (
-            <EventCard
-              key={ev.id}
-              event={ev}
-              currentUserId="u1"
-              // join functionality can be wired later
-            />
-          ))
-        )}
+      <div className="events-detail">
+        <EventCard event={selected} currentUserId="u1" />
       </div>
-
-      {/* Modal with NewEventForm */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <NewEventForm
-          onSubmit={handleCreateEvent}
-          onCancel={() => setIsModalOpen(false)}
-        />
-      </Modal>
     </div>
   );
 }

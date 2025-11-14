@@ -1,48 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import GroupHeader from "../components/GroupHeader";
 import GroupInfoSidebar from "../components/GroupInfoSidebar"; 
 import Post from "../reusable-components/Post";
-import { getGroupById } from "../services/ParseGroupService";
+import { mockGroups } from "../mock-data/mock-data-groups/MockGroupsData";
 
 export default function GroupDetail() {
 
-    // State: starts as null for the single group object
-    const [group, setGroup] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const { groupId } = useParams();
+    console.log("Loading details for: ", groupId);
 
-    // Hooks
-    const { groupId } = useParams();    // get group id from URL
+    // Back button:
     const navigate = useNavigate();
-
-    // fetch data for specific group with useEffect hook
-    useEffect(() => {
-        async function loadGroupDetails() {
-            setLoading(true);
-            const fetchedGroup = await getGroupById(groupId);
-            setGroup(fetchedGroup);
-            setLoading(false);
-        }
-
-        loadGroupDetails();
-    }, [groupId]);  // hook re-runs if groupId changes
-
-    // Handlers
     const handleBackClick = () => {
         navigate(-1);   // goes one step back on history stack
     };
 
-    // Render
-    if (loading) {
-        return <div className="page-wrapper">Loading groups...</div>;
-    }
+    const group = mockGroups.find(g => g.id == groupId);
 
     if (!group) {
         return (
             <div className="page-wrapper">
                 <h1>Group Not Found</h1>
-                <p>Could not find any group with this ID.</p>
-                <button onClick={handleBackClick} className="back-button">← Back</button>
+                <p>Could not find any groups with the search word</p>
             </div>
         );
     }
