@@ -67,7 +67,7 @@ export default function Groups() {
             id={group.id}
             name={group.name}
             description={group.description}
-            memberCount={"Members: " + group.memberCount}
+            memberCount={group.memberCount}
             isUserJoined={group.isUserJoined}
             coverPhotoUrl={group.coverPhotoUrl}
           />
