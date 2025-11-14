@@ -1,16 +1,19 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-// Get Parse from window
-const Parse = window.Parse;
-
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const getParse = () => {
+    // We rely on main.jsx to ensure window.Parse is initialized before AuthProvider is rendered
+    return window.Parse;
+  };
+
   useEffect(() => {
     const checkUser = async () => {
+      const Parse = getParse();
       try {
         const user = Parse.User.current();
         if (user) {
@@ -29,6 +32,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async ({ email, password }) => {
+    const Parse = getParse();
     try {
       const user = await Parse.User.logIn(email, password);
       setCurrentUser(user);
@@ -47,6 +51,7 @@ export function AuthProvider({ children }) {
     dateOfBirth,
     location,
   }) => {
+    const Parse = getParse();
     try {
       //creating new user
       const user = new Parse.User();
@@ -74,6 +79,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
+    const Parse = getParse();
     try {
       await Parse.User.logOut();
       setCurrentUser(null);
