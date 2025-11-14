@@ -5,89 +5,123 @@ import "../index.css";
 import Card from "../components/ProfileCard.jsx";
 import GroupCard from "../components/GroupCard.jsx";
 import { Link } from "react-router-dom";
-import { users } from "../mock-data/mock-data-user/MockDataUsers";
-import Avatar from "../components/Avatar";
-
-const CURRENT_USER_ID = "GUnnayD58J";
+import { useAuth } from "../auth/AuthProvider";
 
 function Profile() {
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { currentUser, loading: isAuthLoading } = useAuth();
 
-  const fetchProfileData = async () => {
+  const [user, setUser] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchProfileData = async (userId) => {
+    setError(null);
+    const Parse = window.Parse;
     try {
-      // Use mock data instead of Parse to avoid initialization errors
-      // In a real app, replace this with Parse queries
-      const mockUser = {
-        id: CURRENT_USER_ID,
-        name: "John",
-        surname: "Doe",
-        bio: "Welcome to my profile! I enjoy connecting with like-minded individuals.",
-        picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
-        friends: [
-          {
-            id: "f1",
-            name: "Alice",
-            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice",
-          },
-          {
-            id: "f2",
-            name: "Bob",
-            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob",
-          },
-        ],
-        groups: [
-          {
-            id: "g1",
-            name: "Tech Enthusiasts",
-            memberCount: 245,
-          },
-          {
-            id: "g2",
-            name: "Local Events",
-            memberCount: 89,
-          },
-        ],
+      const query = new Parse.Query(Parse.User);
+      //Temporary
+      query.include("profile_picture");
+
+      const parseUser = await query.get(userId);
+
+      //Temporary fix for default picture logic
+      const profilePictureFile = parseUser.get("profile_picture");
+      const pictureUrl =
+        profilePictureFile && typeof profilePictureFile.url === "function"
+          ? profilePictureFile.url()
+          : null;
+
+      const groupsJoinedRelation = parseUser.relation("groups_joined");
+      const groupsQuery = groupsJoinedRelation.query();
+      const groupsResults = await groupsQuery.find();
+
+      const structuredUser = {
+        id: parseUser.id,
+        name: parseUser.get("user_firstname"),
+        surname: parseUser.get("user_surname"),
+        bio: parseUser.get("bio") || "No bio yet.",
+        picture: pictureUrl, //Temporary
+        friends: [],
+        groups: groupsResults.map((group) => ({
+          id: group.id,
+          name: group.get("group_name"),
+          memberCount: 0,
+        })),
       };
 
-      setUser(mockUser);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching user profile data:", error);
+      setUser(structuredUser);
+    } catch (err) {
+      console.error("Error fetching user profile data:", err);
+      setError(
+        err.message || "An unknown error occurred while loading profile data."
+      );
       setUser(null);
-      setIsLoading(false);
+    } finally {
+      setProfileLoading(false);
     }
   };
 
   useEffect(() => {
-    // Only fetch if we have a valid ID
-    fetchProfileData();
-  }, []);
+    if (isAuthLoading) {
+      return;
+    }
 
-  if (isLoading) {
+    if (currentUser?.id) {
+      setProfileLoading(true);
+      fetchProfileData(currentUser.id);
+    } else {
+      setUser(null);
+      setProfileLoading(false);
+      setError("User is not logged in or ID is missing.");
+    }
+  }, [currentUser, isAuthLoading]);
+
+  if (isAuthLoading || profileLoading) {
     return <div className="page-wrapper">Loading Profile...</div>;
   }
 
-  if (!user) {
-    return <div className="page-wrapper">Error loading profile.</div>;
+  if (!currentUser) {
+    return <div className="page-wrapper">Access Denied.</div>;
   }
 
+  if (error) {
+    return (
+      <div className="page-wrapper" style={{ textAlign: "center" }}>
+        <h2>Profile Data Failed to Load!</h2>
+        <p style={{ color: "red", fontWeight: "bold" }}>
+          **Specific Error from Parse:** {error}
+        </p>
+        <hr />
+        <p>
+          **Action Required:** This error is likely a database permission issue.
+          You must fix the **File Class Read Permissions** in your Back4App
+          dashboard later!
+        </p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <div className="page-wrapper">Error loading profile data.</div>;
+  }
+
+  const defaultProfilePicUrl = "/path/to/your/default/image.png"; // will be changed
+  const profilePictureUrl = user.picture || defaultProfilePicUrl;
+
   return (
-    //reuses page-wrapper
     <div className="page-wrapper">
       <div className="feature-names">Profile</div>
       <div className="profile-content-layout">
         <div className="profile-main-column">
           <Card>
             <div style={{ textAlign: "center", marginBottom: "15px" }}>
-              <Avatar
-                src={user.picture}
+              <img
+                src={profilePictureUrl}
                 alt={`${user.name} picture`}
-                size="large"
+                className="avatar-large"
               />
             </div>
 
-            {/* name style reuses .name */}
             <div
               className="name"
               style={{
@@ -100,7 +134,6 @@ function Profile() {
             </div>
 
             <div style={{ textAlign: "center" }}>
-              {/* Edit Profile button reusues style for .secondary-button */}
               <button className="secondary-button">Edit Profile</button>
             </div>
           </Card>
@@ -110,27 +143,17 @@ function Profile() {
           <Card title="Bio">
             <p className="long-text">{user.bio}</p>
           </Card>
-          {/* friends list card */}
           <Card title={`Friends (${user.friends.length})`}>
-            <div className="card-content-list">
-              {user.friends.map((friend) => (
-                <div key={friend.id} className="friend-item">
-                  <Avatar src={friend.avatar} alt={friend.name} size="small" />
-                  <div className="name">{friend.name}</div>
-                </div>
-              ))}
-            </div>
+            <div className="card-content-list"></div>
           </Card>
-          {/* groups card */}
           <Card title={`My Groups (${user.groups.length})`}>
-            {/* reuses group card component*/}
             <div
               style={{ display: "flex", flexDirection: "column", gap: "10px" }}
             >
               {user.groups.map((group) => (
                 <Link
                   key={group.id}
-                  to={`/features/groups/${group.id}`}
+                  to={`/groups/${group.id}`}
                   className="group-card-link-compact"
                 >
                   <div className="group-card-compact">
