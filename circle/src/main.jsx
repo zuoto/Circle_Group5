@@ -4,9 +4,14 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./auth/AuthProvider";
 
-// Wait for Parse to load from CDN
 function initializeApp() {
   const Parse = window.Parse;
+
+  if (!Parse) {
+    console.error("Parse SDK failed to load from CDN");
+    return;
+  }
+
   // Initialize Parse
   try {
     Parse.initialize(
@@ -31,4 +36,4 @@ function initializeApp() {
   );
 }
 
-initializeApp();
+setTimeout(initializeApp, 50);
