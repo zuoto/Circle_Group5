@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./auth/AuthProvider";
@@ -9,7 +8,7 @@ function initializeApp() {
   const Parse = window.Parse;
 
   if (!Parse) {
-    console.error("Parse SDK failed to load from CDN"); //for debugging purposes
+    console.error("Parse SDK failed to load from CDN");
     return;
   }
 

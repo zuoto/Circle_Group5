@@ -65,10 +65,12 @@ export default function Feed() {
       </div>
 
       <div className="main-content">
-        {mockPosts.map((post) => (
-          <Post key={post.id} post={post} />
-        ))}
-        {!mockPosts.length && <p>No posts available.</p>}
+        {loading && <p>Loading posts...</p>}
+        {error && <p className="error-message">{error}</p>}
+        {!loading && !error && posts.length === 0 && <p>No posts available.</p>}
+        {!loading &&
+          !error &&
+          posts.map((post) => <Post key={post.id} post={post} />)}
       </div>
 
       <div>
