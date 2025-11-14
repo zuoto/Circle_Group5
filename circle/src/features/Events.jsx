@@ -1,22 +1,17 @@
 import { useEffect, useState } from "react";
-import EventTile from "../reusable-components/EventTile";
 import EventCard from "../reusable-components/EventCard";
 
-// Use the same Parse instance that AuthProvider uses
 const Parse = window.Parse;
 
 export default function Events() {
   const [events, setEvents] = useState([]);
-  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     async function load() {
       try {
-        // Query the Event class via Parse SDK
         const EventClass = Parse.Object.extend("Event");
         const query = new Parse.Query(EventClass);
 
-        // sort by date, include host pointer
         query.ascending("event_date");
         query.include("event_host");
 
@@ -24,28 +19,26 @@ export default function Events() {
         console.log("Events from Parse SDK:", rows);
 
         const mapped = rows.map((e) => {
-          const eventDate = e.get("event_date"); 
+          const eventDate = e.get("event_date"); // JS Date
           const iso = eventDate ? eventDate.toISOString() : null;
-
           const hostObj = e.get("event_host");
 
           return {
-            id: e.id, // same as objectId
+            id: e.id,
             title: e.get("event_name"),
-            description: e.get("event_info"),
-            // string for your existing formatMeetupTime(dateString) helper
+            description: e.get("event_info") || "",
+            // give both, so whatever EventCard uses will work
             meetupTime: iso,
-            // also keep a generic date field as string for anything else
             date: iso,
             location: e.get("event_location") || "",
-            hostId: hostObj ? hostObj.id : "u2",
-            attendees: [], // you can wire event_attendees later
+            hostId: hostObj ? hostObj.id : "u1",
+            // keep it simple for now; later you can load real attendees
+            attendees: [],
             tags: [],
           };
         });
 
         setEvents(mapped);
-        setSelected(mapped[0] || null);
       } catch (err) {
         console.error("Error loading events via Parse SDK:", err);
         setEvents([]);
@@ -59,15 +52,9 @@ export default function Events() {
 
   return (
     <div className="events-layout">
-      <div className="events-list">
-        {events.map((ev) => (
-          <EventTile key={ev.id} event={ev} onOpen={() => setSelected(ev)} />
-        ))}
-      </div>
-
-      <div className="events-detail">
-        <EventCard event={selected} currentUserId="u1" />
-      </div>
+      {events.map((ev) => (
+        <EventCard key={ev.id} event={ev} currentUserId="u1" />
+      ))}
     </div>
   );
 }
