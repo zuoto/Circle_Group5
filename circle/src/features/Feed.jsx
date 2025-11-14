@@ -1,20 +1,43 @@
 import React from "react";
 import Post from "../reusable-components/Post.jsx";
-import { mockPosts } from "../mock-data/feed-mock-data/MockPostsAndComments.jsx";
 import NewPostButton from "../reusable-components/NewPostButton.jsx";
 import Modal from "../reusable-components/Modal.jsx";
 import NewPostForm from "../reusable-components/NewPostForm.jsx";
+import getFeedPosts from "../services/feed/getFeedPosts.js";
 
 export default function Feed() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const handleSubmitPost = () => {
-    console.log("Post submitted!");
-    handleCloseModal();
-  };
+  const [posts, setPosts] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    loadFeedPosts();
+  }, []);
+
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  const loadFeedPosts = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const feedPosts = await getFeedPosts();
+      setPosts(feedPosts);
+    } catch (err) {
+      setError("Failed to load feed posts.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitPost = async () => {
+    console.log("Post submitted!");
+    handleCloseModal();
+    await loadFeedPosts();
+  };
+
   return (
-    //returning the feed page with posts and a new post button
     <>
       <div className="page-wrapper">
         <div className="feature-header">
@@ -23,10 +46,14 @@ export default function Feed() {
         </div>
 
         <div className="main-content">
-          {mockPosts.map((post) => (
-            <Post key={post.id} post={post} />
-          ))}
-          {!mockPosts.length && <p>No posts available.</p>}
+          {loading && <p>Loading posts...</p>}
+          {error && <p className="error">{error}</p>}
+          {!loading && !error && posts.length === 0 && (
+            <p>No posts available.</p>
+          )}
+          {!loading &&
+            !error &&
+            posts.map((post) => <Post key={post.id} post={post} />)}
         </div>
 
         <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
@@ -36,7 +63,24 @@ export default function Feed() {
           />
         </Modal>
       </div>
-      {/* CHANGED: Removed the stray extra </div> that was closing nothing */}
+
+      <div className="main-content">
+        {loading && <p>Loading posts...</p>}
+        {error && <p className="error-message">{error}</p>}
+        {!loading && !error && posts.length === 0 && <p>No posts available.</p>}
+        {!loading &&
+          !error &&
+          posts.map((post) => <Post key={post.id} post={post} />)}
+      </div>
+
+      <div>
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+          <NewPostForm
+            onSubmit={handleSubmitPost}
+            onCancel={handleCloseModal}
+          />
+        </Modal>
+      </div>
     </>
   );
 }
