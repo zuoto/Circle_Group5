@@ -23,9 +23,11 @@ export default function Feed() {
         </div>
 
         <div className="main-content">
-          {mockPosts.map((post) => (
-            <Post key={post.id} post={post} />
-          ))}
+        getFeedPosts().then((posts) => {
+            {posts.map((post) => (
+              <Post key={post.id} post={post} />
+            ))}
+          })}
           {!mockPosts.length && <p>No posts available.</p>}
         </div>
 
@@ -36,7 +38,6 @@ export default function Feed() {
           />
         </Modal>
       </div>
-      {/* CHANGED: Removed the stray extra </div> that was closing nothing */}
     </>
   );
 }

@@ -3,10 +3,12 @@ import GroupCard from "../components/GroupCard";
 import NewPostButton from "../reusable-components/NewPostButton";
 import Modal from "../reusable-components/Modal.jsx";
 import NewGroupForm from "../reusable-components/NewGroupForm";
-import { getAllGroups, createNewGroup } from "../services/ParseGroupService.js";
+import {
+  getAllGroups,
+  createNewGroup,
+} from "../services/groups/ParseGroupService.js";
 
 export default function Groups() {
-
   // state for the groups list, starting empty
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,27 +56,29 @@ export default function Groups() {
   return (
     <div className="page-wrapper">
       <div className="feature-header">
-      <div className="feature-names">Groups</div>
-      <NewPostButton onClick={handleOpenModal} hoverText="start a group" />
+        <div className="feature-names">Groups</div>
+        <NewPostButton onClick={handleOpenModal} hoverText="start a group" />
       </div>
 
       <div className="main-content">
-      {groups.map(group => (
-       <GroupCard
-          key={group.id}
-          id={group.id}
-          name={group.name}
-          description={group.description}
-          memberCount={"Members: " + group.memberCount}
-          isUserJoined={group.isUserJoined}
-          coverPhotoUrl={group.coverPhotoUrl}
-       />
-
-       ))}
+        {groups.map((group) => (
+          <GroupCard
+            key={group.id}
+            id={group.id}
+            name={group.name}
+            description={group.description}
+            memberCount={"Members: " + group.memberCount}
+            isUserJoined={group.isUserJoined}
+            coverPhotoUrl={group.coverPhotoUrl}
+          />
+        ))}
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <NewGroupForm onSubmit={handleCreateGroup} onCancel={handleCloseModal} />
+        <NewGroupForm
+          onSubmit={handleCreateGroup}
+          onCancel={handleCloseModal}
+        />
       </Modal>
     </div>
   );
