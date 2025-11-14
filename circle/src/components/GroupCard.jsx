@@ -2,11 +2,27 @@ import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import JoinButton from "../reusable-components/JoinButton";
+import { toggleGroupMembership } from "../services/ParseGroupService";
 
-function GroupCard({ id, name, description, memberCount, isUserJoined, coverPhotoUrl }) {
+function GroupCard({ id, name, description, initialMemberCount, initialIsUserJoined, coverPhotoUrl }) {
 
-    const handleGroupCardJoin = (e) => {
-        console.log(`User toggled join state for group ID: ${id}`);
+    const [members, setMembers] = useState(initialMemberCount);
+    const [isJoined, setIsJoined] = useState(initialIsUserJoined);
+
+    const handleGroupCardJoin = async () => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const isJoining = !isJoined;
+        try {
+            const memberChange = await toggleGroupMembership(id, isJoining);
+            setIsJoined(isJoining);
+            setMembers(prevMembers => prevMembers + memberChange);
+
+            console.log(`Membership toggled for group ID: ${id}`);
+        } catch (error) {
+            console.error("Failed to update membership: ", error);
+        }
     };
 
     return(
@@ -21,11 +37,11 @@ function GroupCard({ id, name, description, memberCount, isUserJoined, coverPhot
                     <p>{description}</p>
                 </div>
                 <div className="card-footer-row">
-                <span>{memberCount}</span>
+                <span>{members} Members</span>
                 <div className="group-card-actions">
                     <button className="secondary-button" onClick={(e) => { e.preventDefault(); e.stopPropagation();}}>Share</button>
                     <JoinButton
-                        isUserJoined={isUserJoined}
+                        isUserJoined={isJoined}
                         onClick={handleGroupCardJoin}
                     />
                 </div>

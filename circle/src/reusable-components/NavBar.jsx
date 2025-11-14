@@ -1,7 +1,9 @@
 import { NavLink } from "react-router-dom";
 import logo from "../assets/logo.png";
+import { useAuth } from "../auth/AuthProvider";
 
 export default function NavBar() {
+  const { logout } = useAuth();
   return (
     <nav className="h-screen p-4">
       <div className="shape">
@@ -49,6 +51,9 @@ export default function NavBar() {
           </NavLink>
         </li>
       </ul>
+      <button className="logout-button" onClick={logout}>
+        Log Out
+      </button>
     </nav>
   );
 }

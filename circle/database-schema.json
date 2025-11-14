@@ -1,0 +1,611 @@
+[
+  {
+    "className": "_User",
+    "fields": {
+      "objectId": {
+        "type": "String"
+      },
+      "createdAt": {
+        "type": "Date"
+      },
+      "updatedAt": {
+        "type": "Date"
+      },
+      "ACL": {
+        "type": "ACL"
+      },
+      "username": {
+        "type": "String"
+      },
+      "password": {
+        "type": "String"
+      },
+      "email": {
+        "type": "String"
+      },
+      "emailVerified": {
+        "type": "Boolean"
+      },
+      "authData": {
+        "type": "Object"
+      }
+    },
+    "classLevelPermissions": {
+      "find": {
+        "*": true
+      },
+      "count": {
+        "*": true
+      },
+      "get": {
+        "*": true
+      },
+      "create": {
+        "*": true
+      },
+      "update": {
+        "*": true
+      },
+      "delete": {
+        "*": true
+      },
+      "addField": {
+        "*": true
+      },
+      "protectedFields": {
+        "*": []
+      }
+    },
+    "indexes": {
+      "_id_": {
+        "_id": 1
+      },
+      "username_1": {
+        "username": 1
+      },
+      "case_insensitive_username": {
+        "username": 1
+      },
+      "email_1": {
+        "email": 1
+      },
+      "case_insensitive_email": {
+        "email": 1
+      }
+    }
+  },
+  {
+    "className": "_Role",
+    "fields": {
+      "objectId": {
+        "type": "String"
+      },
+      "createdAt": {
+        "type": "Date"
+      },
+      "updatedAt": {
+        "type": "Date"
+      },
+      "ACL": {
+        "type": "ACL"
+      },
+      "name": {
+        "type": "String"
+      },
+      "users": {
+        "type": "Relation",
+        "targetClass": "_User"
+      },
+      "roles": {
+        "type": "Relation",
+        "targetClass": "_Role"
+      }
+    },
+    "classLevelPermissions": {
+      "find": {
+        "*": true
+      },
+      "count": {
+        "*": true
+      },
+      "get": {
+        "*": true
+      },
+      "create": {
+        "*": true
+      },
+      "update": {
+        "*": true
+      },
+      "delete": {
+        "*": true
+      },
+      "addField": {
+        "*": true
+      },
+      "protectedFields": {
+        "*": []
+      }
+    },
+    "indexes": {
+      "_id_": {
+        "_id": 1
+      },
+      "name_1": {
+        "name": 1
+      }
+    }
+  },
+  {
+    "className": "UserC",
+    "fields": {
+      "objectId": {
+        "type": "String"
+      },
+      "createdAt": {
+        "type": "Date"
+      },
+      "updatedAt": {
+        "type": "Date"
+      },
+      "ACL": {
+        "type": "ACL"
+      },
+      "user_name": {
+        "type": "String",
+        "required": true
+      },
+      "user_lastname": {
+        "type": "String",
+        "required": true
+      },
+      "email": {
+        "type": "String",
+        "required": true
+      },
+      "bio": {
+        "type": "String",
+        "required": false
+      },
+      "dateOfBirth": {
+        "type": "Date",
+        "required": true
+      },
+      "profile_pic": {
+        "type": "File",
+        "required": false
+      },
+      "lastActiveAt": {
+        "type": "Date",
+        "required": false
+      },
+      "location": {
+        "type": "GeoPoint",
+        "required": false
+      },
+      "password": {
+        "type": "String",
+        "required": true
+      },
+      "user_friends": {
+        "type": "Relation",
+        "targetClass": "UserC",
+        "required": false
+      },
+      "groups_owned": {
+        "type": "Relation",
+        "targetClass": "Group",
+        "required": false
+      },
+      "groups_joined": {
+        "type": "Relation",
+        "targetClass": "Group",
+        "required": false
+      },
+      "events_owned": {
+        "type": "Relation",
+        "targetClass": "Event",
+        "required": false
+      },
+      "events_joined": {
+        "type": "Relation",
+        "targetClass": "Event",
+        "required": false
+      }
+    },
+    "classLevelPermissions": {
+      "find": {
+        "*": true,
+        "requiresAuthentication": true
+      },
+      "count": {
+        "*": true,
+        "requiresAuthentication": true
+      },
+      "get": {
+        "*": true,
+        "requiresAuthentication": true
+      },
+      "create": {},
+      "update": {},
+      "delete": {},
+      "addField": {
+        "*": true,
+        "requiresAuthentication": true
+      },
+      "protectedFields": {
+        "*": []
+      }
+    },
+    "indexes": {
+      "_id_": {
+        "_id": 1
+      }
+    }
+  },
+  {
+    "className": "Group",
+    "fields": {
+      "objectId": {
+        "type": "String"
+      },
+      "createdAt": {
+        "type": "Date"
+      },
+      "updatedAt": {
+        "type": "Date"
+      },
+      "ACL": {
+        "type": "ACL"
+      },
+      "group_name": {
+        "type": "String",
+        "required": true
+      },
+      "group_description": {
+        "type": "String",
+        "required": true
+      },
+      "group_admin": {
+        "type": "Pointer",
+        "targetClass": "UserC",
+        "required": true
+      },
+      "group_members": {
+        "type": "Relation",
+        "targetClass": "UserC",
+        "required": false
+      },
+      "group_default_pic": {
+        "type": "File",
+        "required": false,
+        "defaultValue": {
+          "__type": "File",
+          "name": "5ee637a648fbde571a30e22f67640338_hobbies-gettyimages-2155468058-6798fa1d13f8f.avif",
+          "url": "https://parsefiles.back4app.com/qygqOjKKgGQSWK7FXj2ElZD8DqPM8R7CurLav0xl/5ee637a648fbde571a30e22f67640338_hobbies-gettyimages-2155468058-6798fa1d13f8f.avif"
+        }
+      }
+    },
+    "classLevelPermissions": {
+      "find": {
+        "*": true
+      },
+      "count": {
+        "*": true
+      },
+      "get": {
+        "*": true
+      },
+      "create": {
+        "*": true
+      },
+      "update": {
+        "*": true
+      },
+      "delete": {
+        "*": true
+      },
+      "addField": {
+        "*": true
+      },
+      "protectedFields": {
+        "*": []
+      }
+    }
+  },
+  {
+    "className": "Event",
+    "fields": {
+      "objectId": {
+        "type": "String"
+      },
+      "createdAt": {
+        "type": "Date"
+      },
+      "updatedAt": {
+        "type": "Date"
+      },
+      "ACL": {
+        "type": "ACL"
+      },
+      "event_name": {
+        "type": "String",
+        "required": true
+      },
+      "event_info": {
+        "type": "String",
+        "required": true
+      },
+      "event_date": {
+        "type": "Date",
+        "required": true
+      },
+      "isActive": {
+        "type": "Boolean",
+        "required": false,
+        "defaultValue": true
+      },
+      "event_host": {
+        "type": "Pointer",
+        "targetClass": "UserC",
+        "required": true
+      },
+      "event_attendees": {
+        "type": "Relation",
+        "targetClass": "UserC",
+        "required": false
+      },
+      "event_location": {
+        "type": "GeoPoint",
+        "required": false
+      },
+      "parent_group": {
+        "type": "Pointer",
+        "targetClass": "Group",
+        "required": false
+      }
+    },
+    "classLevelPermissions": {
+      "find": {
+        "*": true
+      },
+      "count": {
+        "*": true
+      },
+      "get": {
+        "*": true
+      },
+      "create": {
+        "*": true
+      },
+      "update": {
+        "*": true
+      },
+      "delete": {
+        "*": true
+      },
+      "addField": {
+        "*": true
+      },
+      "protectedFields": {
+        "*": []
+      }
+    }
+  },
+  {
+    "className": "Post",
+    "fields": {
+      "objectId": {
+        "type": "String"
+      },
+      "createdAt": {
+        "type": "Date"
+      },
+      "updatedAt": {
+        "type": "Date"
+      },
+      "ACL": {
+        "type": "ACL"
+      },
+      "post_content": {
+        "type": "String",
+        "required": true
+      },
+      "author": {
+        "type": "Pointer",
+        "targetClass": "UserC",
+        "required": true
+      },
+      "hangoutTime": {
+        "type": "Date",
+        "required": false
+      }
+    },
+    "classLevelPermissions": {
+      "find": {
+        "*": true
+      },
+      "count": {
+        "*": true
+      },
+      "get": {
+        "*": true
+      },
+      "create": {
+        "*": true
+      },
+      "update": {
+        "*": true
+      },
+      "delete": {
+        "*": true
+      },
+      "addField": {
+        "*": true
+      },
+      "protectedFields": {
+        "*": []
+      }
+    }
+  },
+  {
+    "className": "Comments",
+    "fields": {
+      "objectId": {
+        "type": "String"
+      },
+      "createdAt": {
+        "type": "Date"
+      },
+      "updatedAt": {
+        "type": "Date"
+      },
+      "ACL": {
+        "type": "ACL"
+      },
+      "text": {
+        "type": "String",
+        "required": false
+      },
+      "comment_author": {
+        "type": "Pointer",
+        "targetClass": "UserC",
+        "required": true
+      },
+      "comment_post": {
+        "type": "Pointer",
+        "targetClass": "Post",
+        "required": true
+      }
+    },
+    "classLevelPermissions": {
+      "find": {
+        "*": true
+      },
+      "count": {
+        "*": true
+      },
+      "get": {
+        "*": true
+      },
+      "create": {
+        "*": true
+      },
+      "update": {
+        "*": true
+      },
+      "delete": {
+        "*": true
+      },
+      "addField": {
+        "*": true
+      },
+      "protectedFields": {
+        "*": []
+      }
+    }
+  },
+  {
+    "className": "Checkmark",
+    "fields": {
+      "objectId": {
+        "type": "String"
+      },
+      "createdAt": {
+        "type": "Date"
+      },
+      "updatedAt": {
+        "type": "Date"
+      },
+      "ACL": {
+        "type": "ACL"
+      },
+      "user_marked": {
+        "type": "Pointer",
+        "targetClass": "UserC",
+        "required": false
+      },
+      "user_post": {
+        "type": "Pointer",
+        "targetClass": "Post",
+        "required": false
+      },
+      "isInCalendar": {
+        "type": "Boolean",
+        "required": false
+      }
+    },
+    "classLevelPermissions": {
+      "find": {
+        "*": true
+      },
+      "count": {
+        "*": true
+      },
+      "get": {
+        "*": true
+      },
+      "create": {
+        "*": true
+      },
+      "update": {
+        "*": true
+      },
+      "delete": {
+        "*": true
+      },
+      "addField": {
+        "*": true
+      },
+      "protectedFields": {
+        "*": []
+      }
+    }
+  },
+  {
+    "className": "CalendarEvent",
+    "fields": {
+      "objectId": {
+        "type": "String"
+      },
+      "createdAt": {
+        "type": "Date"
+      },
+      "updatedAt": {
+        "type": "Date"
+      },
+      "ACL": {
+        "type": "ACL"
+      },
+      "title": {
+        "type": "String",
+        "required": false
+      },
+      "event_time": {
+        "type": "Date",
+        "required": true
+      },
+      "attendees": {
+        "type": "Array",
+        "required": true
+      },
+      "source": {
+        "type": "Pointer",
+        "targetClass": "Event",
+        "required": false
+      }
+    },
+    "classLevelPermissions": {
+      "find": {},
+      "count": {},
+      "get": {},
+      "create": {},
+      "update": {},
+      "delete": {},
+      "addField": {},
+      "protectedFields": {
+        "*": []
+      }
+    }
+  }
+]
