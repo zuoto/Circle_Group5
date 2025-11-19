@@ -63,24 +63,6 @@ export default function Feed() {
           />
         </Modal>
       </div>
-
-      <div className="main-content">
-        {loading && <p>Loading posts...</p>}
-        {error && <p className="error-message">{error}</p>}
-        {!loading && !error && posts.length === 0 && <p>No posts available.</p>}
-        {!loading &&
-          !error &&
-          posts.map((post) => <Post key={post.id} post={post} />)}
-      </div>
-
-      <div>
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-          <NewPostForm
-            onSubmit={handleSubmitPost}
-            onCancel={handleCloseModal}
-          />
-        </Modal>
-      </div>
     </>
   );
 }

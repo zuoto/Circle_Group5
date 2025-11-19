@@ -92,6 +92,12 @@ export default function Register() {
       }
     }
 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setLoading(false);
+      return;
+    }
+
     try {
       await register({
         name: form.name,
