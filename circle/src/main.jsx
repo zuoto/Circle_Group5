@@ -36,4 +36,4 @@ function initializeApp() {
   );
 }
 
-setTimeout(initializeApp, 50);
+initializeApp();
