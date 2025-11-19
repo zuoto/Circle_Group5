@@ -10,16 +10,23 @@ export default function Groups() {
   // state for the groups list, starting empty
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);  // form submission
 
   // Hooks
   useEffect(() => {
     async function loadGroups() {
       setLoading(true);
-      const fetchedGroups = await getAllGroups();
-      setGroups(fetchedGroups);
-      setLoading(false);
+
+      try {
+        const fetchedGroups = await getAllGroups();
+        setGroups(fetchedGroups);
+      } catch (error) {
+        console.error("Error loading groups: ", error);
+        alert("Failed to load groups. Please check your connection.");
+      } finally {
+        setLoading(false);  // sets loading to false no matter if try succeeded or catch failed
+      }
     }
 
     loadGroups();
@@ -30,19 +37,26 @@ export default function Groups() {
   const handleCloseModal = () => setIsModalOpen(false);
 
   const handleCreateGroup = async (newGroupData) => {
-    try {
-      setLoading(true);
-      await createNewGroup(newGroupData);
-      handleCloseModal();
+      setIsSubmitting(true);
 
-      // refresh group list fron the server
-      const fetchedGroups = await getAllGroups();
-      setGroups(fetchedGroups);
-    } catch (error) {
+      try {
+        const savedGroupObject = await createNewGroup(newGroupData);
+        handleCloseModal();
+
+        const newGroup = {
+          id: savedGroupObject.id,
+          name: savedGroupObject.get('group_name'),
+          description: savedGroupObject.get('get_description'),
+          memberCount: 1,   // creator automatically a member
+          isUserJoined: true,
+          coverPhotoUrl: '/covers/default-cover.jpg',
+        };
+        setGroups(prevGroups => [newGroup, ...prevGroups]);
+      } catch (error) {
       console.error("Failed to create group: ", error);
       alert("Failed to create group. Are you logged in?");
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -74,7 +88,7 @@ export default function Groups() {
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <NewGroupForm onSubmit={handleCreateGroup} onCancel={handleCloseModal} />
+        <NewGroupForm onSubmit={handleCreateGroup} onCancel={handleCloseModal} isSubmitting={isSubmitting} />
       </Modal>
     </div>
   );
