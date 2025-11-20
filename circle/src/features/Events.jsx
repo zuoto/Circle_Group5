@@ -1,112 +1,133 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { mockEvents } from "../mock-data/mock-data-events/MockEvents.jsx";
-import EventTile from "../reusable-components/EventTile.jsx";
-import EventCard from "../reusable-components/EventCard.jsx";
+import React, { useEffect, useState } from "react";
+import EventCard from "../reusable-components/EventCard";
 import NewPostButton from "../reusable-components/NewPostButton.jsx";
+import Modal from "../reusable-components/Modal.jsx";
 import NewEventForm from "../reusable-components/NewEventForm.jsx";
 import "../index.css";
 
+const Parse = window.Parse;
 
-const withDefaults = (e) => ({ ...e, attendees: e.attendees || [], tags: e.tags || [] });
+// Helper: Convert Parse Event → UI event
+function mapParseEvent(e) {
+  const date = e.get("event_date");
+  const iso = date ? date.toISOString() : null;
+
+  const host = e.get("event_host");
+  const group = e.get("parent_group");
+
+  return {
+    id: e.id,
+    title: e.get("event_name"),
+    description: e.get("event_info"),
+    date: iso,
+    location: "", // location skipped for now (schema uses GeoPoint)
+    hostId: host ? host.id : null,
+    groupId: group ? group.id : null,
+    groupName: group ? group.get("group_name") : null,
+    attendees: [],
+    tags: [],
+  };
+}
 
 export default function Events() {
-  const currentUserId = "u1";
-  const [events, setEvents] = useState(mockEvents.map(withDefaults));
-  const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState(null);
-  const [showComposer, setShowComposer] = useState(false);
+  const [events, setEvents] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Load existing events from backend
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") { 
-        setSelected(null);
-        setShowComposer(false);
+    async function load() {
+      setLoading(true); 
+      setError(null);
+
+      try {
+        const EventClass = Parse.Object.extend("Event");
+        const query = new Parse.Query(EventClass);
+
+        query.include("event_host");
+        query.include("parent_group");
+        query.ascending("event_date");
+
+        const rows = await query.find();
+        setEvents(rows.map(mapParseEvent));
+      } catch (err) {
+        console.error("Error loading events:", err);
+        setError("Failed to load events.");
+      } finally {
+        setLoading(false); 
       }
-      };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    }
+
+    load();
   }, []);
 
-  const handleCreate = (newEvent) => {
-  const id = "e" + (events.length + 1); 
-    setEvents([{ id, hostId: currentUserId, cover: null, ...newEvent }, ...events]);
-    setShowComposer(false);
-  };
+  // Create new event → save to backend
+  const handleCreateEvent = async (formData) => {
+    try {
+      const EventClass = Parse.Object.extend("Event");
+      const event = new EventClass();
 
-  const toggleAttend = (eventId) => {
-    setEvents((prev) =>
-      prev.map((e) =>
-        e.id === eventId
-          ? {
-              ...e,
-              attendees: e.attendees.includes(currentUserId)
-                ? e.attendees.filter((uid) => uid !== currentUserId)
-                : [...e.attendees, currentUserId],
-            }
-          : e
-      )
-    );
+      // Required fields
+      event.set("event_name", formData.title);
+      event.set("event_info", formData.description);
+      event.set("event_date", formData.date); // this is already a JS Date object from your form
+
+      // Host = the logged-in user
+      const host = Parse.User.current();
+      if (host) {
+        event.set("event_host", host);
+      }
+
+      // Skip group selection until UI has group picker
+      // Skip location until UI supports converting text → GeoPoint
+
+      const saved = await event.save();
+
+      // Add it to the UI immediately
+      setEvents((prev) => [...prev, mapParseEvent(saved)]);
+
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error("Error creating event:", err);
+    }
   };
-  const visibleEvents = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return events;
-    return events.filter((e) =>
-      e.title.toLowerCase().includes(q) ||
-      (e.location || "").toLowerCase().includes(q) ||
-      (e.description || "").toLowerCase().includes(q)
-    );
-  }, [events, query]);
 
   return (
-    <main className="page-wrapper">
-      <div className="feature-header" style={{ justifyContent: "space-between", width: "60vw" }}>
-      {/* Header */}
-      <div className="feature-names">Events</div>
-        <NewPostButton onClick={() => setShowComposer(true)} hoverText="add an event" />
-      </div>
-
-      <div style={{ margin: "1rem auto", width: "60vw" }}>
-        <input
-          type="text"
-          placeholder="Search events..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "0.5rem 0.75rem",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-          }}
+    <div className="page-wrapper">
+      {/* Same header as Groups */}
+      <div className="feature-header">
+        <div className="feature-names">Events</div>
+        <NewPostButton
+          onClick={() => setIsModalOpen(true)}
+          hoverText="create event"
         />
       </div>
 
-      <section className="main-content" style={{ width: "60vw" }}>
-        {events.map((ev) => (
-          <EventTile key={ev.id} event={ev} onOpen={setSelected} />
-        ))}
-        </section>
-      {selected && (
-        <div className="modal-backdrop" onClick={() => setSelected(null)}>
-          <div
-            className="modal-body"
-            onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setSelected(null)} aria-label="Close">×</button>
+      {/* List of events */}
+      <div className="main-content">
+        {events.length === 0 ? (
+          <p>No events yet</p>
+        ) : (
+          events.map((ev) => (
             <EventCard
-              event={selected}
-              currentUserId={currentUserId}
-              onToggleAttend={() => toggleAttend(selected.id)}
+              key={ev.id}
+              event={ev}
+              currentUserId="u1"
+              // join functionality can be wired later
             />
-            </div>
-        </div>
-      )}
-      {showComposer && (
-        <div className="modal-backdrop" onClick={() => setShowComposer(false)}>
-          <div className="modal-body" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setShowComposer(false)} aria-label="Close">×</button>
-            <NewEventForm onSubmit={handleCreate} onCancel={() => setShowComposer(false)} />
-          </div>
-        </div>
-      )}
-    </main>
+          ))
+        )}
+      </div>
+
+      {/* Modal with NewEventForm */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <NewEventForm
+          onSubmit={handleCreateEvent}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
+    </div>
   );
 }
