@@ -33,9 +33,16 @@ export default function Events() {
   const [events, setEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // NEW: loading + error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   // Load existing events from backend
   useEffect(() => {
     async function load() {
+      setLoading(true);      // NEW
+      setError(null);        // NEW
+
       try {
         const EventClass = Parse.Object.extend("Event");
         const query = new Parse.Query(EventClass);
@@ -48,6 +55,9 @@ export default function Events() {
         setEvents(rows.map(mapParseEvent));
       } catch (err) {
         console.error("Error loading events:", err);
+        setError("Failed to load events.");   // NEW: surface error to UI
+      } finally {
+        setLoading(false);   // NEW
       }
     }
 
@@ -63,16 +73,13 @@ export default function Events() {
       // Required fields
       event.set("event_name", formData.title);
       event.set("event_info", formData.description);
-      event.set("event_date", formData.date); // this is already a JS Date object from your form
+      event.set("event_date", formData.date); // JS Date object
 
       // Host = the logged-in user
       const host = Parse.User.current();
       if (host) {
         event.set("event_host", host);
       }
-
-      // Skip group selection until UI has group picker
-      // Skip location until UI supports converting text → GeoPoint
 
       const saved = await event.save();
 
@@ -82,6 +89,7 @@ export default function Events() {
       setIsModalOpen(false);
     } catch (err) {
       console.error("Error creating event:", err);
+      // optional: setError("Failed to create event.");
     }
   };
 
@@ -98,18 +106,20 @@ export default function Events() {
 
       {/* List of events */}
       <div className="main-content">
-        {events.length === 0 ? (
-          <p>No events yet</p>
-        ) : (
+        {loading && <p>Loading events...</p>}
+        {error && <p className="error">{error}</p>}
+        {!loading && !error && events.length === 0 && (
+          <p>No events yet.</p>
+        )}
+        {!loading &&
+          !error &&
           events.map((ev) => (
             <EventCard
               key={ev.id}
               event={ev}
               currentUserId="u1"
-              // join functionality can be wired later
             />
-          ))
-        )}
+          ))}
       </div>
 
       {/* Modal with NewEventForm */}
