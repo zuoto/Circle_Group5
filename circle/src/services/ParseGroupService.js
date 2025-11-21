@@ -57,7 +57,7 @@ export async function getGroupById(groupId) {
 // Create new group in database
 export async function createNewGroup(newGroupData) {
     const Parse = window.Parse;
-    const { groupName, description } = newGroupData;
+    const { groupName, description, coverPhotoFile } = newGroupData;
     const currentUser = Parse.User.current();   // gets the logged-in user
 
     if (!currentUser) {
@@ -69,6 +69,19 @@ export async function createNewGroup(newGroupData) {
     newGroup.set('group_name', groupName);
     newGroup.set('group_description', description);
     newGroup.set('group_admin', currentUser);
+
+    if (coverPhotoFile) {
+        // convert the file object to a parse file object
+        const file = new Parse.File(coverPhotoFile.name, coverPhotoFile);
+
+        try {
+            const uploadedFile = await file.save();
+            // link uploaded file to group object
+            newGroup.set('group_default_pic', file);
+        } catch (fileError) {
+            console.error("Error uploading group header file: ", fileError);
+        }
+    }
 
     try {
         const savedGroup = await newGroup.save();

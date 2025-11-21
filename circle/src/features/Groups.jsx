@@ -43,13 +43,16 @@ export default function Groups() {
         const savedGroupObject = await createNewGroup(newGroupData);
         handleCloseModal();
 
+        const picFile = savedGroupObject.get('group_default_pic');
+        const newGroupPicUrl = picFile ? picFile.url() : '/covers/default-cover.jpg';
+
         const newGroup = {
           id: savedGroupObject.id,
           name: savedGroupObject.get('group_name'),
-          description: savedGroupObject.get('get_description'),
+          description: savedGroupObject.get('group_description'),
           memberCount: 1,   // creator automatically a member
           isUserJoined: true,
-          coverPhotoUrl: '/covers/default-cover.jpg',
+          coverPhotoUrl: newGroupPicUrl,
         };
         setGroups(prevGroups => [newGroup, ...prevGroups]);
       } catch (error) {

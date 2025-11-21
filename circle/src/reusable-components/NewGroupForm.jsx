@@ -4,10 +4,11 @@ export default function NewGroupForm({ onSubmit, onCancel }) {
 
     const [groupName, setGroupName] = React.useState('');
     const [description, setDescription] = React.useState('');
+    const [coverPhotoFile, setCoverPhotoFile] = React.useState(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit({ groupName, description });
+        onSubmit({ groupName, description, coverPhotoFile });
     };
 
     return (
@@ -20,6 +21,13 @@ export default function NewGroupForm({ onSubmit, onCancel }) {
                 className="post-textarea"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)} required />
+            <label className="file-input-label">
+                Group Header Photo (Optional):
+            </label> 
+            <input
+                type="file"
+                accept="image"
+                onChange={(e) => setCoverPhotoFile(e.target.files[0])} />
             <textarea
                 placeholder="Group Description (What is the group about?)"
                 className="post-textarea"
