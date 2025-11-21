@@ -21,13 +21,20 @@ export default function NewGroupForm({ onSubmit, onCancel }) {
                 className="post-textarea"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)} required />
-            <label className="file-input-label">
-                Group Header Photo (Optional):
-            </label> 
+
+        <div className="file-input-wrapper">
             <input
                 type="file"
+                id="coverPhotoUpload"
                 accept="image"
-                onChange={(e) => setCoverPhotoFile(e.target.files[0])} />
+                onChange={(e) => setCoverPhotoFile(e.target.files[0])} 
+                className="hidden-file-input"
+                />
+                <label htmlFor="coverPhotoUpload" className="styled-file-label post-textarea">
+                    {coverPhotoFile ? coverPhotoFile.name : 'Choose Group Header Image...'}
+                </label>
+        </div>
+
             <textarea
                 placeholder="Group Description (What is the group about?)"
                 className="post-textarea"
