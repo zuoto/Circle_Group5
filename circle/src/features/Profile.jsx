@@ -2,74 +2,33 @@
 
 import React, { useState, useEffect } from "react";
 import "../index.css";
-import Card from "../components/ProfileCard.jsx";
-import GroupCard from "../components/GroupCard.jsx";
 import { Link } from "react-router-dom";
-import { users } from "../mock-data/mock-data-user/MockDataUsers";
-import Avatar from "../components/Avatar";
-
-const CURRENT_USER_ID = "GUnnayD58J";
 
 function Profile() {
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchProfileData = async () => {
-    try {
-      // Use mock data instead of Parse to avoid initialization errors
-      // In a real app, replace this with Parse queries
-      const mockUser = {
-        id: CURRENT_USER_ID,
-        name: "John",
-        surname: "Doe",
-        bio: "Welcome to my profile! I enjoy connecting with like-minded individuals.",
-        picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
-        friends: [
-          {
-            id: "f1",
-            name: "Alice",
-            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice",
-          },
-          {
-            id: "f2",
-            name: "Bob",
-            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob",
-          },
-        ],
-        groups: [
-          {
-            id: "g1",
-            name: "Tech Enthusiasts",
-            memberCount: 245,
-          },
-          {
-            id: "g2",
-            name: "Local Events",
-            memberCount: 89,
-          },
-        ],
-      };
-
-      setUser(mockUser);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching user profile data:", error);
-      setUser(null);
-      setIsLoading(false);
-    }
+  //mock data for profile including bio, friends, groups
+  const mockProfileData = {
+    bio: "Ava | Student at ITU | Copenhagen | D&D, arts & crafts",
+    friends: users.filter((u) => u.id !== "u5").slice(0, 4),
+    groups: [
+      { id: "1", name: "The Fellowship of the Chaotic Dice", memberCount: 12 },
+      { id: "2", name: "DIY Group", memberCount: 9 },
+    ],
   };
 
-  useEffect(() => {
-    // Only fetch if we have a valid ID
-    fetchProfileData();
-  }, []);
-
-  if (isLoading) {
-    return <div className="page-wrapper">Loading Profile...</div>;
+  function loadUser() {
+    //loops through the set of avatars, sets user and connects them to the profile data
+    const found = users.find((u) => u.id === "u5");
+    setUser({ ...found, ...mockProfileData });
   }
 
+  useEffect(() => {
+    loadUser();
+  }, []);
+
   if (!user) {
-    return <div className="page-wrapper">Error loading profile.</div>;
+    return <div className="page-wrapper">Loading Profile...</div>;
   }
 
   return (
@@ -81,8 +40,8 @@ function Profile() {
           <Card>
             <div style={{ textAlign: "center", marginBottom: "15px" }}>
               <Avatar
-                src={user.picture}
-                alt={`${user.name} picture`}
+                src={user.avatar}
+                alt={`${user.name} avatar`}
                 size="large"
               />
             </div>
@@ -136,9 +95,7 @@ function Profile() {
                   <div className="group-card-compact">
                     <h3 style={{ margin: 0 }}>{group.name}</h3>
                     <div className="member-count-box">
-                      <span className="member-count-number">
-                        {group.memberCount}
-                      </span>
+                      <span className="member-count-number">{group.memberCount}</span>
                       <span className="member-count-text">members</span>
                     </div>
                   </div>
