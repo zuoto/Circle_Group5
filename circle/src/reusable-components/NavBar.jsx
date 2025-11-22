@@ -50,6 +50,9 @@ export default function NavBar() {
             Profile
           </NavLink>
         </li>
+        <li className="nav-item">
+          <input type="text" placeholder="Search..." className="search-input" />
+        </li>
       </ul>
       <button className="logout-button" onClick={logout}>
         Log Out

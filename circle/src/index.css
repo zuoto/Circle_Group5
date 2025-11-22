@@ -676,19 +676,23 @@ main {
   padding-top: 10px;
 }
 
+/* ATTENDEES TOOLTIP */
+.wrapper-relative {
+  position: relative;
+  display: inline-block;
+}
 
 .attendees {
   position: absolute;
-  bottom: 155px;
-  right: 30px;
-  margin-bottom: 8px;
+  top: calc(100% + 8px);
+  right: 0px;
   min-width: 200px;
   background: #f2f2ef;
   border: 2px solid #569c74de;
   border-radius: 20px 0px 20px 0px;
   padding: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 2000;
+  z-index: 1000;
 }
 
 .attendees-header {
@@ -1308,4 +1312,33 @@ body.modal-open {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* searchbar */
+.search-input {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 0.8em 1.2em;
+  font-size: 1em;
+  font-family: 'Funnel Display', sans-serif;
+  background-color: #ffffff;
+  color: #333;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #569c74de;
+  box-shadow: 0 0 0 3px rgba(86, 156, 116, 0.1);
+}
+
+.search-input::placeholder {
+  color: #999;
+  font-weight: normal;
+  text-align: center;
+}
+
+.search-input:hover {
+  border-color: #569c74de;
 }

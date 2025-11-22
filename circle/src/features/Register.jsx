@@ -52,6 +52,7 @@ export default function Register() {
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
       newErrors.email = "Email is invalid";
     }
+
     if (!form.password) {
       newErrors.password = "Password is required";
     } else if (form.password.length < 6) {

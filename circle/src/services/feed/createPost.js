@@ -7,6 +7,13 @@ async function createPost(postContent, hangoutTime) {
       throw new Error("No user is currently logged in.");
     }
 
+    if (!postContent || !postContent.trim()) {
+      throw new Error("Post content is required");
+    }
+    
+    if (!hangoutTime || !(hangoutTime instanceof Date)) {
+      throw new Error("Valid hangout time is required");
+    }
     // new post object
     const Post = Parse.Object.extend("Post");
     const newPost = new Post();
@@ -23,7 +30,7 @@ async function createPost(postContent, hangoutTime) {
     return {
       id: savedPost.id,
       content: savedPost.get("post_content"),
-      hangoutTime: savedPost.get("hangoutTime"), //TODO: MAKE IT INTO DATE OBJECT
+      hangoutTime: savedPost.get("hangoutTime"), 
       author: {
         id: currentUser.id,
         username: currentUser.get("username")
@@ -33,7 +40,6 @@ async function createPost(postContent, hangoutTime) {
       comments: []
     };
   } catch (error) {
-    console.error("Error creating post:", error);
     throw error;
   }
 }
