@@ -1,0 +1,29 @@
+import React from "react";
+import Card from "./ProfileCard.jsx";
+import ProfileGroupLink from "./ProfileGroupLink.jsx";
+
+export default function ({ user }) {
+  if (!user) return null;
+
+  return (
+    <div className="profile-sidebar-column">
+      <Card title="Bio">
+        <p className="long-text">{user.bio}</p>
+      </Card>
+
+      {/* Friends Card (content is empty placeholder) */}
+      <Card title={`Friends (${user.friends.length})`}>
+        <div className="card-content-list">
+          {/* Currently empty content list in Profile.jsx */}
+        </div>
+      </Card>
+      <Card title={`My Groups (${user.groups.length})`}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {user.groups.map((group) => (
+            <ProfileGroupLink key={group.id} group={group} />
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
