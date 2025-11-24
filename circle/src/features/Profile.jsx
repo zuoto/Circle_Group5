@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import "../index.css";
-import Card from "../components/ProfileCard.jsx";
-import GroupCard from "../components/GroupCard.jsx";
-import { Link } from "react-router-dom";
+import ProfileHeader from "../components/ProfileHeader";
+import ProfileSideBar from "../components/ProfileSideBar";
 import { useAuth } from "../auth/AuthProvider";
 
 function Profile() {
@@ -26,10 +25,10 @@ function Profile() {
 
       //Temporary fix for default picture logic
       const profilePictureFile = parseUser.get("profile_picture");
-      const pictureUrl =
-        profilePictureFile && typeof profilePictureFile.url === "function"
-          ? profilePictureFile.url()
-          : null;
+      const isParseFile =
+        profilePictureFile && typeof profilePictureFile.url === "function";
+
+      const pictureUrl = isParseFile ? profilePictureFile.url() : null;
 
       const groupsJoinedRelation = parseUser.relation("groups_joined");
       const groupsQuery = groupsJoinedRelation.query();
@@ -105,71 +104,15 @@ function Profile() {
     return <div className="page-wrapper">Error loading profile data.</div>;
   }
 
-  const defaultProfilePicUrl = "/path/to/your/default/image.png"; // will be changed
+  const defaultProfilePicUrl = "new_default_pic.png"; // will be changed
   const profilePictureUrl = user.picture || defaultProfilePicUrl;
 
   return (
     <div className="page-wrapper">
       <div className="feature-names">Profile</div>
       <div className="profile-content-layout">
-        <div className="profile-main-column">
-          <Card>
-            <div style={{ textAlign: "center", marginBottom: "15px" }}>
-              <img
-                src={profilePictureUrl}
-                alt={`${user.name} picture`}
-                className="avatar-large"
-              />
-            </div>
-
-            <div
-              className="name"
-              style={{
-                fontSize: "2em",
-                textAlign: "center",
-                marginBottom: "15px",
-              }}
-            >
-              {user.name} {user.surname}
-            </div>
-
-            <div style={{ textAlign: "center" }}>
-              <button className="secondary-button">Edit Profile</button>
-            </div>
-          </Card>
-        </div>
-
-        <div className="profile-sidebar-column">
-          <Card title="Bio">
-            <p className="long-text">{user.bio}</p>
-          </Card>
-          <Card title={`Friends (${user.friends.length})`}>
-            <div className="card-content-list"></div>
-          </Card>
-          <Card title={`My Groups (${user.groups.length})`}>
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-            >
-              {user.groups.map((group) => (
-                <Link
-                  key={group.id}
-                  to={`/groups/${group.id}`}
-                  className="group-card-link-compact"
-                >
-                  <div className="group-card-compact">
-                    <h3 style={{ margin: 0 }}>{group.name}</h3>
-                    <div className="member-count-box">
-                      <span className="member-count-number">
-                        {group.memberCount}
-                      </span>
-                      <span className="member-count-text">members</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </Card>
-        </div>
+        <ProfileHeader user={user} profilePictureURL={profilePictureUrl} />
+        <ProfileSideBar user={user} />
       </div>
     </div>
   );
