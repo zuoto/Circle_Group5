@@ -1,4 +1,4 @@
-async function createPost(postContent, hangoutTime) {
+async function createPost(postContent, hangoutTime, groupId = null) {
   try {
     const Parse = window.Parse; 
     
@@ -23,6 +23,11 @@ async function createPost(postContent, hangoutTime) {
     newPost.set("author", currentUser);
     newPost.set("participants", []); // no participants yet
 
+    if (groupId) {
+      const groupPointer = Parse.Object.createWithoutData("Group", groupId);
+      newPost.set("group", groupPointer);
+    }
+    
     const savedPost = await newPost.save();
 
     console.log("Post created successfully:", savedPost.id);

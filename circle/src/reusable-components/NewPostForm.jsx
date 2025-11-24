@@ -1,7 +1,7 @@
 import React from "react";
 import createPost from "../services/feed/createPost.js";
 
-export default function NewPostForm({ onSubmit, onCancel }) {
+export default function NewPostForm({ onSubmit, onCancel, groupId }) {
   const [postContent, setPostContent] = React.useState("");
   const [hangoutTime, setHangoutTime] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -27,7 +27,7 @@ export default function NewPostForm({ onSubmit, onCancel }) {
     try {
       const hangoutDate = new Date(hangoutTime);
 
-      await createPost(postContent, hangoutDate);
+      await createPost(postContent, hangoutDate, groupId);
       setPostContent("");
       setHangoutTime("");
       onSubmit();

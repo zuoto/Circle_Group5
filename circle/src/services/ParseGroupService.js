@@ -38,6 +38,52 @@ export async function getGroupById(groupId) {
             }
         }
 
+        const PostClass = Parse.Object.extend("Post");
+        const postQuery = new Parse.Query(PostClass);
+        postQuery.equalTo("group", group);  // only posts for this group
+        postQuery.include("author");
+        postQuery.descending("createdAt");
+
+        const parsePosts = await postQuery.find();
+
+        // map the posts to simple objects
+        const mappedPosts = await Promise.all(parsePosts.map(async (post) => {
+            // fetch comments for posts
+            const Comment = Parse.Object.extend("Comments");
+            const commentQuery = new Parse.Query(Comment);
+            commentQuery.equalTo("post", post);
+            commentQuery.include("comment_author");
+            commentQuery.ascending("createdAt");
+            const comments = await commentQuery.find();
+
+            const author = post.get("author");
+
+            return {
+                id: post.id,
+                content: post.get("post_content"),
+                hangoutTime: post.get("hangoutTime"),
+                authorId: author.id,
+                author: {
+                    id: author.id,
+                    name: author.get("username"),
+                    surname: "",
+                    avatar: author.get("avatar") ? author.get("avatar").url() : null
+                },
+
+                createdAt: post.get("createdAt"),
+                participants: post.get("participants") || [],
+                comments: comments.map(c => ({
+                    id: c.id,
+                    content: c.get("text"),
+                    author: {
+                        id: c.get("comment_author").id,
+                        name: c.get("comment_author").get("username")
+                    },
+                    createdAt: c.get("createdAt")
+                }))
+            };
+        }));
+
         return {
             id: group.id,
             name: group.get('group_name'),
@@ -45,7 +91,7 @@ export async function getGroupById(groupId) {
             coverPhotoUrl: picUrl,
             isUserJoined: isUserJoined,
             memberCount: memberCount,
-            posts: [],
+            posts: mappedPosts,
             nextMeetup: { time: "N/A", location: "N/A"}
         };
     } catch (error) {
