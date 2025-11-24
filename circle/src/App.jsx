@@ -8,6 +8,7 @@ import LogIn from "./features/LogIn";
 import Register from "./features/Register";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
+import SearchPage from "./features/SearchPage";
 import "./App.css";
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="groups" element={<Groups />} />
           <Route path="groups/:groupId" element={<GroupDetail />} />
           <Route path="events" element={<Events />} />
+          <Route path="search" element={<SearchPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
