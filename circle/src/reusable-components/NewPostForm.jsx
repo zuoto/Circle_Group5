@@ -1,7 +1,7 @@
 import React from "react";
 import createPost from "../services/feed/createPost.js";
 
-export default function NewPostForm({ onSubmit, onCancel, groupId }) {
+export default function NewPostForm({ onSubmitSuccess, onCancel, groupId }) {
   const [postContent, setPostContent] = React.useState("");
   const [hangoutTime, setHangoutTime] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -16,6 +16,11 @@ export default function NewPostForm({ onSubmit, onCancel, groupId }) {
       return;
     }
 
+    if (groupId && typeof groupId !== 'string') {
+      setError("Internal error: Invalid Group ID format");
+      return;
+    }
+
     if (!hangoutTime) {
       setError("Hangout time is required");
       return;
@@ -24,13 +29,17 @@ export default function NewPostForm({ onSubmit, onCancel, groupId }) {
     setLoading(true);
     setError(null);
 
+    console.log("Group ID being passed to createPost: ", groupId, typeof groupId);
+
     try {
       const hangoutDate = new Date(hangoutTime);
 
       await createPost(postContent, hangoutDate, groupId);
       setPostContent("");
       setHangoutTime("");
-      onSubmit();
+      if (onSubmitSuccess) {
+        onSubmitSuccess();
+      }
     } catch (err) {
       console.error("Failed to create post:", err);
       setError("Failed to create post. Please try again.");

@@ -33,7 +33,8 @@ export async function getGroupById(groupId) {
             memberCount = await memberQuery.count();
 
             if (currentUser) {
-                memberQuery.equalTo("objectId", currentUser.id);
+                const userCheckQuery = relation.query();
+                userCheckQuery.equalTo("objectId", currentUser.id);
                 isUserJoined = (await memberQuery.count()) > 0;
             }
         }
@@ -66,8 +67,9 @@ export async function getGroupById(groupId) {
                 author: {
                     id: author.id,
                     name: author.get("username"),
-                    surname: "",
-                    avatar: author.get("avatar") ? author.get("avatar").url() : null
+                    user_firstname: author.get("user_firstname"),
+                    user_surname: author.get("user_surname"),
+                    profile_picture: author.get("profile_picture") ? author.get("profile_picture").url() : null
                 },
 
                 createdAt: post.get("createdAt"),
@@ -147,7 +149,10 @@ export async function toggleGroupMembership(groupId, isJoining) {
     }
 
     try {
-        const group = Parse.Object.createWithoutData("Group", groupId);
+        const Group = Parse.Object.extend("Group");
+        const query = new Parse.Query(Group);
+        const group = await query.get(groupId);
+
         const membersRelation = group.relation('group_members');
 
         if (isJoining) {

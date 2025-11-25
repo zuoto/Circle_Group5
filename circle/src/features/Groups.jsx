@@ -21,6 +21,7 @@ export default function Groups() {
       try {
         const fetchedGroups = await getAllGroups();
         setGroups(fetchedGroups);
+        console.log("Fetched groups: ", fetchedGroups);
       } catch (error) {
         console.error("Error loading groups: ", error);
         alert("Failed to load groups. Please check your connection.");
@@ -76,15 +77,17 @@ export default function Groups() {
       </div>
 
       <div className="main-content">
-      {groups.map(group => (
+      {groups
+        .filter(group => group && group.id)
+        .map(group => (
        <GroupCard
           key={group.id}
           id={group.id}
           name={group.name}
           description={group.description}
-          memberCount={group.memberCount}
-          isUserJoined={group.isUserJoined}
-          coverPhotoUrl={group.coverPhotoUrl}
+          initialMemberCount={group.memberCount || 0}
+          initialIsUserJoined={group.isUserJoined || false}
+          coverPhotoUrl={group.coverPhotoUrl || '/covers/default-cover.jpg'}
        />
 
        ))}
