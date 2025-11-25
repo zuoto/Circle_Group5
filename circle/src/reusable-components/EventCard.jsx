@@ -1,5 +1,6 @@
+// src/reusable-components/EventCard.jsx
 import React from "react";
-import ImInButton from "./ImInButton.jsx";
+import EventAttendButton from "./EventAttendButton.jsx";
 import "../index.css";
 
 const formatMeetupTime = (dateString) => {
@@ -21,13 +22,15 @@ export default function EventCard({
   event,
   currentUserId,
   onToggleAttend,
-  onClick,           // new prop
+  onClick,
 }) {
   if (!event) return null;
 
   const attendees = Array.isArray(event.attendees) ? event.attendees : [];
   const details = Array.isArray(event.details) ? event.details : [];
-  const isAttending = currentUserId ? attendees.includes(currentUserId) : false;
+  const isAttending = currentUserId
+    ? attendees.includes(currentUserId)
+    : false;
 
   return (
     <div className="post event-card" onClick={onClick}>
@@ -46,7 +49,9 @@ export default function EventCard({
           className="avatar"
         />
         <div>
-          <div className="event-title">{event.title || "Untitled event"}</div>
+          <div className="event-title">
+            {event.title || "Untitled event"}
+          </div>
           <div className="event-meta">
             Hosted by <strong>{event.hostName}</strong>{" "}
             {event.date && <>· {formatMeetupTime(event.date)}</>}
@@ -55,7 +60,9 @@ export default function EventCard({
             <div className="event-location">📍 {event.location}</div>
           )}
           {event.groupName && (
-            <div className="event-group">In group: {event.groupName}</div>
+            <div className="event-group">
+              In group: {event.groupName}
+            </div>
           )}
         </div>
       </div>
@@ -70,12 +77,14 @@ export default function EventCard({
         </ul>
       )}
 
-      {/* Stop footer clicks from triggering navigation */}
       <div
         className="event-footer"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()} // don't trigger card click
       >
-        <ImInButton isAttending={isAttending} onClick={onToggleAttend} />
+        <EventAttendButton
+          isAttending={isAttending}
+          onClick={onToggleAttend}
+        />
         <div>{attendees.length} going</div>
       </div>
     </div>
