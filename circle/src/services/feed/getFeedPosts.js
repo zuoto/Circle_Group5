@@ -14,6 +14,7 @@ async function getFeedPosts() {
     const query = new Parse.Query(PostClass);
     query.containedIn("author", usersToShow);
     query.include("author");
+    query.include("group");
     query.descending("createdAt");
     query.limit(20);
 
@@ -22,6 +23,7 @@ async function getFeedPosts() {
     const postsWithComments = await Promise.all(
       parsePosts.map(async (post) => {
         const authorPointer = post.get("author");
+        const groupObject = post.get("group");
         
         // Fetch the full User object with all fields
         const userQuery = new Parse.Query(Parse.User);
@@ -39,6 +41,8 @@ async function getFeedPosts() {
           id: post.id,
           content: post.get("post_content"),
           hangoutTime: post.get("hangoutTime"),
+          groupId: groupObject ? groupObject.id : null,
+          groupName: groupObject ? groupObject.get("group_name") : null,
           author: {
             id: authorUser.id,
             username: authorUser.get("username"),

@@ -102,13 +102,13 @@ export default function GroupDetail() {
                 <div className="group-description-box">
                     <h3>Group Description</h3>
                     <p>{group.description}{" "}</p>
-                    <p style={{fontSize: '0.9em', color: '#666'}}>{group.memberCount} Members</p>
+                    <span>Members: {group.memberCount}</span>
                 </div>
 
-                <div className="feature-header" style={{marginBottom: '1rem'}}>
-                    <h3>Group Discussion</h3>
-                    {group.isUserJoined && (
-                        <NewPostButton onClick={handleOpenPostModal} hoverText="Add Post" />
+                <div className="group-discussion-header">
+                    <div className="discussion-name">Group Discussion</div>
+                        {group.isUserJoined && (
+                        <NewPostButton onClick={handleOpenPostModal} hoverText="Add Post" customClass="small-post-button" />
                     )}
                 </div>
 

@@ -39,7 +39,7 @@ function GroupCard({ id, name, description, initialMemberCount, initialIsUserJoi
                     <p>{description}</p>
                 </div>
                 <div className="card-footer-row">
-                <span>{members} Members</span>
+                <span>Members: {members}</span>
                 <div className="group-card-actions">
                     <button className="secondary-button" onClick={(e) => { e.preventDefault(); e.stopPropagation();}}>Share</button>
                     <JoinButton

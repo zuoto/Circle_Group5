@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Comment from "./Comment.jsx";
 import CommentButton from "./CommentButton.jsx";
@@ -10,6 +11,8 @@ function Post({ post, isGroupPost }) {
   if (!post) {
     return null;
   }
+
+  const { groupName, groupId } = post;
 
   const [showAttendees, setShowAttendees] = useState(false);
   const [participants, setParticipants] = useState(post.participants || []);
@@ -59,6 +62,15 @@ function Post({ post, isGroupPost }) {
 
   return (
     <div className="post">
+      {groupName && (
+        <div className="group-badge-wrapper">
+          <span className="group-badge">
+            Posted in: 
+            <Link to={`/groups/${groupId}`}>{groupName}</Link>
+          </span>
+          </div>
+      )}
+      
       {!(isGroupPost && post.meetup) && (
         <div className="post-meeting-time">
           {formatMeetupTime(post.hangoutTime)}
@@ -97,7 +109,7 @@ function Post({ post, isGroupPost }) {
             onCommentAdded={handleCommentAdded}
           />
           <div className="wrapper-relative">
-            {!isGroupPost && (
+            {!groupId && !isGroupPost && (
               <ImInButton
                 postId={post.id}
                 initialJoined={isUserJoined}

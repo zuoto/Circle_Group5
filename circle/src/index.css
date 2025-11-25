@@ -388,6 +388,41 @@ main {
   box-sizing: border-box;
 }
 
+/* Group post badge */
+.group-badge-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  padding: 0;
+  margin-right: -2px;
+  margin-top: -2px;
+}
+
+.group-badge {
+  display: inline-flex;
+  padding: 8px 18px;
+  border-radius: 0 20px 0 8px;
+  font-size: 0.9em;
+  font-weight: 500;
+  color: #1f1f1f;
+  border: 2px solid #fcc82bce;
+  box-shadow: none;
+  align-items: center;
+}
+
+.group-badge a {
+  color: #863c5e;
+  text-decoration: none;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.group-badge a:hover {
+  text-decoration: underline;
+  color: #df540d;
+}
+
 /* GROUPS STYLES */
 .group-card-link {
   text-decoration: none;
@@ -576,10 +611,48 @@ main {
   font-family: "Funnel Display", sans-serif;
   font-size: 1.5rem;
   margin-bottom: 12px;
+  font-weight: 600;
 }
 
 .group-description-box p {
   line-height: 1.6;
+}
+
+.group-description-box span {
+  color: #888888;
+  font-size: 0.9rem;
+  font-weight: bold;
+  line-height: 3.5;
+}
+
+.group-discussion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd; 
+}
+
+.discussion-name {
+  font-weight: 600;
+  font-family: "Funnel Display", sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+}
+
+.small-post-button {
+  min-width: 60px;
+  max-width: 60px;
+  min-height: 40px;
+  max-height: 40px;
+  font-size: 1.5em;
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
+.small-post-button:hover {
+  font-size: 0.8rem;
 }
 
 .group-comment {
@@ -638,10 +711,10 @@ main {
 .sidebar-header {
   font-family: "Funnel Display", sans-serif;
   font-size: 1.5rem;
-  color: #1f1f1f;
   margin-bottom: 15px;
   text-align: left;
   padding-left: 10px;
+  font-weight: 600;
 }
 
 .meetup-box {
