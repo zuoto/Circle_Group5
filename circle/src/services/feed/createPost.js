@@ -1,4 +1,4 @@
-async function createPost(postContent, hangoutTime) {
+async function createPost(postContent, hangoutTime, groupId = null) {
   try {
     const Parse = window.Parse; 
     
@@ -23,6 +23,20 @@ async function createPost(postContent, hangoutTime) {
     newPost.set("author", currentUser);
     newPost.set("participants", []); // no participants yet
 
+    if (groupId && typeof groupId === 'string' && groupId.length > 0) {
+      try {
+        const Group = Parse.Object.extend("Group");
+        const groupPointer = new Group();
+        groupPointer.id = groupId;
+        newPost.set("group", groupPointer);
+      } catch (e) {
+        console.error("Failed to create Parse Group Pointer: ", e);
+        throw new Error("Invalid Group ID provided.");
+      }
+    } else if (groupId) {
+      throw new Error("Group ID is invalid.");
+    }
+    
     const savedPost = await newPost.save();
 
     console.log("Post created successfully:", savedPost.id);

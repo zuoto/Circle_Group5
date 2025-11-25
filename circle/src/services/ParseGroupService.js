@@ -33,10 +33,58 @@ export async function getGroupById(groupId) {
             memberCount = await memberQuery.count();
 
             if (currentUser) {
-                memberQuery.equalTo("objectId", currentUser.id);
+                const userCheckQuery = relation.query();
+                userCheckQuery.equalTo("objectId", currentUser.id);
                 isUserJoined = (await memberQuery.count()) > 0;
             }
         }
+
+        const PostClass = Parse.Object.extend("Post");
+        const postQuery = new Parse.Query(PostClass);
+        postQuery.equalTo("group", group);  // only posts for this group
+        postQuery.include("author");
+        postQuery.descending("createdAt");
+
+        const parsePosts = await postQuery.find();
+
+        // map the posts to simple objects
+        const mappedPosts = await Promise.all(parsePosts.map(async (post) => {
+            // fetch comments for posts
+            const Comment = Parse.Object.extend("Comments");
+            const commentQuery = new Parse.Query(Comment);
+            commentQuery.equalTo("post", post);
+            commentQuery.include("comment_author");
+            commentQuery.ascending("createdAt");
+            const comments = await commentQuery.find();
+
+            const author = post.get("author");
+
+            return {
+                id: post.id,
+                content: post.get("post_content"),
+                hangoutTime: post.get("hangoutTime"),
+                authorId: author.id,
+                author: {
+                    id: author.id,
+                    name: author.get("username"),
+                    user_firstname: author.get("user_firstname"),
+                    user_surname: author.get("user_surname"),
+                    profile_picture: author.get("profile_picture") ? author.get("profile_picture").url() : null
+                },
+
+                createdAt: post.get("createdAt"),
+                participants: post.get("participants") || [],
+                comments: comments.map(c => ({
+                    id: c.id,
+                    content: c.get("text"),
+                    author: {
+                        id: c.get("comment_author").id,
+                        name: c.get("comment_author").get("username")
+                    },
+                    createdAt: c.get("createdAt")
+                }))
+            };
+        }));
 
         return {
             id: group.id,
@@ -45,7 +93,7 @@ export async function getGroupById(groupId) {
             coverPhotoUrl: picUrl,
             isUserJoined: isUserJoined,
             memberCount: memberCount,
-            posts: [],
+            posts: mappedPosts,
             nextMeetup: { time: "N/A", location: "N/A"}
         };
     } catch (error) {
@@ -101,7 +149,10 @@ export async function toggleGroupMembership(groupId, isJoining) {
     }
 
     try {
-        const group = Parse.Object.createWithoutData("Group", groupId);
+        const Group = Parse.Object.extend("Group");
+        const query = new Parse.Query(Group);
+        const group = await query.get(groupId);
+
         const membersRelation = group.relation('group_members');
 
         if (isJoining) {

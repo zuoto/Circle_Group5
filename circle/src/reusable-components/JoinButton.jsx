@@ -1,23 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 
 function JoinButton({ isUserJoined, onClick, className }) {
  
-    const [isJoined, setIsJoined] = useState(isUserJoined || false);
-
     const handleJoinClick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Toggle
-        setIsJoined(!isJoined);
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
 
         if (onClick) {
             onClick(e);
         }
     };
 
-    const buttonText = isJoined ? "Joined" : "Join";
-    const buttonClass = isJoined ? "joined-button" : 'primary-button';
+    const buttonText = isUserJoined ? "Joined" : "Join";
+    const buttonClass = isUserJoined ? "joined-button" : 'primary-button';
 
     return (
         <button

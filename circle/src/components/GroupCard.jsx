@@ -6,12 +6,14 @@ import { toggleGroupMembership } from "../services/ParseGroupService";
 
 function GroupCard({ id, name, description, initialMemberCount, initialIsUserJoined, coverPhotoUrl }) {
 
-    const [members, setMembers] = useState(initialMemberCount);
-    const [isJoined, setIsJoined] = useState(initialIsUserJoined);
+    const [members, setMembers] = useState(initialMemberCount || 0);
+    const [isJoined, setIsJoined] = useState(initialIsUserJoined === true);
 
-    const handleGroupCardJoin = async () => {
-        e.preventDefault();
-        e.stopPropagation();
+    const handleGroupCardJoin = async (e) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();   
+        }
         
         const isJoining = !isJoined;
         try {
