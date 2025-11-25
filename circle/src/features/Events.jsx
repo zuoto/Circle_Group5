@@ -20,11 +20,19 @@ function mapParseEvent(e) {
     title: e.get("event_name"),
     description: e.get("event_info"),
     date: iso,
-    location: "", // location skipped for now (schema uses GeoPoint)
+    location: e.get("event_location") || "",
+
+    // ← now using user_firstname
     hostId: host ? host.id : null,
+    hostName: host ? host.get("user_firstname") || "Unknown" : "Unknown",
+
+    // avatar stays optional
+    hostAvatar: host ? host.get("avatar_url") || "/avatar/default.jpg" : "/avatar/default.jpg",
+
     groupId: group ? group.id : null,
     groupName: group ? group.get("group_name") : null,
-    attendees: [],
+
+    attendees: e.get("event_attendees") || [],
     tags: [],
   };
 }

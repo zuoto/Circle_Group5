@@ -1,5 +1,4 @@
 import React from "react";
-import { users } from "../mock-data/mock-data-user/MockDataUsers.jsx";
 import ImInButton from "./ImInButton.jsx";
 import "../index.css";
 
@@ -20,7 +19,7 @@ const formatMeetupTime = (dateString) => {
 
 export default function EventCard({ event, currentUserId, onToggleAttend }) {
   if (!event) return null;
-  const host = users.find((u) => u.id === event.hostId);
+
   const attendees = Array.isArray(event.attendees) ? event.attendees : [];
   const details = Array.isArray(event.details) ? event.details : [];
   const isAttending = currentUserId ? attendees.includes(currentUserId) : false;
@@ -37,18 +36,21 @@ export default function EventCard({ event, currentUserId, onToggleAttend }) {
 
       <div className="user-info event-header">
         <img
-          src={host?.avatar || "/avatar/default.jpg"}
-          alt={host?.name || "Host"}
+          src={event.hostAvatar}
+          alt={event.hostName}
           className="avatar"
         />
         <div>
           <div className="event-title">{event.title || "Untitled event"}</div>
           <div className="event-meta">
-            Hosted by <strong>{host?.name || "Unknown"}</strong> ·{" "}
-            {formatMeetupTime(event.date)}
+            Hosted by <strong>{event.hostName}</strong> ·{" "}
+            {event.date ? formatMeetupTime(event.date) : "Date TBA"}
           </div>
           {event.location && (
             <div className="event-location">📍 {event.location}</div>
+          )}
+          {event.groupName && (
+            <div className="event-group">In group: {event.groupName}</div>
           )}
         </div>
       </div>
