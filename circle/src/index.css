@@ -1505,3 +1505,62 @@ body.modal-open {
   font-size: 0.85rem;
   padding: 6px 12px;
 }
+/* Make event header layout similar to group header */
+.event-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Avatar in the event header */
+.event-header .avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+/* Event detail header – make it match group title vibes */
+.event-detail-title {
+  font-family: "Funnel Display", sans-serif;
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: #863c5e;
+  margin: 0;
+}
+
+/* Subtext under title (host, date) */
+.event-meta {
+  font-size: 0.95rem;
+  color: #444;
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+.group-link-inline {
+  color: #863c5e;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.group-link-inline:hover {
+  color: #df540d;
+  text-decoration: underline;
+}
+/* Green version of primary-button, identical size */
+.event-attend-active {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: bold;
+  font-family: "Funnel Display", sans-serif;
+  background-color:  #fc8085;
+  color: #e8e8e4;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.event-attend-active:hover {
+  background-color: #4a8a60;
+}
