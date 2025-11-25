@@ -99,8 +99,11 @@ export default function GroupDetail() {
                 onJoinClick={handleJoinClick}
                 />
 
+                <div className="group-description-header">
+                    <div className="description-name">Group Description</div>
+                </div>
+
                 <div className="group-description-box">
-                    <h3>Group Description</h3>
                     <p>{group.description}{" "}</p>
                     <span>Members: {group.memberCount}</span>
                 </div>

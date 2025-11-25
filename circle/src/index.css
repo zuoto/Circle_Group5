@@ -513,7 +513,7 @@ main {
 }
 
 .group-card-actions .primary-button:hover {
-  background-color: #6f3151;
+  background-color: #602644;
 }
 
 .group-card-actions .secondary-button {
@@ -584,6 +584,10 @@ main {
   color: #e8e8e4;
 }
 
+.group-actions .primary-button:hover {
+  background-color: #602644;
+}
+
 .joined-button {
   background-color: #569c74;
   color: white;
@@ -594,8 +598,24 @@ main {
   font-weight: bold;
 }
 
+.joined-button:hover {
+  background-color: #4a8a60;
+}
+
 .joined-button span {
   margin-right: 5px;
+}
+
+.group-description-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.description-name {
+  font-weight: 600;
+  font-family: "Funnel Display", sans-serif;
+  font-size: 1.5rem;
 }
 
 .group-description-box {
@@ -605,13 +625,6 @@ main {
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   text-align: left;
-}
-
-.group-description-box h3 {
-  font-family: "Funnel Display", sans-serif;
-  font-size: 1.5rem;
-  margin-bottom: 12px;
-  font-weight: 600;
 }
 
 .group-description-box p {
