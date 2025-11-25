@@ -3,10 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import GroupHeader from "../components/GroupHeader";
 import GroupInfoSidebar from "../components/GroupInfoSidebar"; 
 import Post from "../reusable-components/Post";
-import { getGroupById, toggleGroupMembership } from "../services/ParseGroupService";
+import { getGroupById, toggleGroupMembership, fetchGroupMembers } from "../services/ParseGroupService";
 import NewPostButton from "../reusable-components/NewPostButton";
 import Modal from "../reusable-components/Modal";
 import NewPostForm from "../reusable-components/NewPostForm";
+import MembersTooltip from "../components/MembersTooltip";
 
 export default function GroupDetail() {
 
@@ -14,6 +15,8 @@ export default function GroupDetail() {
     const [group, setGroup] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+    const [groupMembers, setGroupMembers] = useState([]);
+    const [showMembersTooltip, setShowMembersTooltip] = useState(false);
 
     // Hooks
     const { groupId } = useParams();    // get group id from URL
@@ -31,6 +34,18 @@ export default function GroupDetail() {
     useEffect(() => {
         loadGroupDetails();
     }, [loadGroupDetails]);
+
+    // Hook to fetch member details for the tooltip
+    useEffect(() => {
+        // check whether group object and its member list are available
+        if (group && group.id) {
+            const fetchMembers = async () => {
+                const membersList = await fetchGroupMembers(group.id);
+                setGroupMembers(membersList);
+            };
+            fetchMembers();
+        }
+    }, [group]);
 
     // Handlers
     const handlePostCreated = () => {
@@ -105,7 +120,16 @@ export default function GroupDetail() {
 
                 <div className="group-description-box">
                     <p>{group.description}{" "}</p>
+                    <div
+                        className="members-info-wrapper"
+                        onMouseEnter={() => setShowMembersTooltip(true)}
+                        onMouseLeave={() => setShowMembersTooltip(false)}
+                        >
                     <span>Members: {group.memberCount}</span>
+                    <MembersTooltip
+                        members={groupMembers}
+                        show={showMembersTooltip} />
+                    </div>
                 </div>
 
                 <div className="group-discussion-header">
