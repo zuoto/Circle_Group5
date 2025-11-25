@@ -1,9 +1,9 @@
-// src/reusable-components/EventCard.jsx
 import React from "react";
 import EventAttendButton from "./EventAttendButton.jsx";
 import "../index.css";
 
 const formatMeetupTime = (dateString) => {
+  if (!dateString) return "";
   const date = new Date(dateString);
   const time = date.toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -49,9 +49,7 @@ export default function EventCard({
           className="avatar"
         />
         <div>
-          <div className="event-title">
-            {event.title || "Untitled event"}
-          </div>
+          <div className="event-title">{event.title || "Untitled event"}</div>
           <div className="event-meta">
             Hosted by <strong>{event.hostName}</strong>{" "}
             {event.date && <>· {formatMeetupTime(event.date)}</>}
@@ -60,9 +58,7 @@ export default function EventCard({
             <div className="event-location">📍 {event.location}</div>
           )}
           {event.groupName && (
-            <div className="event-group">
-              In group: {event.groupName}
-            </div>
+            <div className="event-group">In group: {event.groupName}</div>
           )}
         </div>
       </div>
@@ -77,9 +73,10 @@ export default function EventCard({
         </ul>
       )}
 
+      {/* footer: prevent click bubbling so button doesn't navigate */}
       <div
         className="event-footer"
-        onClick={(e) => e.stopPropagation()} // don't trigger card click
+        onClick={(e) => e.stopPropagation()}
       >
         <EventAttendButton
           isAttending={isAttending}

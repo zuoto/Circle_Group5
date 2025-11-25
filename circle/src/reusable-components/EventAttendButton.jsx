@@ -5,12 +5,12 @@ export default function EventAttendButton({ isAttending, onClick }) {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async (e) => {
-    e.stopPropagation(); // don't trigger card navigation
-    if (!onClick || loading) return;
+    e.stopPropagation();
+    if (loading || !onClick) return;
 
     try {
       setLoading(true);
-      await onClick();      // parent (Events.jsx) handles Parse update
+      await onClick();
     } finally {
       setLoading(false);
     }
@@ -23,8 +23,8 @@ export default function EventAttendButton({ isAttending, onClick }) {
     : "I'm in";
 
   const buttonClass = isAttending
-    ? "joined-button-small"
-    : "primary-button";
+    ? "event-attend-active"  // green, same size
+    : "primary-button";      // normal color
 
   return (
     <button
