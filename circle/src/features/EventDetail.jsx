@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 const Parse = window.Parse;
 
-// Reuse the same mapping as in Events.jsx
+// Convert Parse → UI event
 function mapParseEvent(e) {
   const date = e.get("event_date");
   const iso = date ? date.toISOString() : null;
 
   const host = e.get("event_host");
   const group = e.get("parent_group");
+  const coverFile = e.get("event_cover");
 
   return {
     id: e.id,
@@ -27,6 +28,7 @@ function mapParseEvent(e) {
     groupId: group ? group.id : null,
     groupName: group ? group.get("group_name") : null,
 
+    cover: coverFile ? coverFile.url() : null,
     attendees: e.get("event_attendees") || [],
     tags: [],
   };
@@ -67,9 +69,7 @@ export default function EventDetail() {
     loadEvent();
   }, [eventId]);
 
-  const handleBackClick = () => {
-    navigate(-1);
-  };
+  const handleBackClick = () => navigate(-1);
 
   if (loading) {
     return <div className="page-wrapper">Loading event...</div>;
@@ -80,9 +80,7 @@ export default function EventDetail() {
       <div className="page-wrapper">
         <h1>Event Not Found</h1>
         <p>Could not find any event with this ID.</p>
-        <button onClick={handleBackClick} className="back-button">
-          ← Back
-        </button>
+        <button onClick={handleBackClick} className="back-button">← Back</button>
       </div>
     );
   }
@@ -90,13 +88,12 @@ export default function EventDetail() {
   return (
     <div className="page-wrapper group-detail-page-wrapper">
       <div className="group-detail-layout">
-        {/* LEFT COLUMN – main content, same structure as GroupDetail */}
-        <div className="group-main-content">
-          <button onClick={handleBackClick} className="back-button">
-            ← Back
-          </button>
 
-          {/* Reuse cover style class if you later add event.cover */}
+        {/* LEFT COLUMN */}
+        <div className="group-main-content">
+          <button onClick={handleBackClick} className="back-button">← Back</button>
+
+          {/* Cover image (only once) */}
           {event.cover && (
             <div
               className="group-detail-cover-photo"
@@ -104,7 +101,7 @@ export default function EventDetail() {
             />
           )}
 
-          {/* This mimics GroupHeader area visually */}
+          {/* Event header styled like GroupHeader */}
           <div className="group-header">
             <div className="user-info event-header">
               <img
@@ -114,11 +111,22 @@ export default function EventDetail() {
               />
               <div>
                 <h2 className="event-detail-title">{event.title}</h2>
+
                 <div className="event-meta">
                   Hosted by <strong>{event.hostName}</strong>
+
                   {event.groupName && (
-                    <> · in group <strong>{event.groupName}</strong></>
+                    <>
+                      {" · in group "}
+                      <Link
+                        to={`/groups/${event.groupId}`}
+                        className="group-link-inline"
+                      >
+                        <strong>{event.groupName}</strong>
+                      </Link>
+                    </>
                   )}
+
                   {event.date && (
                     <>
                       <br />
@@ -134,6 +142,7 @@ export default function EventDetail() {
                       </span>
                     </>
                   )}
+
                   {event.location && (
                     <>
                       <br />
@@ -145,26 +154,30 @@ export default function EventDetail() {
             </div>
           </div>
 
-          {/* Reuse the same description box styling as groups */}
+          {/* Description box */}
           <div className="group-description-box">
             <h3>Event Description</h3>
             <p>{event.description}</p>
           </div>
-
-          {/* Future: event comments will go here */}
-          {/* <CommentsForEvent eventId={event.id} /> */}
         </div>
 
-        {/* RIGHT COLUMN – sidebar, styled like GroupInfoSidebar */}
+        {/* RIGHT SIDEBAR */}
         <div className="group-sidebar">
           <h3 className="sidebar-header">Event details</h3>
+
           <p>
             <strong>Attending:</strong> {event.attendees.length} people
           </p>
 
           {event.groupName && (
             <p>
-              <strong>Hosted in group:</strong> {event.groupName}
+              <strong>Hosted in group:</strong>{" "}
+              <Link
+                to={`/groups/${event.groupId}`}
+                className="group-link-inline"
+              >
+                {event.groupName}
+              </Link>
             </p>
           )}
 
@@ -181,6 +194,7 @@ export default function EventDetail() {
             </p>
           )}
         </div>
+
       </div>
     </div>
   );

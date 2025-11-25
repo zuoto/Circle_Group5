@@ -1451,3 +1451,13 @@ body.modal-open {
   margin-top: 0.35rem;
   line-height: 1.4;
 }
+.group-link-inline {
+  color: #863c5e;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.group-link-inline:hover {
+  color: #df540d;
+  text-decoration: underline;
+}
