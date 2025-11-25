@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import Comment from "../reusable-components/Comment.jsx";
+import EventCommentButton from "../reusable-components/EventCommentButton.jsx";
 
 const Parse = window.Parse;
 
-// Convert Parse → UI event
+// Map Parse Event → UI object
 function mapParseEvent(e) {
   const date = e.get("event_date");
   const iso = date ? date.toISOString() : null;
@@ -29,21 +31,24 @@ function mapParseEvent(e) {
     groupName: group ? group.get("group_name") : null,
 
     cover: coverFile ? coverFile.url() : null,
-    attendees: e.get("event_attendees") || [],
-    tags: [],
   };
 }
 
 export default function EventDetail() {
   const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingEvent, setLoadingEvent] = useState(true);
+
+  const [comments, setComments] = useState([]);          // Parse objects
+  const [loadingComments, setLoadingComments] = useState(true);
+  const [newCommentText, setNewCommentText] = useState("");
 
   const { eventId } = useParams();
   const navigate = useNavigate();
 
+  // Load event
   useEffect(() => {
     async function loadEvent() {
-      setLoading(true);
+      setLoadingEvent(true);
       try {
         const EventClass = Parse.Object.extend("Event");
         const query = new Parse.Query(EventClass);
@@ -62,16 +67,54 @@ export default function EventDetail() {
         console.error("Error loading event:", err);
         setEvent(null);
       } finally {
-        setLoading(false);
+        setLoadingEvent(false);
       }
     }
 
     loadEvent();
   }, [eventId]);
 
-  const handleBackClick = () => navigate(-1);
+  // Load comments for this event
+  useEffect(() => {
+    if (!eventId) return;
 
-  if (loading) {
+    async function loadComments() {
+      setLoadingComments(true);
+      try {
+        const EventCommentClass = Parse.Object.extend("EventComments");
+        const query = new Parse.Query(EventCommentClass);
+
+        const eventPtr = new Parse.Object("Event");
+        eventPtr.id = eventId;
+
+        query.equalTo("parent_event", eventPtr);
+        query.include("comment_author");
+        query.ascending("createdAt");
+
+        const rows = await query.find();
+        setComments(rows); // pass Parse objects directly to <Comment />
+      } catch (err) {
+        console.error("Error loading event comments:", err);
+        setComments([]);
+      } finally {
+        setLoadingComments(false);
+      }
+    }
+
+    loadComments();
+  }, [eventId]);
+
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
+  // When a new comment was added in EventCommentButton
+  const handleCommentAdded = (savedComment) => {
+    setComments((prev) => [...prev, savedComment]);
+    setNewCommentText("");
+  };
+
+  if (loadingEvent) {
     return <div className="page-wrapper">Loading event...</div>;
   }
 
@@ -80,7 +123,9 @@ export default function EventDetail() {
       <div className="page-wrapper">
         <h1>Event Not Found</h1>
         <p>Could not find any event with this ID.</p>
-        <button onClick={handleBackClick} className="back-button">← Back</button>
+        <button onClick={handleBackClick} className="back-button">
+          ← Back
+        </button>
       </div>
     );
   }
@@ -88,12 +133,13 @@ export default function EventDetail() {
   return (
     <div className="page-wrapper group-detail-page-wrapper">
       <div className="group-detail-layout">
-
-        {/* LEFT COLUMN */}
+        {/* LEFT COLUMN – main content */}
         <div className="group-main-content">
-          <button onClick={handleBackClick} className="back-button">← Back</button>
+          <button onClick={handleBackClick} className="back-button">
+            ← Back
+          </button>
 
-          {/* Cover image (only once) */}
+          {/* Cover image */}
           {event.cover && (
             <div
               className="group-detail-cover-photo"
@@ -101,7 +147,7 @@ export default function EventDetail() {
             />
           )}
 
-          {/* Event header styled like GroupHeader */}
+          {/* Header: host, group, date, location */}
           <div className="group-header">
             <div className="user-info event-header">
               <img
@@ -111,22 +157,17 @@ export default function EventDetail() {
               />
               <div>
                 <h2 className="event-detail-title">{event.title}</h2>
-
                 <div className="event-meta">
                   Hosted by <strong>{event.hostName}</strong>
-
-                  {event.groupName && (
+                  {event.groupName && event.groupId && (
                     <>
-                      {" · in group "}
-                      <Link
-                        to={`/groups/${event.groupId}`}
-                        className="group-link-inline"
-                      >
+                      {" "}
+                      · in group{" "}
+                      <Link to={`/groups/${event.groupId}`}>
                         <strong>{event.groupName}</strong>
                       </Link>
                     </>
                   )}
-
                   {event.date && (
                     <>
                       <br />
@@ -142,7 +183,6 @@ export default function EventDetail() {
                       </span>
                     </>
                   )}
-
                   {event.location && (
                     <>
                       <br />
@@ -154,47 +194,62 @@ export default function EventDetail() {
             </div>
           </div>
 
-          {/* Description box */}
+          {/* Description */}
           <div className="group-description-box">
             <h3>Event Description</h3>
             <p>{event.description}</p>
           </div>
+
+          {/* COMMENTS */}
+          <div className="comment-section">
+            <h3>Comments</h3>
+
+            {loadingComments && <p>Loading comments...</p>}
+
+            {!loadingComments && comments.length === 0 && (
+              <p>No comments yet. Be the first.</p>
+            )}
+
+            {!loadingComments &&
+              comments.map((c) => <Comment key={c.id} comment={c} />)}
+
+            {/* New comment form */}
+            <div className="comment-form" style={{ marginTop: "16px" }}>
+              <textarea
+                className="post-textarea"
+                style={{ minHeight: "80px" }}
+                placeholder="Write a comment..."
+                value={newCommentText}
+                onChange={(e) => setNewCommentText(e.target.value)}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: "8px",
+                }}
+              >
+                <EventCommentButton
+                  eventId={event.id}
+                  commentText={newCommentText}
+                  onCommentAdded={handleCommentAdded}
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* RIGHT SIDEBAR */}
+        {/* RIGHT COLUMN – sidebar, but NOT repeating host/date/group */}
         <div className="group-sidebar">
           <h3 className="sidebar-header">Event details</h3>
-
-          <p>
-            <strong>Attending:</strong> {event.attendees.length} people
-          </p>
-
-          {event.groupName && (
+          <div className="sidebar-box">
             <p>
-              <strong>Hosted in group:</strong>{" "}
-              <Link
-                to={`/groups/${event.groupId}`}
-                className="group-link-inline"
-              >
-                {event.groupName}
-              </Link>
+              This is where we can later add extra info like
+              <br />
+              “What to bring”, “Level”, or links.
             </p>
-          )}
-
-          {event.date && (
-            <p>
-              <strong>Date & time:</strong>{" "}
-              {new Date(event.date).toLocaleString()}
-            </p>
-          )}
-
-          {event.location && (
-            <p>
-              <strong>Location:</strong> {event.location}
-            </p>
-          )}
+          </div>
         </div>
-
       </div>
     </div>
   );
