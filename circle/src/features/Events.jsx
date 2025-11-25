@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";   // 👈 NEW
 import EventCard from "../reusable-components/EventCard";
 import NewPostButton from "../reusable-components/NewPostButton.jsx";
 import Modal from "../reusable-components/Modal.jsx";
@@ -22,12 +23,11 @@ function mapParseEvent(e) {
     date: iso,
     location: e.get("event_location") || "",
 
-    // ← now using user_firstname
     hostId: host ? host.id : null,
     hostName: host ? host.get("user_firstname") || "Unknown" : "Unknown",
-
-    // avatar stays optional
-    hostAvatar: host ? host.get("avatar_url") || "/avatar/default.jpg" : "/avatar/default.jpg",
+    hostAvatar: host
+      ? host.get("avatar_url") || "/avatar/default.jpg"
+      : "/avatar/default.jpg",
 
     groupId: group ? group.id : null,
     groupName: group ? group.get("group_name") : null,
@@ -40,16 +40,15 @@ function mapParseEvent(e) {
 export default function Events() {
   const [events, setEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // NEW: loading + error state
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load existing events from backend
+  const navigate = useNavigate();   // 👈 NEW
+
   useEffect(() => {
     async function load() {
-      setLoading(true);      // NEW
-      setError(null);        // NEW
+      setLoading(true);
+      setError(null);
 
       try {
         const EventClass = Parse.Object.extend("Event");
@@ -63,47 +62,39 @@ export default function Events() {
         setEvents(rows.map(mapParseEvent));
       } catch (err) {
         console.error("Error loading events:", err);
-        setError("Failed to load events.");   // NEW: surface error to UI
+        setError("Failed to load events.");
       } finally {
-        setLoading(false);   // NEW
+        setLoading(false);
       }
     }
 
     load();
   }, []);
 
-  // Create new event → save to backend
   const handleCreateEvent = async (formData) => {
     try {
       const EventClass = Parse.Object.extend("Event");
       const event = new EventClass();
 
-      // Required fields
       event.set("event_name", formData.title);
       event.set("event_info", formData.description);
-      event.set("event_date", formData.date); // JS Date object
+      event.set("event_date", formData.date);
 
-      // Host = the logged-in user
       const host = Parse.User.current();
       if (host) {
         event.set("event_host", host);
       }
 
       const saved = await event.save();
-
-      // Add it to the UI immediately
       setEvents((prev) => [...prev, mapParseEvent(saved)]);
-
       setIsModalOpen(false);
     } catch (err) {
       console.error("Error creating event:", err);
-      // optional: setError("Failed to create event.");
     }
   };
 
   return (
     <div className="page-wrapper">
-      {/* Same header as Groups */}
       <div className="feature-header">
         <div className="feature-names">Events</div>
         <NewPostButton
@@ -112,13 +103,11 @@ export default function Events() {
         />
       </div>
 
-      {/* List of events */}
       <div className="main-content">
         {loading && <p>Loading events...</p>}
         {error && <p className="error">{error}</p>}
-        {!loading && !error && events.length === 0 && (
-          <p>No events yet.</p>
-        )}
+        {!loading && !error && events.length === 0 && <p>No events yet.</p>}
+
         {!loading &&
           !error &&
           events.map((ev) => (
@@ -126,11 +115,12 @@ export default function Events() {
               key={ev.id}
               event={ev}
               currentUserId="u1"
+              onToggleAttend={() => {}}
+              onClick={() => navigate(`/events/${ev.id}`)}   // 👈 CLICK → DETAIL
             />
           ))}
       </div>
 
-      {/* Modal with NewEventForm */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <NewEventForm
           onSubmit={handleCreateEvent}

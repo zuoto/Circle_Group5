@@ -17,7 +17,12 @@ const formatMeetupTime = (dateString) => {
   return `${time} on ${day}`;
 };
 
-export default function EventCard({ event, currentUserId, onToggleAttend }) {
+export default function EventCard({
+  event,
+  currentUserId,
+  onToggleAttend,
+  onClick,           // new prop
+}) {
   if (!event) return null;
 
   const attendees = Array.isArray(event.attendees) ? event.attendees : [];
@@ -25,7 +30,7 @@ export default function EventCard({ event, currentUserId, onToggleAttend }) {
   const isAttending = currentUserId ? attendees.includes(currentUserId) : false;
 
   return (
-    <div className="post">
+    <div className="post event-card" onClick={onClick}>
       {event.cover ? (
         <img
           src={event.cover}
@@ -43,8 +48,8 @@ export default function EventCard({ event, currentUserId, onToggleAttend }) {
         <div>
           <div className="event-title">{event.title || "Untitled event"}</div>
           <div className="event-meta">
-            Hosted by <strong>{event.hostName}</strong> ·{" "}
-            {event.date ? formatMeetupTime(event.date) : "Date TBA"}
+            Hosted by <strong>{event.hostName}</strong>{" "}
+            {event.date && <>· {formatMeetupTime(event.date)}</>}
           </div>
           {event.location && (
             <div className="event-location">📍 {event.location}</div>
@@ -65,7 +70,11 @@ export default function EventCard({ event, currentUserId, onToggleAttend }) {
         </ul>
       )}
 
-      <div className="event-footer">
+      {/* Stop footer clicks from triggering navigation */}
+      <div
+        className="event-footer"
+        onClick={(e) => e.stopPropagation()}
+      >
         <ImInButton isAttending={isAttending} onClick={onToggleAttend} />
         <div>{attendees.length} going</div>
       </div>

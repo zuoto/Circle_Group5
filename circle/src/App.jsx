@@ -1,9 +1,10 @@
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
-import Feed from "./features/feed.jsx";
+import Feed from "./features/Feed.jsx";
 import Profile from "./features/Profile";
 import Groups from "./features/Groups";
 import GroupDetail from "./features/GroupDetail";
 import Events from "./features/Events";
+import EventDetail from "./features/EventDetail.jsx";
 import LogIn from "./features/LogIn";
 import Register from "./features/Register";
 import ProtectedRoute from "./auth/ProtectedRoute";
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="groups" element={<Groups />} />
           <Route path="groups/:groupId" element={<GroupDetail />} />
           <Route path="events" element={<Events />} />
+          <Route path="/events/:eventId" element={<EventDetail />} />
           <Route path="search" element={<SearchPage />} />
         </Route>
 
