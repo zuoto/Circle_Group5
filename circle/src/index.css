@@ -298,6 +298,7 @@ nav {
   align-items: center;
   gap: 16px;
   padding-top: 20px;
+  overflow: visible;
 }
 
 /* ensure main content area uses same page background by default */
@@ -437,6 +438,40 @@ main {
   color: #df540d;
 }
 
+/* Members tooltip */
+
+.members-info-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.members-tooltip {
+  position: absolute;
+  color: #666;
+  top: calc(100% + 8px);
+  left: 0px;
+  min-width: 200px;
+  background: #f2f2ef;
+  border: 2px solid #569c74de;
+  border-radius: 0px 0px 20px 0px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10000;
+}
+
+.member-name {
+  padding: 4px 0;
+  color: #666;
+}
+
+.members-header {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
 /* GROUPS STYLES */
 .group-card-link {
   text-decoration: none;
@@ -446,8 +481,14 @@ main {
   align-self: flex-start;
 }
 
+
+.group-card-link.is-tooltip-active .group-card {
+  z-index: 1001;
+}
+
 .group-card {
   position: relative;
+  z-index: 2;
   padding: 24px 30px 30px 30px;
   display: flex;
   flex-direction: column;
@@ -459,7 +500,6 @@ main {
   justify-content: space-between;
   min-height: 150px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  overflow: hidden;
   width: 60vw;
 }
 
@@ -550,6 +590,7 @@ main {
   flex-direction: column;
   gap: 24px;
   position: relative;
+  overflow: visible;
 }
 
 .group-main-content .post {
