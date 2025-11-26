@@ -1,13 +1,19 @@
 // Profile.jsx
 
 import React, { useState, useEffect } from "react";
+// Import useParams to read the ID from the URL
+import { useParams } from "react-router-dom";
 import "../index.css";
 import ProfileHeader from "../components/ProfileHeader";
 import ProfileSideBar from "../components/ProfileSideBar";
 import { useAuth } from "../auth/AuthProvider";
+import Parse from "parse"; // Sticking to team's pattern
 
 function Profile() {
   const { currentUser, loading: isAuthLoading } = useAuth();
+
+  // FIX 1: Get the userId from the URL path (e.g., '/profile/abc1234')
+  const { userId: urlUserId } = useParams();
 
   const [user, setUser] = useState(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -16,12 +22,15 @@ function Profile() {
   const fetchProfileData = async (userId) => {
     setError(null);
     const Parse = window.Parse;
+
     try {
       const query = new Parse.Query(Parse.User);
-      //Temporary
       query.include("profile_picture");
 
+      // FIX 2: Use the ID passed to the function (which comes from URL or currentUser)
       const parseUser = await query.get(userId);
+
+      // ... (Rest of data processing, relations, etc. remains the same)
 
       //Temporary fix for default picture logic
       const profilePictureFile = parseUser.get("profile_picture");
@@ -30,6 +39,7 @@ function Profile() {
 
       const pictureUrl = isParseFile ? profilePictureFile.url() : null;
 
+      // Fetching Groups relation
       const groupsJoinedRelation = parseUser.relation("groups_joined");
       const groupsQuery = groupsJoinedRelation.query();
       const groupsResults = await groupsQuery.find();
@@ -39,8 +49,8 @@ function Profile() {
         name: parseUser.get("user_firstname"),
         surname: parseUser.get("user_surname"),
         bio: parseUser.get("bio") || "No bio yet.",
-        picture: pictureUrl, //Temporary
-        friends: [],
+        picture: pictureUrl,
+        friends: [], // Friends relation logic would go here
         groups: groupsResults.map((group) => ({
           id: group.id,
           name: group.get("group_name"),
@@ -65,24 +75,34 @@ function Profile() {
       return;
     }
 
-    if (currentUser?.id) {
+    // FIX 3: Determine the single target user ID:
+    // If an ID is in the URL, use it; otherwise, use the logged-in user's ID.
+    const targetUserId = urlUserId || currentUser?.id;
+
+    if (targetUserId) {
       setProfileLoading(true);
-      fetchProfileData(currentUser.id);
+      fetchProfileData(targetUserId);
     } else {
       setUser(null);
       setProfileLoading(false);
       setError("User is not logged in or ID is missing.");
     }
-  }, [currentUser, isAuthLoading]);
+  }, [currentUser, isAuthLoading, urlUserId]); // FIX 4: Add urlUserId to dependencies
 
   if (isAuthLoading || profileLoading) {
     return <div className="page-wrapper">Loading Profile...</div>;
   }
 
-  if (!currentUser) {
-    return <div className="page-wrapper">Access Denied.</div>;
+  // FIX 5: Simplified Conditional Rendering
+
+  // Scenario 1: User is not logged in AND there is no ID in the URL (i.e., user clicked the main Profile link)
+  if (!currentUser && !urlUserId) {
+    return (
+      <div className="page-wrapper">Please log in to view your profile.</div>
+    );
   }
 
+  // Scenario 2: Error occurred during data fetch (this catches the failed query)
   if (error) {
     return (
       <div className="page-wrapper" style={{ textAlign: "center" }}>
@@ -92,19 +112,21 @@ function Profile() {
         </p>
         <hr />
         <p>
-          **Action Required:** This error is likely a database permission issue.
-          You must fix the **File Class Read Permissions** in your Back4App
-          dashboard later!
+          **Action Required:** If you see "Object Not Found," the user ID in the
+          URL is wrong. If you see an error like "Unauthorized," the profile you
+          are trying to view is restricted by ACL.
         </p>
       </div>
     );
   }
 
+  // Scenario 3: Data successfully loaded (user is not null)
   if (!user) {
-    return <div className="page-wrapper">Error loading profile data.</div>;
+    // This catches scenarios where the fetch failed but didn't set a specific error message.
+    return <div className="page-wrapper">Profile data unavailable.</div>;
   }
 
-  const defaultProfilePicUrl = "new_default_pic.png"; // will be changed
+  const defaultProfilePicUrl = "new_default_pic.png";
   const profilePictureUrl = user.picture || defaultProfilePicUrl;
 
   return (
