@@ -34,6 +34,7 @@ function Profile() {
       const groupsJoinedRelation = parseUser.relation("groups_joined");
       const groupsQuery = groupsJoinedRelation.query();
       const groupsResults = await groupsQuery.find();
+      console.log("Fetched groups: ", groupsResults.map(g => ({id: g.id, name: g.get("group_name")})));
 
       const structuredUser = {
         id: parseUser.id,
@@ -45,7 +46,6 @@ function Profile() {
         groups: groupsResults.map((group) => ({
           id: group.id,
           name: group.get("group_name"),
-          memberCount: 0,
         })),
       };
 
