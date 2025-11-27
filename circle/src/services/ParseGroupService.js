@@ -15,10 +15,15 @@ export async function getGroupById(groupId) {
     const Parse = window.Parse;
     const GroupClass = Parse.Object.extend("Group");
     const query = new Parse.Query(GroupClass);
-    const currentUser = Parse.User.current();
+    const currentUser = Parse.User.current() || null;
 
     try {
         const group = await query.get(groupId);
+
+        if (!group) {
+            console.warn(`Group not found for ID: ${groupId}`);
+            return null;
+        }
 
         // get file object from the group
         const picFile = group.get('group_default_pic');
@@ -32,10 +37,10 @@ export async function getGroupById(groupId) {
             const memberQuery = relation.query();
             memberCount = await memberQuery.count();
 
-            if (currentUser) {
+            if (currentUser) { 
                 const userCheckQuery = relation.query();
                 userCheckQuery.equalTo("objectId", currentUser.id);
-                isUserJoined = (await memberQuery.count()) > 0;
+                isUserJoined = (await userCheckQuery.count()) > 0; 
             }
         }
 
@@ -59,6 +64,16 @@ export async function getGroupById(groupId) {
 
             const author = post.get("author");
 
+            if (!author) {
+                console.error(`Post ${post.id} found without an author. Skipping or using placeholder.`);
+                return {
+                    id: post.id,
+                    content: post.get("post_content") || "Post content unavailable.",
+                    author: { id: 'deleted', name: 'Deleted User'},
+                    comments: [],
+                };
+            }
+
             return {
                 id: post.id,
                 content: post.get("post_content"),
@@ -74,17 +89,23 @@ export async function getGroupById(groupId) {
 
                 createdAt: post.get("createdAt"),
                 participants: post.get("participants") || [],
-                comments: comments.map(c => ({
-                    id: c.id,
-                    content: c.get("text"),
-                    author: {
-                        id: c.get("comment_author").id,
-                        name: c.get("comment_author").get("username")
+                comments: comments.map(c => {
+                    const commentAuthor = c.get("comment_author");
+                    return{
+                        id: c.id,
+                        content: c.get("text"),
+                        author: commentAuthor ? {
+                        id: commentAuthor.id,
+                        name: commentAuthor.get("username")
+                    } : {
+                        id: 'unknown',
+                        name: 'Unknown User'
                     },
                     createdAt: c.get("createdAt")
-                }))
-            };
-        }));
+                }
+            })
+        };
+    }));
 
         return {
             id: group.id,
