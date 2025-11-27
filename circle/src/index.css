@@ -11,7 +11,7 @@
 
 /* ROOT & THEME */
 :root {
-  --page-bg: #E8E8E4;
+  --page-bg: #e8e8e4;
 }
 
 @media (prefers-color-scheme: light) {
@@ -20,7 +20,7 @@
     background-color: #ffffff;
   }
   a:hover {
-    color: #863C5E;
+    color: #863c5e;
   }
   button {
     background-color: #f9f9f9;
@@ -45,7 +45,7 @@ main {
 
 a {
   font-weight: 500;
-  color: #863C5E;
+  color: #863c5e;
   text-decoration: inherit;
 }
 
@@ -53,14 +53,13 @@ a {
 .feature-names {
   font-size: 4em;
   line-height: 1.1;
-  font-family: 'Funnel Display', sans-serif;
-  background-color: #863C5E;
-  color: #E8E8E4;
+  font-family: "Funnel Display", sans-serif;
+  background-color: #863c5e;
+  color: #e8e8e4;
   padding: 10px;
   width: 100%;
   margin: 0;
-  border-radius: 20px 0 0 0 ;
-  color: #E8E8E4;
+  border-radius: 20px 0 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,15 +78,15 @@ a {
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: bold;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
   background-color: #569c74de;
-  color: #E8E8E4;
+  color: #e8e8e4;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 
 .primary-button:hover {
-  background-color: #569C74;
+  background-color: #569c74;
 }
 
 .primary-button:focus,
@@ -101,9 +100,9 @@ a {
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: bold;
-  font-family: 'Funnel Display', sans-serif;
-  background-color: #DF540D;
-  color: #E8E8E4;
+  font-family: "Funnel Display", sans-serif;
+  background-color: #df540d;
+  color: #e8e8e4;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -122,9 +121,23 @@ a {
 }
 
 .secondary-button:hover {
-  background-color: #FC8085;
+  background-color: #fc8085;
 }
 
+.searchbutton {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #fc8084bb;
+  color: #1f1f1fca;
+  cursor: pointer;
+  border-radius: 0 0px 15px 15px;
+  transition: border-color 0.25s;
+  width: 100%;
+}
 .secondary-button:focus,
 .secondary-button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -151,7 +164,7 @@ a {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  color: #863C5E;
+  color: #863c5e;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
@@ -160,33 +173,32 @@ a {
 }
 
 .back-button:hover {
-  color: #DF540D;
+  color: #df540d;
 }
-
 
 .new-post-button {
   font-size: 4em;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
   font-weight: bold;
   padding: 10px 30px;
   border-radius: 0 0 20px 0;
-  background-color: #D9854D;
-  color: #E8E8E4;
+  background-color: #d9854d;
+  color: #e8e8e4;
   border: none;
   cursor: pointer;
   display: flex;
-  min-width: 110px; 
-  min-height: 90.5px; 
-  max-width: 110px; 
-  max-height: 90.5px; 
+  min-width: 110px;
+  min-height: 90.5px;
+  max-width: 110px;
+  max-height: 90.5px;
   align-items: center;
   justify-content: center;
   line-height: 1.1;
-  overflow-wrap: break-word; 
+  overflow-wrap: break-word;
 }
 
 .new-post-button:hover {
-  background-color: #DF540D;
+  background-color: #df540d;
   font-size: 1em;
 }
 
@@ -210,7 +222,7 @@ nav {
   padding: 4rem;
   width: 100%;
   height: 78vh;
-  background-color: #E8E0C7;
+  background-color: #e8e0c7;
   border-radius: 0px 120px 0px 0px;
   display: flex;
   flex-direction: column;
@@ -220,14 +232,14 @@ nav {
 }
 
 .nav-link {
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
   font-size: x-large;
   display: block;
   padding: 0.6rem 1rem;
   width: 100%;
   text-decoration: none;
   border-radius: 6px;
-  color: #569C74;
+  color: #569c74;
 }
 
 .nav-link:hover {
@@ -272,12 +284,13 @@ nav {
   background-color: var(--page-bg);
 }
 
-.feed-content-wrapper, .groups-content-wrapper {
+.feed-content-wrapper,
+.groups-content-wrapper {
   max-width: 800px;
   width: 100%;
   margin: 0;
   align-self: center;
-} 
+}
 
 .main-content {
   display: flex;
@@ -285,6 +298,7 @@ nav {
   align-items: center;
   gap: 16px;
   padding-top: 20px;
+  overflow: visible;
 }
 
 /* ensure main content area uses same page background by default */
@@ -299,13 +313,13 @@ main {
   padding: 24px 30px 30px 30px;
   width: 60vw;
   background-color: #f2f2ef;
-  border: 2px solid #FCC82B;
+  border: 2px solid #fcc82b;
   border-radius: 0 20px 0 20px;
   box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
   display: flex;
   flex-direction: column;
   align-self: center;
-  margin: 0; 
+  margin: 0;
   text-align: left;
 }
 
@@ -342,7 +356,7 @@ main {
 
 .post-meeting-time:hover {
   cursor: pointer;
-  background-color: #FCC82B;
+  background-color: #fcc82b;
 }
 
 .avatar {
@@ -351,7 +365,6 @@ main {
   border-radius: 50%;
   margin-right: 16px;
 }
-
 
 .content {
   font-size: 1.25em;
@@ -390,6 +403,75 @@ main {
   box-sizing: border-box;
 }
 
+/* Group post badge */
+.group-badge-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  padding: 0;
+  margin-right: -2px;
+  margin-top: -2px;
+}
+
+.group-badge {
+  display: inline-flex;
+  padding: 8px 18px;
+  border-radius: 0 20px 0 8px;
+  font-size: 0.9em;
+  font-weight: 500;
+  color: #1f1f1f;
+  border: 2px solid #fcc82bce;
+  box-shadow: none;
+  align-items: center;
+}
+
+.group-badge a {
+  color: #863c5e;
+  text-decoration: none;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.group-badge a:hover {
+  text-decoration: underline;
+  color: #df540d;
+}
+
+/* Members tooltip */
+
+.members-info-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.members-tooltip {
+  position: absolute;
+  color: #666;
+  top: calc(100% + 8px);
+  left: 0px;
+  min-width: 200px;
+  background: #f2f2ef;
+  border: 2px solid #569c74de;
+  border-radius: 0px 0px 20px 0px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10000;
+}
+
+.member-name {
+  padding: 4px 0;
+  color: #666;
+}
+
+.members-header {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
 /* GROUPS STYLES */
 .group-card-link {
   text-decoration: none;
@@ -399,8 +481,14 @@ main {
   align-self: flex-start;
 }
 
+
+.group-card-link.is-tooltip-active .group-card {
+  z-index: 1001;
+}
+
 .group-card {
   position: relative;
+  z-index: 2;
   padding: 24px 30px 30px 30px;
   display: flex;
   flex-direction: column;
@@ -412,7 +500,6 @@ main {
   justify-content: space-between;
   min-height: 150px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  overflow: hidden;
   width: 60vw;
 }
 
@@ -423,7 +510,7 @@ main {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  border-bottom: 2px solid #FCC82B;
+  border-bottom: 2px solid #fcc82b;
   margin-bottom: 20px;
   margin-top: 5px;
 }
@@ -475,12 +562,12 @@ main {
 
 .group-card-actions .primary-button {
   padding: 0.5em 1em;
-  background-color: #863C5E;
-  color: #E8E8E4;
+  background-color: #863c5e;
+  color: #e8e8e4;
 }
 
 .group-card-actions .primary-button:hover {
-  background-color: #6f3151;
+  background-color: #602644;
 }
 
 .group-card-actions .secondary-button {
@@ -503,6 +590,7 @@ main {
   flex-direction: column;
   gap: 24px;
   position: relative;
+  overflow: visible;
 }
 
 .group-main-content .post {
@@ -528,14 +616,14 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #FCC82B;
+  border-bottom: 2px solid #fcc82b;
   padding-bottom: 16px;
 }
 
 .group-header h1 {
   font-family: "Funnel Display", sans-serif;
   font-size: 2.8rem;
-  color: #863C5E;
+  color: #863c5e;
   position: relative;
   margin-top: 5px;
   text-align: left;
@@ -551,37 +639,88 @@ main {
   color: #e8e8e4;
 }
 
+.group-actions .primary-button:hover {
+  background-color: #602644;
+}
+
 .joined-button {
-  background-color: #569C74;
+  background-color: #569c74;
   color: white;
-  border: 1px solid #569C74;
+  border: 1px solid #569c74;
   cursor: default;
   padding: 8px 14px;
   border-radius: 8px;
   font-weight: bold;
 }
 
+.joined-button:hover {
+  background-color: #4a8a60;
+}
+
 .joined-button span {
   margin-right: 5px;
+}
+
+.group-description-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.description-name {
+  font-weight: 600;
+  font-family: "Funnel Display", sans-serif;
+  font-size: 1.5rem;
 }
 
 .group-description-box {
   background-color: transparent;
   border-radius: 0 0 12px 0;
-  border: 1px solid #E8E8E4;
+  border: 1px solid #e8e8e4;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   text-align: left;
 }
 
-.group-description-box h3 {
+.group-description-box p {
+  line-height: 1.6;
+}
+
+.group-description-box span {
+  color: #888888;
+  font-size: 0.9rem;
+  font-weight: bold;
+  line-height: 3.5;
+}
+
+.group-discussion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd; 
+}
+
+.discussion-name {
+  font-weight: 600;
   font-family: "Funnel Display", sans-serif;
   font-size: 1.5rem;
   margin-bottom: 12px;
 }
 
-.group-description-box p {
-  line-height: 1.6;
+.small-post-button {
+  min-width: 60px;
+  max-width: 60px;
+  min-height: 40px;
+  max-height: 40px;
+  font-size: 1.5em;
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
+.small-post-button:hover {
+  font-size: 0.8rem;
 }
 
 .group-comment {
@@ -640,14 +779,14 @@ main {
 .sidebar-header {
   font-family: "Funnel Display", sans-serif;
   font-size: 1.5rem;
-  color: #1F1F1F;
   margin-bottom: 15px;
   text-align: left;
   padding-left: 10px;
+  font-weight: 600;
 }
 
 .meetup-box {
-  background-color: #D9854D;
+  background-color: #d9854d;
   color: white;
   padding: 24px 20px;
 }
@@ -669,7 +808,6 @@ main {
   justify-content: center;
 }
 
-
 .card-footer-row {
   display: flex;
   justify-content: space-between;
@@ -677,19 +815,23 @@ main {
   padding-top: 10px;
 }
 
+/* ATTENDEES TOOLTIP */
+.wrapper-relative {
+  position: relative;
+  display: inline-block;
+}
 
 .attendees {
   position: absolute;
-  bottom: 155px;
-  right: 30px;
-  margin-bottom: 8px;
+  top: calc(100% + 8px);
+  right: 0px;
   min-width: 200px;
   background: #f2f2ef;
   border: 2px solid #569c74de;
   border-radius: 20px 0px 20px 0px;
   padding: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 2000;
+  z-index: 1000;
 }
 
 .attendees-header {
@@ -730,7 +872,7 @@ main {
 .comment-name {
   font-weight: bold;
   font-size: 15px;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
 }
 
 .comment-timestamp {
@@ -761,7 +903,7 @@ main {
 }
 
 .comment-actions span {
-  color: #863C5E; 
+  color: #863c5e;
   font-weight: bold;
   cursor: pointer;
 }
@@ -792,8 +934,7 @@ main {
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  border: 2px solid #FCC82B;
-
+  border: 2px solid #fcc82b;
 }
 
 /* Close button */
@@ -813,7 +954,7 @@ main {
 }
 
 .modal-close:hover {
-  color: #DF540D;
+  color: #df540d;
 }
 
 /* New post form */
@@ -824,11 +965,11 @@ main {
 }
 
 .new-post-form h2 {
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
   font-size: 2em;
   font-weight: bold;
   margin: 0;
-  color: #863C5E;
+  color: #863c5e;
 }
 
 .post-textarea {
@@ -847,7 +988,7 @@ main {
 
 .post-textarea:focus {
   outline: none;
-  border-color: #569C74;
+  border-color: #569c74;
 }
 
 input.post-textarea {
@@ -862,11 +1003,49 @@ input.post-textarea {
   margin-top: 20px;
 }
 
+/* File upload field */
+.hidden-file-input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.styled-file-label {
+  width: 100%;
+  min-height: initial;
+  height: 40px;
+  padding: 1rem;
+  font-size: 0.5rem 1.1em;
+  font-size: 1.1em;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  color: #808082;
+}
+
+.styled-file-label:hover {
+  background-color: #f9f9f9;
+  border-color: #863c5e;
+}
+
+.styled-file-label:focus,
+.styled-file-label:active {
+  border-color: #569c74;
+  color: #333;
+}
+
 /* AVATAR SIZE MODIFIERS*/
 .avatar-large {
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
+  object-fit: cover;
   margin-right: 0;
 }
 
@@ -983,90 +1162,460 @@ input.post-textarea {
 .profile-sidebar-column .group-card {
   width: 100%;
 }
-/* Modal overlay */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
-}
 
-/* Modal content */
-.modal-content {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: var(--page-bg);
-  padding: 2rem;
-  border-radius: 20px;
-  z-index: 1001;
-  max-width: 600px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  border: 2px solid #FCC82B;
-
-}
-
-/* Close button */
-.modal-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-  color: #333;
-  line-height: 1;
-  padding: 0;
-  width: 2rem;
-  height: 2rem;
-}
-
-.modal-close:hover {
-  color: #DF540D;
-}
-
-/* New post form */
-.new-post-form {
+/*LogIn Page*/
+.login-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--page-bg);
+  padding: 20px;
 }
-
-.new-post-form h2 {
-  font-family: 'Funnel Display', sans-serif;
-  font-size: 2em;
-  font-weight: bold;
-  margin: 0;
-  color: #863C5E;
-}
-
-.post-textarea {
+.login-card {
+  background-color: #f2f2ef;
+  border: 2px solid #fcc82b;
+  border-radius: 20px 0 20px 0;
+  box-shadow: 0 6px 18px rgba(20, 20, 20, 0.06);
+  padding: 40px;
   width: 100%;
-  min-height: 150px;
-  padding: 1rem;
-  font-size: 1.1em;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  resize: vertical;
+  max-width: 400px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.login-btn {
+  width: 100%;
+}
+
+/* LOGIN FORM STYLES */
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
   font-family: inherit;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
+  border: 1px solid #ddd;
+  border-radius: 6px;
   box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.2s;
 }
 
-.post-textarea:focus {
+.form-group input:focus {
   outline: none;
-  border-color: #569C74;
+  border-color: #569c74;
+  box-shadow: 0 0 0 3px rgba(86, 156, 116, 0.1);
 }
 
-.form-actions {
+.form-group input::placeholder {
+  color: #999;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 0.9em;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  border-left: 3px solid #d32f2f;
+}
+
+.login-card h1 {
+  font-family: "Funnel Display", sans-serif;
+  font-size: 2.5em;
+  color: #863c5e;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.login-card form {
   display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-btn {
+  padding: 12px 20px;
+  font-size: 1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: "Funnel Display", sans-serif;
+}
+
+.login-btn.primary-button {
+  background-color: #569c74;
+  color: #e8e8e4;
+}
+
+.login-btn.primary-button:hover {
+  background-color: #4a8a60;
+}
+
+.register-link {
+  display: block;
+  margin-top: 20px;
+  padding: 12px 16px;
+  font-size: 0.95em;
+  color: #863c5e;
+  text-align: center;
+  text-decoration: none;
+  transition: color 0.2s, background-color 0.2s;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.register-link:hover {
+  color: #df540d;
+  background-color: rgba(223, 84, 13, 0.1);
+}
+/* Events.jsx modal container */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5vh 16px;
+  z-index: 50;
+}
+
+/* Events.jsx modal panel */
+.modal-body {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  max-width: 900px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Prevent background scroll when a modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Event tile wrapper — used in EventTile.jsx */
+.event-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+/* Hover state for EventTile.jsx */
+.event-tile:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+/* Date/time chip under the title — EventTile.jsx */
+.event-time {
+  font-size: 14px;
+  color: #6b7280;
+}
+/* Header row with avatar and text — EventTile.jsx & EventCard.jsx */
+.event-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+/* Avatar inside the EventTile header — EventTile.jsx */
+.event-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+/* Host/meta line — EventCard.jsx */
+.event-meta {
+  font-size: 14px;
+  color: #4b5563;
+  margin-bottom: 4px;
+}
+
+/* Title — EventTile.jsx & EventCard.jsx */
+.event-title {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+/* Location line — EventTile.jsx & EventCard.jsx */
+.event-location {
+  font-size: 17px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+/* Description & details — EventTile.jsx & EventCard.jsx */
+.event-description,
+.event-details {
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+/* Bullet spacing for details — EventCard.jsx */
+.event-details li {
+  margin-left: 18px;
+  list-style-type: disc;
+}
+
+/* Footer row with attendees/tags/CTA — EventTile.jsx & EventCard.jsx */
+.event-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  row-gap: 4px;
+  margin-top: 16px;
+}
+
+/* Small tag pills — EventTile.jsx */
+.event-tag {
+  background: #f3f4f6;
+  border-radius: 9999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  color: #374151;
+}
+/* “View details” affordance — EventTile.jsx */
+.view-details {
+  margin-left: auto;
+  font-weight: 500;
+  color: #4f46e5;
+  white-space: nowrap;
+}
+/*
+.create-button {
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.create-button:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+}*/
+
+.error {
+  color: red;
+  background-color: #fee;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+  font-size: 14px;
+  border: 1px solid red;
+}
+
+.logout-button {
+  position: bottom-left;
+  top: 10px;
+  right: 10px;
+  background-color: #fc8085;
+  color: #e8e8e4;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* searchbar */
+.search-input {
+  width: 100%;
+  border-radius: 15px 15px 0 0;
+  border: 1px solid #ddd;
+  padding: 0.8em 1.2em;
+  font-size: 1em;
+  font-family: 'Funnel Display', sans-serif;
+  background-color: #ffffff;
+  color: #333;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #569c74de;
+  box-shadow: 0 0 0 3px rgba(86, 156, 116, 0.1);
+}
+
+.search-input::placeholder {
+  color: #999;
+  font-weight: normal;
+  text-align: center;
+}
+
+.search-input:hover {
+  border-color: #569c74de;
+}
+/* SEARCH PAGE STYLES */
+.search-query-text {
+  color: #666;
+  font-size: 1rem;
+  margin-top: 8px;
+  font-weight: normal;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 1.2em;
+}
+
+.no-results-message {
+  text-align: center;
+  padding: 80px 20px;
+  color: #999;
+  font-size: 1.3em;
+}
+
+.search-section {
+  margin-bottom: 48px;
+}
+
+.search-section-header {
+  font-family: "Funnel Display", sans-serif;
+  font-size: 2rem;
+  color: #863C5E;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #FCC82B;
+}
+
+.search-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+/* SEARCH RESULT CARDS */
+.clickable {
+  cursor: pointer;
+}
+
+.event-time-badge {
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: #D9854D;
+  font-weight: bold;
+}
+
+.event-title {
+  margin-bottom: 12px;
+}
+
+.event-description {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.event-group-badge {
+  background-color: #863C5E;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.joined-button-small {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+}
+/* Make event header layout similar to group header */
+.event-header {
+  display: flex;
+  align-items: center;
   gap: 1rem;
-  justify-content: flex-end;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Avatar in the event header */
+.event-header .avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+/* Event detail header – make it match group title vibes */
+.event-detail-title {
+  font-family: "Funnel Display", sans-serif;
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: #863c5e;
+  margin: 0;
+}
+
+/* Subtext under title (host, date) */
+.event-meta {
+  font-size: 0.95rem;
+  color: #444;
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+.group-link-inline {
+  color: #863c5e;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.group-link-inline:hover {
+  color: #df540d;
+  text-decoration: underline;
+}
+/* Green version of primary-button, identical size */
+.event-attend-active {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: bold;
+  font-family: "Funnel Display", sans-serif;
+  background-color:  #fc8085;
+  color: #e8e8e4;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.event-attend-active:hover {
+  background-color: #4a8a60;
 }

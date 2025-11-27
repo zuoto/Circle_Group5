@@ -1,11 +1,7 @@
 import React from "react";
 import JoinButton from "../reusable-components/JoinButton";
 
-function GroupHeader({ name, isUserJoined }) {
-    
-    const handleJoinToggle = (e, newIsJoinedState) => {
-        console.log(`User toggled join state to: ${newIsJoinedState}`);
-    };
+function GroupHeader({ name, isUserJoined, onJoinClick }) {
 
     return(
        <div className="group-header">
@@ -14,7 +10,7 @@ function GroupHeader({ name, isUserJoined }) {
             <button className="secondary-button share-button">Share</button>
             <JoinButton
                 isUserJoined={isUserJoined}
-                onClick={handleJoinToggle}
+                onClick={onJoinClick}
             />
         </div>
        </div>

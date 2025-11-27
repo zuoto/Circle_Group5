@@ -1,28 +1,43 @@
-import { Routes, Route } from "react-router-dom";
-import NavBar from "./reusable-components/NavBar";
-import Feed from "./features/Feed";
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
+import Feed from "./features/Feed.jsx";
 import Profile from "./features/Profile";
 import Groups from "./features/Groups";
 import GroupDetail from "./features/GroupDetail";
 import Events from "./features/Events";
+import EventDetail from "./features/EventDetail.jsx";
+import LogIn from "./features/LogIn";
+import Register from "./features/Register";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import MainLayout from "./layouts/MainLayout";
+import SearchPage from "./features/SearchPage";
 import "./App.css";
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      <aside className="w-64 flex-none min-h-full">
-        <NavBar />
-      </aside>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LogIn />} />
+        <Route path="/register" element={<Register />} />
 
-      <main className="flex-1 min-w-0 p-6 page-content-bg">
-        <Routes>
-          <Route path="/" element={<Feed />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/groups" element={<Groups />} />
-          <Route path="/groups/:groupId" element={<GroupDetail />} />
-          <Route path="/events" element={<Events />} />
-        </Routes>
-      </main>
-    </div>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Feed />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="groups" element={<Groups />} />
+          <Route path="groups/:groupId" element={<GroupDetail />} />
+          <Route path="events" element={<Events />} />
+          <Route path="/events/:eventId" element={<EventDetail />} />
+          <Route path="search" element={<SearchPage />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
