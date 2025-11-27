@@ -1,13 +1,15 @@
-// Profile.jsx
-
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import "../index.css";
 import ProfileHeader from "../components/ProfileHeader";
 import ProfileSideBar from "../components/ProfileSideBar";
 import { useAuth } from "../auth/AuthProvider";
+import Parse from "parse"; // Sticking to team's pattern
 
 function Profile() {
   const { currentUser, loading: isAuthLoading } = useAuth();
+
+  const { userId: urlUserId } = useParams();
 
   const [user, setUser] = useState(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -16,14 +18,13 @@ function Profile() {
   const fetchProfileData = async (userId) => {
     setError(null);
     const Parse = window.Parse;
+
     try {
       const query = new Parse.Query(Parse.User);
-      //Temporary
       query.include("profile_picture");
 
       const parseUser = await query.get(userId);
 
-      //Temporary fix for default picture logic
       const profilePictureFile = parseUser.get("profile_picture");
       const isParseFile =
         profilePictureFile && typeof profilePictureFile.url === "function";
@@ -39,7 +40,7 @@ function Profile() {
         name: parseUser.get("user_firstname"),
         surname: parseUser.get("user_surname"),
         bio: parseUser.get("bio") || "No bio yet.",
-        picture: pictureUrl, //Temporary
+        picture: pictureUrl,
         friends: [],
         groups: groupsResults.map((group) => ({
           id: group.id,
@@ -65,22 +66,26 @@ function Profile() {
       return;
     }
 
-    if (currentUser?.id) {
+    const targetUserId = urlUserId || currentUser?.id;
+
+    if (targetUserId) {
       setProfileLoading(true);
-      fetchProfileData(currentUser.id);
+      fetchProfileData(targetUserId);
     } else {
       setUser(null);
       setProfileLoading(false);
       setError("User is not logged in or ID is missing.");
     }
-  }, [currentUser, isAuthLoading]);
+  }, [currentUser, isAuthLoading, urlUserId]);
 
   if (isAuthLoading || profileLoading) {
     return <div className="page-wrapper">Loading Profile...</div>;
   }
 
-  if (!currentUser) {
-    return <div className="page-wrapper">Access Denied.</div>;
+  if (!currentUser && !urlUserId) {
+    return (
+      <div className="page-wrapper">Please log in to view your profile.</div>
+    );
   }
 
   if (error) {
@@ -92,26 +97,32 @@ function Profile() {
         </p>
         <hr />
         <p>
-          **Action Required:** This error is likely a database permission issue.
-          You must fix the **File Class Read Permissions** in your Back4App
-          dashboard later!
+          **Action Required:** If you see "Object Not Found," the user ID in the
+          URL is wrong. If you see an error like "Unauthorized," the profile you
+          are trying to view is restricted by ACL.
         </p>
       </div>
     );
   }
 
   if (!user) {
-    return <div className="page-wrapper">Error loading profile data.</div>;
+    return <div className="page-wrapper">Profile data unavailable.</div>;
   }
 
-  const defaultProfilePicUrl = "new_default_pic.png"; // will be changed
+  const defaultProfilePicUrl = "new_default_pic.png";
   const profilePictureUrl = user.picture || defaultProfilePicUrl;
+
+  const isViewingSelf = currentUser?.id === user.id;
 
   return (
     <div className="page-wrapper">
       <div className="feature-names">Profile</div>
       <div className="profile-content-layout">
-        <ProfileHeader user={user} profilePictureURL={profilePictureUrl} />
+        <ProfileHeader
+          user={user}
+          profilePictureURL={profilePictureUrl}
+          isViewingSelf={isViewingSelf}
+        />
         <ProfileSideBar user={user} />
       </div>
     </div>
