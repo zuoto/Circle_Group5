@@ -481,7 +481,6 @@ main {
   align-self: flex-start;
 }
 
-
 .group-card-link.is-tooltip-active .group-card {
   z-index: 1001;
 }
@@ -699,7 +698,7 @@ main {
   align-items: center;
   padding: 15px 0;
   margin-bottom: 20px;
-  border-bottom: 1px solid #ddd; 
+  border-bottom: 1px solid #ddd;
 }
 
 .discussion-name {
@@ -1463,7 +1462,7 @@ body.modal-open {
   border: 1px solid #ddd;
   padding: 0.8em 1.2em;
   font-size: 1em;
-  font-family: 'Funnel Display', sans-serif;
+  font-family: "Funnel Display", sans-serif;
   background-color: #ffffff;
   color: #333;
   transition: border-color 0.25s, box-shadow 0.25s;
@@ -1513,10 +1512,10 @@ body.modal-open {
 .search-section-header {
   font-family: "Funnel Display", sans-serif;
   font-size: 2rem;
-  color: #863C5E;
+  color: #863c5e;
   margin-bottom: 24px;
   padding-bottom: 12px;
-  border-bottom: 2px solid #FCC82B;
+  border-bottom: 2px solid #fcc82b;
 }
 
 .search-results-grid {
@@ -1533,7 +1532,7 @@ body.modal-open {
 .event-time-badge {
   margin-bottom: 12px;
   font-size: 0.9rem;
-  color: #D9854D;
+  color: #d9854d;
   font-weight: bold;
 }
 
@@ -1548,7 +1547,7 @@ body.modal-open {
 }
 
 .event-group-badge {
-  background-color: #863C5E;
+  background-color: #863c5e;
   color: white;
   padding: 4px 10px;
   border-radius: 12px;
@@ -1610,7 +1609,7 @@ body.modal-open {
   font-size: 1em;
   font-weight: bold;
   font-family: "Funnel Display", sans-serif;
-  background-color:  #fc8085;
+  background-color: #fc8085;
   color: #e8e8e4;
   cursor: pointer;
   transition: background-color 0.25s;
@@ -1618,4 +1617,65 @@ body.modal-open {
 
 .event-attend-active:hover {
   background-color: #4a8a60;
+}
+
+.user-result-card {
+  /* Copying base card styles but making it smaller */
+  position: relative;
+  z-index: 2;
+  padding: 15px 20px 20px 20px; /* Reduced padding */
+  display: flex;
+  flex-direction: column;
+  background-color: #f2f2ef;
+  border: 2px solid #fcc82b;
+  border-radius: 0 15px 0 15px; /* Slightly smaller radius */
+  box-shadow: 0 4px 12px rgba(20, 20, 20, 0.05); /* Reduced shadow */
+  margin: 0;
+  justify-content: space-between;
+  min-height: 120px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%; /* Ensures it fits the grid cell */
+  max-width: 350px; /* Constrain the card size */
+}
+
+.user-result-card:hover {
+  transform: translateY(-3px); /* Slightly less dramatic hover */
+  box-shadow: 0 6px 15px rgba(20, 20, 20, 0.1);
+}
+
+.user-card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+/* NEW AVATAR SIZE FOR SEARCH RESULTS */
+.avatar-search {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%; /* Makes the image circular */
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.user-card-content {
+  text-align: left;
+  /* Use the existing h3 and p styles defined globally */
+}
+
+/* Override profile picture wrapper from the group-card styles */
+.user-result-card .group-card-cover-photo {
+  height: 60px; /* Make the banner smaller */
+  margin-bottom: 10px;
+}
+
+/* Style for the button inside the new card */
+.user-result-card button {
+  width: 100%;
+  max-width: 150px; /* Constrain button width */
+  align-self: flex-start;
+  padding: 0.4em 1em; /* Smaller padding */
+  font-size: 0.9em;
+  margin-top: 10px;
 }

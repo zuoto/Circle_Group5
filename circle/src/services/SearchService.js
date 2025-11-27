@@ -1,22 +1,27 @@
+// SearchService.js (MODIFIED)
+
 export const performSearch = async (query) => {
   const Parse = window.Parse;
   const lowerQuery = query.toLowerCase();
   const caseSensitiveQuery = query;
 
+  // Initialize users as an array (this will be overwritten by the cloud function result)
+  let users = [];
+
   try {
-    // users
-    const UserQuery = new Parse.Query(Parse.User);
-    UserQuery.startsWith("user_firstname", caseSensitiveQuery);
+    // ----------------------------------------------------
+    // NEW SECURE USER SEARCH VIA CLOUD FUNCTION
+    // ----------------------------------------------------
 
-    const UserQuery2 = new Parse.Query(Parse.User);
-    UserQuery2.startsWith("user_surname", caseSensitiveQuery);
+    // The previous client-side Parse.Query(Parse.User) logic is REMOVED.
+    // We now call the Cloud Function you implemented, which uses the Master Key
+    // to search all users securely on the server.
 
-    const UserQuery3 = new Parse.Query(Parse.User);
-    UserQuery3.startsWith("username", caseSensitiveQuery);
+    users = await Parse.Cloud.run("searchUsers", { query: caseSensitiveQuery });
 
-    const userCompoundQuery = Parse.Query.or(UserQuery, UserQuery2, UserQuery3);
-    userCompoundQuery.limit(10);
-    const users = await userCompoundQuery.find();
+    // ----------------------------------------------------
+    // GROUPS AND EVENTS SEARCH (Existing Logic)
+    // ----------------------------------------------------
 
     // groups
     const GroupClass = Parse.Object.extend("Group");
@@ -51,6 +56,7 @@ export const performSearch = async (query) => {
 
     return { users, groups, events };
   } catch (error) {
+    // If the Cloud Function fails, the error will be caught here.
     console.error("Search error details:", error);
     throw error;
   }
