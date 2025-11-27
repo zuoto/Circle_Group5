@@ -1,5 +1,5 @@
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
-import Feed from "./features/Feed.jsx";
+import Feed from "./features/feed.jsx";
 import Profile from "./features/Profile";
 import Groups from "./features/Groups";
 import GroupDetail from "./features/GroupDetail";
