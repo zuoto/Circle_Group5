@@ -1,3 +1,20 @@
+// Helper function to map a Parse event to a UI object
+function mapParseEventToUi(e) {
+    const date = e.get("event_date");
+    if (!date) {
+        return null;
+    }
+
+    return {
+        id: e.id,
+        title: e.get("event_name"),
+        date: date.toISOString(),
+        // format to group detail sidebar
+        timeDisplay: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        dateDisplay: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    };
+}
+
 // Fetch all groups for list page using cloud function
 export async function getAllGroups() {
     const Parse = window.Parse;
@@ -107,6 +124,26 @@ export async function getGroupById(groupId) {
         };
     }));
 
+    // fetch upcoming event
+    let nextEvent = null;
+    try {
+        const EventClass = Parse.Object.extend("Event");
+        const eventQuery = new Parse.Query(EventClass);
+
+        // point to current group
+        eventQuery.equalTo("parent_group", group);
+        eventQuery.greaterThanOrEqualTo("event_date", new Date());  // get only future events
+        eventQuery.ascending("event_date");
+        eventQuery.limit(1);    // show only first result
+
+        const nextEventResult = await eventQuery.first();
+        if (nextEventResult) {
+            nextEvent = mapParseEventToUi(nextEventResult);
+        }
+    } catch (eventError) {
+        console.warn("Could not fetch next upcoming event: ", eventError);
+    }
+
         return {
             id: group.id,
             name: group.get('group_name'),
@@ -115,7 +152,7 @@ export async function getGroupById(groupId) {
             isUserJoined: isUserJoined,
             memberCount: memberCount,
             posts: mappedPosts,
-            nextMeetup: { time: "N/A", location: "N/A"}
+            nextEvent: nextEvent,
         };
     } catch (error) {
         console.error("Error fetching group by ID: ", error);
