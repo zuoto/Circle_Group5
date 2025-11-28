@@ -1749,4 +1749,39 @@ body.modal-open {
   padding: 0.4em 1em; /* Smaller padding */
   font-size: 0.9em;
   margin-top: 10px;
+} /* for event sidebar*/
+
+.danger-button {
+  background-color: #c0392b;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
 }
+
+.danger-button:hover {
+  opacity: 0.9;
+}
+
+.avatar-small {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  object-fit: cover;
+  margin-right: 0.5rem;
+}
+
+.sidebar-attendees {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0;
+}
+
+.sidebar-attendee-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
