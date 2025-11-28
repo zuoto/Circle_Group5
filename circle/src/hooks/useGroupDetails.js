@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getGroupById, toggleGroupMembership, fetchGroupMembers } from "../services/ParseGroupService";
 
 export const useGroupDetails = () => {
