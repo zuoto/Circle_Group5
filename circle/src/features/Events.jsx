@@ -1,13 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import EventCard from "../reusable-components/EventCard";
-import NewPostButton from "../reusable-components/NewPostButton.jsx";
-import Modal from "../reusable-components/Modal.jsx";
-import NewEventForm from "../reusable-components/NewEventForm.jsx";
-import "../index.css";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import profilepic from "../../public/avatars/default.png";
+import EventInfoSidebar from "../components/EventInfoSidebar.jsx";
+import EventCommentsSection from "../components/EventCommentsSection.jsx";
+import Modal from "../reusable-components/Modal.jsx";
 
 const Parse = window.Parse;
+
+function getUserAvatar(user) {
+  if (!user) return profilepic;
+
+  const pic = user.get("profile_picture");
+  if (!pic) return profilepic;
+
+  if (typeof pic === "string") return pic;
+  if (typeof pic.url === "function") return pic.url();
+
+  return profilepic;
+}
 
 // Map Parse Event → UI object
 function mapParseEvent(e) {
@@ -18,19 +28,6 @@ function mapParseEvent(e) {
   const group = e.get("parent_group");
   const coverFile = e.get("event_cover");
 
-  let hostAvatar = profilepic;
-  if (host) {
-    const pic = host.get("profile_picture");
-    if (pic) {
-      // handle both "stored as URL string" and "stored as Parse.File"
-      if (typeof pic === "string") {
-        hostAvatar = pic;
-      } else if (typeof pic.url === "function") {
-        hostAvatar = pic.url();
-      }
-    }
-  }
-
   return {
     id: e.id,
     title: e.get("event_name"),
@@ -40,231 +37,208 @@ function mapParseEvent(e) {
 
     hostId: host ? host.id : null,
     hostName: host ? host.get("user_firstname") || "Unknown" : "Unknown",
-    hostAvatar, 
-    
+    hostAvatar: getUserAvatar(host),
+
     groupId: group ? group.id : null,
     groupName: group ? group.get("group_name") : null,
 
     cover: coverFile ? coverFile.url() : null,
 
     attendees: [],
-    tags: [],
   };
 }
 
-export default function Events() {
-  const [events, setEvents] = useState([]);
-  const [groups, setGroups] = useState([]);         // 👈 NEW
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export default function EventDetail() {
+  const [event, setEvent] = useState(null);
+  const [loadingEvent, setLoadingEvent] = useState(true);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const { eventId } = useParams();
   const navigate = useNavigate();
-
   const currentUser = Parse.User.current();
-  const currentUserId = currentUser ? currentUser.id : null;
 
-  // Load events
+  // Load event + attendees
   useEffect(() => {
-    async function loadEvents() {
-      setLoading(true);
-      setError(null);
-
+    async function loadEvent() {
+      setLoadingEvent(true);
       try {
         const EventClass = Parse.Object.extend("Event");
         const query = new Parse.Query(EventClass);
 
         query.include("event_host");
         query.include("parent_group");
-        query.ascending("event_date");
+        query.equalTo("objectId", eventId);
 
-        const rows = await query.find();
-        const mapped = rows.map(mapParseEvent);
-        setEvents(mapped);
+        const result = await query.first();
+        if (!result) {
+          setEvent(null);
+          return;
+        }
+
+        const baseEvent = mapParseEvent(result);
+
+        // Attendees from relation "event_attendees"
+        let attendees = [];
+        try {
+          const relation = result.relation("event_attendees");
+          const rows = await relation.query().find();
+          attendees = rows.map((u) => ({
+            id: u.id,
+            name:
+              u.get("user_firstname") ||
+              u.get("username") ||
+              "Unknown",
+            avatar: getUserAvatar(u),
+          }));
+        } catch (attErr) {
+          console.error("Error loading event attendees:", attErr);
+        }
+
+        setEvent({ ...baseEvent, attendees });
       } catch (err) {
-        console.error("Error loading events:", err);
-        setError("Failed to load events.");
+        console.error("Error loading event:", err);
+        setEvent(null);
       } finally {
-        setLoading(false);
+        setLoadingEvent(false);
       }
     }
 
-    loadEvents();
-  }, []);
+    loadEvent();
+  }, [eventId]);
 
-  // load groups for the select box in NewEventForm
-  useEffect(() => {
-    async function loadGroups() {
-      try {
-        const GroupClass = Parse.Object.extend("Group");
-        const query = new Parse.Query(GroupClass);
-        query.ascending("group_name");
+  const handleBackClick = () => navigate(-1);
 
-        const rows = await query.find();
-        const mapped = rows.map((g) => ({
-          id: g.id,
-          name: g.get("group_name"),
-        }));
-        setGroups(mapped);
-      } catch (err) {
-        console.error("Error loading groups:", err);
-        setGroups([]);
-      }
-    }
+  const isOwner =
+    currentUser && event && event.hostId === currentUser.id;
 
-    loadGroups();
-  }, []);
+  const handleOpenDeleteModal = () => setIsDeleteModalOpen(true);
+  const handleCloseDeleteModal = () => setIsDeleteModalOpen(false);
 
-
-  /* Toggle attendance using Relation<_User> event_attendees */
-  const handleToggleAttend = async (eventId) => {
-    if (!currentUserId) {
-      alert("You need to be logged in to join an event.");
-      return;
-    }
+  const handleConfirmDelete = async () => {
+    if (!event) return;
 
     try {
-      const existing = events.find((ev) => ev.id === eventId);
-      const alreadyAttending = existing
-        ? (existing.attendees || []).includes(currentUserId)
-        : false;
-
-      // Fetch event from Parse
       const EventClass = Parse.Object.extend("Event");
       const query = new Parse.Query(EventClass);
-      const eventObj = await query.get(eventId);
+      const obj = await query.get(event.id);
+      await obj.destroy();
 
-      const relation = eventObj.relation("event_attendees");
-      const user = Parse.User.current();
-
-      if (alreadyAttending) {
-        relation.remove(user);
-      } else {
-        relation.add(user);
-      }
-
-      await eventObj.save();
-
-      // Update local state so UI reflects this
-      setEvents((prev) =>
-        prev.map((ev) => {
-          if (ev.id !== eventId) return ev;
-
-          const current = ev.attendees || [];
-          let newAttendees;
-
-          if (alreadyAttending) {
-            newAttendees = current.filter((id) => id !== currentUserId);
-          } else {
-            newAttendees = current.includes(currentUserId)
-              ? current
-              : [...current, currentUserId];
-          }
-
-          return {
-            ...ev,
-            attendees: newAttendees,
-          };
-        })
-      );
+      setIsDeleteModalOpen(false);
+      navigate("/events");
     } catch (err) {
-      console.error("Error updating attendance:", err);
-      alert("Failed to update attendance. Please try again.");
+      console.error("Error deleting event:", err);
+      alert("Failed to delete event.");
+      setIsDeleteModalOpen(false);
     }
   };
 
-  /* Create new event */
-  const handleCreateEvent = async (formData) => {
-  try {
-    const EventClass = Parse.Object.extend("Event");
-    const event = new EventClass();
-
-    event.set("event_name", formData.title);
-    event.set("event_info", formData.description);
-    event.set("event_date", formData.date);
-    event.set("event_location_text", formData.location);
-
-    const host = Parse.User.current();
-    if (host) {
-      event.set("event_host", host);
-    }
-
-    // optional: connect to group if your form sends groupId
-    if (formData.groupId) {
-      const GroupClass = Parse.Object.extend("Group");
-      const groupPtr = new GroupClass();
-      groupPtr.id = formData.groupId;
-      event.set("parent_group", groupPtr);
-    }
-
-    // ✅ Properly handle image file from NewEventForm
-    if (formData.coverFile) {
-      // formData.coverFile is a browser File
-      const parseFile = new Parse.File(
-        formData.coverFile.name,
-        formData.coverFile
-      );
-
-      // Save the file first (Parse will upload it)
-      await parseFile.save();
-
-      // Attach it to the event
-      event.set("event_cover", parseFile);
-    }
-
-    const saved = await event.save();
-
-    // Add to local state so it shows up immediately
-    setEvents((prev) => [...prev, mapParseEvent(saved)]);
-    setIsModalOpen(false);
-  } catch (err) {
-    console.error("Error creating event:", err);
-    alert("Failed to create event.");
+  if (loadingEvent) {
+    return <div className="page-wrapper">Loading event...</div>;
   }
-};
 
+  if (!event) {
+    return (
+      <div className="page-wrapper">
+        <h1>Event Not Found</h1>
+        <p>Could not find any event with this ID.</p>
+        <button onClick={handleBackClick} className="back-button">
+          ← Back
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="page-wrapper">
-      <div className="feature-header">
-        <div className="feature-names">Events</div>
-        <NewPostButton
-          onClick={() => setIsModalOpen(true)}
-          hoverText="create event"
-        />
-      </div>
+    <div className="page-wrapper group-detail-page-wrapper">
+      <div className="group-detail-layout">
+        {/* LEFT COLUMN */}
+        <div className="group-main-content">
+          <button onClick={handleBackClick} className="back-button">
+            ← Back
+          </button>
 
-      <div className="main-content">
-        {loading && <p>Loading events...</p>}
-        {error && <p className="error">{error}</p>}
-        {!loading && !error && events.length === 0 && (
-          <p>No events yet.</p>
-        )}
-
-        {!loading &&
-          !error &&
-          events.map((ev) => (
-            <EventCard
-              key={ev.id}
-              event={ev}
-              currentUserId={currentUserId}
-              onToggleAttend={() => handleToggleAttend(ev.id)}
-              onClick={() => navigate(`/events/${ev.id}`)}
-              onHostClick={() => {
-                if (ev.hostId) {
-                  navigate(`/users/${ev.hostId}`);  
-                }
-              }}
+          {event.cover && (
+            <div
+              className="group-detail-cover-photo"
+              style={{ backgroundImage: `url(${event.cover})` }}
             />
-          ))}
+          )}
+
+          {/* Header */}
+          <div className="group-header">
+            <div className="user-info event-header">
+              <Link
+                to={event.hostId ? `/users/${event.hostId}` : "#"}
+                onClick={(e) => {
+                  if (!event.hostId) e.preventDefault();
+                }}
+                className="user-link"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.75rem",
+                }}
+              >
+                <img
+                  src={event.hostAvatar}
+                  alt={event.hostName}
+                  className="avatar"
+                />
+              </Link>
+              <div>
+                <h2 className="event-detail-title">{event.title}</h2>
+                {event.groupName && event.groupId && (
+                  <div className="event-meta">
+                    In group{" "}
+                    <Link to={`/groups/${event.groupId}`}>
+                      <strong>{event.groupName}</strong>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="group-description-box">
+            <h3>Event Description</h3>
+            <p>{event.description}</p>
+          </div>
+
+          {/* Comments */}
+          <EventCommentsSection eventId={event.id} />
+        </div>
+
+        {/* RIGHT COLUMN – sidebar */}
+        <div className="group-sidebar">
+          <EventInfoSidebar
+            event={event}
+            isOwner={isOwner}
+            onDeleteClick={handleOpenDeleteModal}
+          />
+        </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <NewEventForm
-          groups={groups} 
-          onSubmit={handleCreateEvent}
-          onCancel={() => setIsModalOpen(false)}
-        />
+      {/* Delete confirmation modal */}
+      <Modal isOpen={isDeleteModalOpen} onClose={handleCloseDeleteModal}>
+        <div className="delete-confirm-modal">
+          <h3>Delete this event?</h3>
+          <p>This action cannot be undone.</p>
+          <div className="form-actions">
+            <button
+              className="secondary-button"
+              onClick={handleCloseDeleteModal}
+            >
+              Cancel
+            </button>
+            <button
+              className="danger-button"
+              onClick={handleConfirmDelete}
+            >
+              Yes, delete
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

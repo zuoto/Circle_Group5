@@ -29,8 +29,7 @@ export default function EventInfoSidebar({ event, isOwner, onDelete }) {
 
         {event.location && (
           <p>
-            <strong>Where:</strong> {event.location}
-          </p>
+            <strong>Where:</strong> {event.location}</p>
         )}
 
         {event.groupName && (
