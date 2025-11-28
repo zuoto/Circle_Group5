@@ -2,52 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Comment from "../reusable-components/Comment.jsx";
 import EventCommentButton from "../reusable-components/EventCommentButton.jsx";
-import profilepic from "../../public/avatars/default.png";
 import EventInfoSidebar from "../components/EventInfoSidebar.jsx";
+import { mapParseEvent, getUserAvatar } from "../utils/eventHelpers.js";
 
 const Parse = window.Parse;
-
-// Helper: consistent avatar logic
-function getUserAvatar(user) {
-  if (!user) return profilepic;
-
-  const pic = user.get("profile_picture");
-  if (!pic) return profilepic;
-
-  if (typeof pic === "string") return pic;
-  if (typeof pic.url === "function") return pic.url();
-
-  return profilepic;
-}
-
-// Map Parse Event → UI object
-function mapParseEvent(e) {
-  const date = e.get("event_date");
-  const iso = date ? date.toISOString() : null;
-
-  const host = e.get("event_host");
-  const group = e.get("parent_group");
-  const coverFile = e.get("event_cover");
-
-  return {
-    id: e.id,
-    title: e.get("event_name"),
-    description: e.get("event_info"),
-    date: iso,
-    location: e.get("event_location_text") || "",
-
-    hostId: host ? host.id : null,
-    hostName: host ? host.get("user_firstname") || "Unknown" : "Unknown",
-    hostAvatar: getUserAvatar(host),
-
-    groupId: group ? group.id : null,
-    groupName: group ? group.get("group_name") : null,
-
-    cover: coverFile ? coverFile.url() : null,
-
-    attendees: [], // will be filled after loading relation
-  };
-}
 
 export default function EventDetail() {
   const [event, setEvent] = useState(null);
@@ -57,7 +15,10 @@ export default function EventDetail() {
   const [loadingComments, setLoadingComments] = useState(true);
   const [newCommentText, setNewCommentText] = useState("");
 
-  const { eventId } = useParams();
+  // handle both /events/:eventId and /events/:id routes
+  const params = useParams();
+  const eventId = params.eventId || params.id;
+
   const navigate = useNavigate();
   const currentUser = Parse.User.current();
 
@@ -65,6 +26,14 @@ export default function EventDetail() {
   useEffect(() => {
     async function loadEvent() {
       setLoadingEvent(true);
+
+      if (!eventId) {
+        console.warn("No eventId in route params");
+        setEvent(null);
+        setLoadingEvent(false);
+        return;
+      }
+
       try {
         const EventClass = Parse.Object.extend("Event");
         const query = new Parse.Query(EventClass);
@@ -74,30 +43,32 @@ export default function EventDetail() {
         query.equalTo("objectId", eventId);
 
         const result = await query.first();
-        if (result) {
-          const baseEvent = mapParseEvent(result);
-
-          // Load attendees from relation "event_attendees"
-          let attendees = [];
-          try {
-            const relation = result.relation("event_attendees");
-            const rows = await relation.query().find();
-            attendees = rows.map((u) => ({
-              id: u.id,
-              name:
-                u.get("user_firstname") ||
-                u.get("username") ||
-                "Unknown",
-              avatar: getUserAvatar(u),
-            }));
-          } catch (attErr) {
-            console.error("Error loading event attendees:", attErr);
-          }
-
-          setEvent({ ...baseEvent, attendees });
-        } else {
+        if (!result) {
+          console.warn("No Event found for id:", eventId);
           setEvent(null);
+          return;
         }
+
+        const baseEvent = mapParseEvent(result);
+
+        // Attendees from relation "event_attendees"
+        let attendees = [];
+        try {
+          const relation = result.relation("event_attendees");
+          const rows = await relation.query().find();
+          attendees = rows.map((u) => ({
+            id: u.id,
+            name:
+              u.get("user_firstname") ||
+              u.get("username") ||
+              "Unknown",
+            avatar: getUserAvatar(u),
+          }));
+        } catch (attErr) {
+          console.error("Error loading event attendees:", attErr);
+        }
+
+        setEvent({ ...baseEvent, attendees });
       } catch (err) {
         console.error("Error loading event:", err);
         setEvent(null);
@@ -148,7 +119,7 @@ export default function EventDetail() {
     setNewCommentText("");
   };
 
-  // 🔑 Only host can delete
+  // Only host can delete
   const isOwner =
     currentUser && event && event.hostId === currentUser.id;
 
