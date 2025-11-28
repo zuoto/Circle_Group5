@@ -5,6 +5,7 @@ import NewPostButton from "../reusable-components/NewPostButton.jsx";
 import Modal from "../reusable-components/Modal.jsx";
 import NewEventForm from "../reusable-components/NewEventForm.jsx";
 import "../index.css";
+import profilepic from "../../public/avatars/default.png";
 
 const Parse = window.Parse;
 
@@ -17,6 +18,19 @@ function mapParseEvent(e) {
   const group = e.get("parent_group");
   const coverFile = e.get("event_cover");
 
+  let hostAvatar = profilepic;
+  if (host) {
+    const pic = host.get("profile_picture");
+    if (pic) {
+      // handle both "stored as URL string" and "stored as Parse.File"
+      if (typeof pic === "string") {
+        hostAvatar = pic;
+      } else if (typeof pic.url === "function") {
+        hostAvatar = pic.url();
+      }
+    }
+  }
+
   return {
     id: e.id,
     title: e.get("event_name"),
@@ -26,10 +40,8 @@ function mapParseEvent(e) {
 
     hostId: host ? host.id : null,
     hostName: host ? host.get("user_firstname") || "Unknown" : "Unknown",
-    hostAvatar: host
-      ? host.get("avatar_url") || "/avatar/default.jpg"
-      : "/avatar/default.jpg",
-
+    hostAvatar, 
+    
     groupId: group ? group.id : null,
     groupName: group ? group.get("group_name") : null,
 
