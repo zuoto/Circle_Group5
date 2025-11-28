@@ -212,13 +212,17 @@ export async function toggleGroupMembership(groupId, isJoining) {
         const group = await query.get(groupId);
 
         const membersRelation = group.relation('group_members');
+        const userGroupsRelation = currentUser.relation('groups_joined');
 
         if (isJoining) {
             membersRelation.add(currentUser);
+            userGroupsRelation.add(group);
         } else {
             membersRelation.remove(currentUser);
+            userGroupsRelation.remove(group);
         }
         await group.save();
+        await currentUser.save();
         return isJoining ? 1 : -1;
     } catch (error) {
         console.error("Error toggling group membership: ", error);
