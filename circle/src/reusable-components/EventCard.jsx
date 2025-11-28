@@ -23,6 +23,7 @@ export default function EventCard({
   currentUserId,
   onToggleAttend,
   onClick,
+  onHostClick,
 }) {
   if (!event) return null;
 
