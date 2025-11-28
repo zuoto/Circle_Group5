@@ -8,7 +8,7 @@ import "../index.css";
 
 const Parse = window.Parse;
 
-/* Map Parse Event → UI object */
+// Map Parse Event → UI object
 function mapParseEvent(e) {
   const date = e.get("event_date");
   const iso = date ? date.toISOString() : null;
@@ -22,7 +22,7 @@ function mapParseEvent(e) {
     title: e.get("event_name"),
     description: e.get("event_info"),
     date: iso,
-    location: e.get("event_location") || "",
+    location: e.get("event_location_text") || "",
 
     hostId: host ? host.id : null,
     hostName: host ? host.get("user_firstname") || "Unknown" : "Unknown",
@@ -35,7 +35,6 @@ function mapParseEvent(e) {
 
     cover: coverFile ? coverFile.url() : null,
 
-    // purely frontend: we track attendees as an array of userIds for this session
     attendees: [],
     tags: [],
   };
@@ -43,6 +42,7 @@ function mapParseEvent(e) {
 
 export default function Events() {
   const [events, setEvents] = useState([]);
+  const [groups, setGroups] = useState([]);         // 👈 NEW
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -52,9 +52,9 @@ export default function Events() {
   const currentUser = Parse.User.current();
   const currentUserId = currentUser ? currentUser.id : null;
 
-  /* Load events from backend */
+  // Load events
   useEffect(() => {
-    async function load() {
+    async function loadEvents() {
       setLoading(true);
       setError(null);
 
@@ -77,8 +77,32 @@ export default function Events() {
       }
     }
 
-    load();
+    loadEvents();
   }, []);
+
+  // load groups for the select box in NewEventForm
+  useEffect(() => {
+    async function loadGroups() {
+      try {
+        const GroupClass = Parse.Object.extend("Group");
+        const query = new Parse.Query(GroupClass);
+        query.ascending("group_name");
+
+        const rows = await query.find();
+        const mapped = rows.map((g) => ({
+          id: g.id,
+          name: g.get("group_name"),
+        }));
+        setGroups(mapped);
+      } catch (err) {
+        console.error("Error loading groups:", err);
+        setGroups([]);
+      }
+    }
+
+    loadGroups();
+  }, []);
+
 
   /* Toggle attendance using Relation<_User> event_attendees */
   const handleToggleAttend = async (eventId) => {
@@ -139,42 +163,54 @@ export default function Events() {
 
   /* Create new event */
   const handleCreateEvent = async (formData) => {
-    try {
-      const EventClass = Parse.Object.extend("Event");
-      const event = new EventClass();
+  try {
+    const EventClass = Parse.Object.extend("Event");
+    const event = new EventClass();
 
-      event.set("event_name", formData.title);
-      event.set("event_info", formData.description);
-      event.set("event_date", formData.date);
-      event.set("event_location", formData.location);
+    event.set("event_name", formData.title);
+    event.set("event_info", formData.description);
+    event.set("event_date", formData.date);
+    event.set("event_location_text", formData.location);
 
-      const host = Parse.User.current();
-      if (host) {
-        event.set("event_host", host);
-      }
-
-      // optional: connect to group if your form sends groupId
-      if (formData.groupId) {
-        const GroupClass = Parse.Object.extend("Group");
-        const groupPtr = new GroupClass();
-        groupPtr.id = formData.groupId;
-        event.set("parent_group", groupPtr);
-      }
-
-      // optional: cover file if your form sends coverFile (Parse.File or File)
-      if (formData.coverFile instanceof Parse.File) {
-        event.set("event_cover", formData.coverFile);
-      }
-
-      const saved = await event.save();
-
-      setEvents((prev) => [...prev, mapParseEvent(saved)]);
-      setIsModalOpen(false);
-    } catch (err) {
-      console.error("Error creating event:", err);
-      alert("Failed to create event.");
+    const host = Parse.User.current();
+    if (host) {
+      event.set("event_host", host);
     }
-  };
+
+    // optional: connect to group if your form sends groupId
+    if (formData.groupId) {
+      const GroupClass = Parse.Object.extend("Group");
+      const groupPtr = new GroupClass();
+      groupPtr.id = formData.groupId;
+      event.set("parent_group", groupPtr);
+    }
+
+    // ✅ Properly handle image file from NewEventForm
+    if (formData.coverFile) {
+      // formData.coverFile is a browser File
+      const parseFile = new Parse.File(
+        formData.coverFile.name,
+        formData.coverFile
+      );
+
+      // Save the file first (Parse will upload it)
+      await parseFile.save();
+
+      // Attach it to the event
+      event.set("event_cover", parseFile);
+    }
+
+    const saved = await event.save();
+
+    // Add to local state so it shows up immediately
+    setEvents((prev) => [...prev, mapParseEvent(saved)]);
+    setIsModalOpen(false);
+  } catch (err) {
+    console.error("Error creating event:", err);
+    alert("Failed to create event.");
+  }
+};
+
 
   return (
     <div className="page-wrapper">
@@ -202,12 +238,18 @@ export default function Events() {
               currentUserId={currentUserId}
               onToggleAttend={() => handleToggleAttend(ev.id)}
               onClick={() => navigate(`/events/${ev.id}`)}
+              onHostClick={() => {
+                if (ev.hostId) {
+                  navigate(`/users/${ev.hostId}`);  
+                }
+              }}
             />
           ))}
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <NewEventForm
+          groups={groups} 
           onSubmit={handleCreateEvent}
           onCancel={() => setIsModalOpen(false)}
         />

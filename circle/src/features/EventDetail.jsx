@@ -19,7 +19,7 @@ function mapParseEvent(e) {
     title: e.get("event_name"),
     description: e.get("event_info"),
     date: iso,
-    location: e.get("event_location") || "",
+    location: e.get("event_location_text") || "",
 
     hostId: host ? host.id : null,
     hostName: host ? host.get("user_firstname") || "Unknown" : "Unknown",
@@ -149,6 +149,14 @@ export default function EventDetail() {
 
           {/* Header: host, group, date, location */}
           <div className="group-header">
+            <Link
+              to={event.hostId ? `/users/${event.hostId}` : "#"}
+              onClick={(e) => {
+                if (!event.hostId) e.preventDefault();
+              }}
+              className="user-link"
+              style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
+            ></Link>
             <div className="user-info event-header">
               <img
                 src={event.hostAvatar}
