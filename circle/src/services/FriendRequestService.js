@@ -22,7 +22,7 @@ export const sendFriendRequest = async (recipientId) => {
 
     await newRequest.save();
 
-    return true; // Success
+    return true;
   } catch (error) {
     console.error("Error sending friend request:", error);
     throw error;
