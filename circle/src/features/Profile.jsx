@@ -4,7 +4,6 @@ import "../index.css";
 import ProfileHeader from "../components/ProfileHeader";
 import ProfileSideBar from "../components/ProfileSideBar";
 import { useAuth } from "../auth/AuthProvider";
-import Parse from "parse"; // Sticking to team's pattern
 
 function Profile() {
   const { currentUser, loading: isAuthLoading } = useAuth();

@@ -106,7 +106,7 @@ function EditProfileModal({ user, onClose }) {
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               rows="4"
-              className="comment-input" // Reusing input styles
+              className="comment-input"
               placeholder="Tell people about yourself..."
               style={{ width: "100%", resize: "vertical" }}
             />

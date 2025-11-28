@@ -21,13 +21,13 @@ function UserResultCard({ user }) {
 
     try {
       await sendFriendRequest(user.id);
-      setRequestStatus(true); // Success: Change status to sent
+      setRequestStatus(true); // success = hange status to sent
     } catch (error) {
       console.error("Failed to send request:", error);
       alert(
         `Failed to send request. Check console for details. ${error.message}`
       );
-      setRequestStatus(false); // Failure: Keep button clickable
+      setRequestStatus(false); // failure = keep button clickable
     } finally {
       setLoading(false);
     }
@@ -35,24 +35,23 @@ function UserResultCard({ user }) {
 
   return (
     <div
-      className="user-result-card clickable" // <- Step 1 applied here
+      className="user-result-card clickable"
       onClick={() => navigate(`/profile/${user.id}`)}
     >
       <div className="user-card-header">
-        {/* New structure for avatar and text */}
         <img
           src={profilePicture}
           alt={user.get ? user.get("user_firstname") : user.user_firstname}
-          className="avatar-search" // <- New class applied here
+          className="avatar-search"
         />
 
         <div className="user-card-content">
           <h3>
-            {/* MODIFIED: Check for .get() before accessing properties */}
+            {/* will return to this at some point: check for .get() before accessing properties */}
             {user.get ? user.get("user_firstname") : user.user_firstname}{" "}
             {user.get ? user.get("user_surname") : user.user_surname}
           </h3>
-          {/* MODIFIED: Check for .get() before accessing properties */}
+          {/* will also return to this: check for .get() before accessing properties */}
           <p>@{user.get ? user.get("username") : user.username}</p>
         </div>
       </div>
