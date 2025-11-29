@@ -14,12 +14,6 @@ export default function NavBar() {
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
-
   return (
     <nav className="h-screen p-4">
       <div className="shape">

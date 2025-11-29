@@ -2,53 +2,38 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Comment from "../reusable-components/Comment.jsx";
 import EventCommentButton from "../reusable-components/EventCommentButton.jsx";
+import EventInfoSidebar from "../components/EventInfoSidebar.jsx";
+import { mapParseEvent, getUserAvatar } from "../utils/eventHelpers.js";
 
 const Parse = window.Parse;
-
-// Map Parse Event → UI object
-function mapParseEvent(e) {
-  const date = e.get("event_date");
-  const iso = date ? date.toISOString() : null;
-
-  const host = e.get("event_host");
-  const group = e.get("parent_group");
-  const coverFile = e.get("event_cover");
-
-  return {
-    id: e.id,
-    title: e.get("event_name"),
-    description: e.get("event_info"),
-    date: iso,
-    location: e.get("event_location") || "",
-
-    hostId: host ? host.id : null,
-    hostName: host ? host.get("user_firstname") || "Unknown" : "Unknown",
-    hostAvatar: host
-      ? host.get("avatar_url") || "/avatar/default.jpg"
-      : "/avatar/default.jpg",
-
-    groupId: group ? group.id : null,
-    groupName: group ? group.get("group_name") : null,
-
-    cover: coverFile ? coverFile.url() : null,
-  };
-}
 
 export default function EventDetail() {
   const [event, setEvent] = useState(null);
   const [loadingEvent, setLoadingEvent] = useState(true);
 
-  const [comments, setComments] = useState([]);          // Parse objects
+  const [comments, setComments] = useState([]); // Parse objects
   const [loadingComments, setLoadingComments] = useState(true);
   const [newCommentText, setNewCommentText] = useState("");
 
-  const { eventId } = useParams();
-  const navigate = useNavigate();
+  // handle both /events/:eventId and /events/:id routes
+  const params = useParams();
+  const eventId = params.eventId || params.id;
 
-  // Load event
+  const navigate = useNavigate();
+  const currentUser = Parse.User.current();
+
+  // Load event + attendees
   useEffect(() => {
     async function loadEvent() {
       setLoadingEvent(true);
+
+      if (!eventId) {
+        console.warn("No eventId in route params");
+        setEvent(null);
+        setLoadingEvent(false);
+        return;
+      }
+
       try {
         const EventClass = Parse.Object.extend("Event");
         const query = new Parse.Query(EventClass);
@@ -58,11 +43,32 @@ export default function EventDetail() {
         query.equalTo("objectId", eventId);
 
         const result = await query.first();
-        if (result) {
-          setEvent(mapParseEvent(result));
-        } else {
+        if (!result) {
+          console.warn("No Event found for id:", eventId);
           setEvent(null);
+          return;
         }
+
+        const baseEvent = mapParseEvent(result);
+
+        // Attendees from relation "event_attendees"
+        let attendees = [];
+        try {
+          const relation = result.relation("event_attendees");
+          const rows = await relation.query().find();
+          attendees = rows.map((u) => ({
+            id: u.id,
+            name:
+              u.get("user_firstname") ||
+              u.get("username") ||
+              "Unknown",
+            avatar: getUserAvatar(u),
+          }));
+        } catch (attErr) {
+          console.error("Error loading event attendees:", attErr);
+        }
+
+        setEvent({ ...baseEvent, attendees });
       } catch (err) {
         console.error("Error loading event:", err);
         setEvent(null);
@@ -108,10 +114,29 @@ export default function EventDetail() {
     navigate(-1);
   };
 
-  // When a new comment was added in EventCommentButton
   const handleCommentAdded = (savedComment) => {
     setComments((prev) => [...prev, savedComment]);
     setNewCommentText("");
+  };
+
+  // Only host can delete
+  const isOwner =
+    currentUser && event && event.hostId === currentUser.id;
+
+  const handleDeleteEvent = async () => {
+    if (!window.confirm("Delete this event? This cannot be undone.")) return;
+
+    try {
+      const EventClass = Parse.Object.extend("Event");
+      const query = new Parse.Query(EventClass);
+      const obj = await query.get(event.id);
+      await obj.destroy();
+
+      navigate("/events");
+    } catch (err) {
+      console.error("Error deleting event:", err);
+      alert("Failed to delete event.");
+    }
   };
 
   if (loadingEvent) {
@@ -147,49 +172,37 @@ export default function EventDetail() {
             />
           )}
 
-          {/* Header: host, group, date, location */}
+          {/* Header: avatar, title, optional group */}
           <div className="group-header">
             <div className="user-info event-header">
-              <img
-                src={event.hostAvatar}
-                alt={event.hostName}
-                className="avatar"
-              />
+              <Link
+                to={event.hostId ? `/users/${event.hostId}` : "#"}
+                onClick={(e) => {
+                  if (!event.hostId) e.preventDefault();
+                }}
+                className="user-link"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.75rem",
+                }}
+              >
+                <img
+                  src={event.hostAvatar}
+                  alt={event.hostName}
+                  className="avatar"
+                />
+              </Link>
               <div>
                 <h2 className="event-detail-title">{event.title}</h2>
-                <div className="event-meta">
-                  Hosted by <strong>{event.hostName}</strong>
-                  {event.groupName && event.groupId && (
-                    <>
-                      {" "}
-                      · in group{" "}
-                      <Link to={`/groups/${event.groupId}`}>
-                        <strong>{event.groupName}</strong>
-                      </Link>
-                    </>
-                  )}
-                  {event.date && (
-                    <>
-                      <br />
-                      <span>
-                        {new Date(event.date).toLocaleString("en-GB", {
-                          weekday: "short",
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </>
-                  )}
-                  {event.location && (
-                    <>
-                      <br />
-                      <span>📍 {event.location}</span>
-                    </>
-                  )}
-                </div>
+                {event.groupName && event.groupId && (
+                  <div className="event-meta">
+                    In group{" "}
+                    <Link to={`/groups/${event.groupId}`}>
+                      <strong>{event.groupName}</strong>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -239,16 +252,13 @@ export default function EventDetail() {
           </div>
         </div>
 
-        {/* RIGHT COLUMN – sidebar, but NOT repeating host/date/group */}
+        {/* RIGHT COLUMN – sidebar */}
         <div className="group-sidebar">
-          <h3 className="sidebar-header">Event details</h3>
-          <div className="sidebar-box">
-            <p>
-              This is where we can later add extra info like
-              <br />
-              “What to bring”, “Level”, or links.
-            </p>
-          </div>
+          <EventInfoSidebar
+            event={event}
+            isOwner={isOwner}
+            onDelete={handleDeleteEvent}
+          />
         </div>
       </div>
     </div>

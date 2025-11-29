@@ -1,21 +1,12 @@
 export const performSearch = async (query) => {
   const Parse = window.Parse;
   const lowerQuery = query.toLowerCase();
+  const caseSensitiveQuery = query;
+
+  let users = [];
 
   try {
-    // users
-    const UserQuery = new Parse.Query(Parse.User);
-    UserQuery.matches("user_firstname", new RegExp(lowerQuery, "i"));
-
-    const UserQuery2 = new Parse.Query(Parse.User);
-    UserQuery2.matches("user_surname", new RegExp(lowerQuery, "i"));
-
-    const UserQuery3 = new Parse.Query(Parse.User);
-    UserQuery3.matches("username", new RegExp(lowerQuery, "i"));
-
-    const userCompoundQuery = Parse.Query.or(UserQuery, UserQuery2, UserQuery3);
-    userCompoundQuery.limit(10);
-    const users = await userCompoundQuery.find();
+    users = await Parse.Cloud.run("searchUsers", { query: caseSensitiveQuery });
 
     // groups
     const GroupClass = Parse.Object.extend("Group");
@@ -25,7 +16,6 @@ export const performSearch = async (query) => {
     GroupQuery.include("members");
     GroupQuery.limit(10);
     const groups = await GroupQuery.find();
-
 
     // events
     const EventClass = Parse.Object.extend("Event");
@@ -40,13 +30,13 @@ export const performSearch = async (query) => {
     eventCompoundQuery.include("parent_group");
     eventCompoundQuery.ascending("event_date");
     eventCompoundQuery.limit(10);
-    
+
     const events = await eventCompoundQuery.find();
 
     console.log("Search results:", {
       users: users.length,
       groups: groups.length,
-      events: events.length
+      events: events.length,
     });
 
     return { users, groups, events };
