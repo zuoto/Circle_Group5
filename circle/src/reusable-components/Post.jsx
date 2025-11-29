@@ -51,6 +51,7 @@ function Post({ post, isGroupPost }) {
 
       query.equalTo("comment_post", postObj);
       query.include("comment_author");
+      query.include("comment_author.profile_picture");
       query.ascending("createdAt");
 
       const fetchedComments = await query.find();
@@ -65,12 +66,12 @@ function Post({ post, isGroupPost }) {
       {groupName && (
         <div className="group-badge-wrapper">
           <span className="group-badge">
-            Posted in: 
+            Posted in:
             <Link to={`/groups/${groupId}`}>{groupName}</Link>
           </span>
-          </div>
+        </div>
       )}
-      
+
       {!(isGroupPost && post.meetup) && (
         <div className="post-meeting-time">
           {formatMeetupTime(post.hangoutTime)}

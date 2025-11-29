@@ -34,7 +34,7 @@ export default function LogIn() {
 
     try {
       await login({ email: form.email, password: form.password });
-      navigate(from, { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
