@@ -25,9 +25,13 @@ async function getFeedPosts() {
         const authorPointer = post.get("author");
         const groupObject = post.get("group");
         
-        // Fetch the full User object with all fields
         const userQuery = new Parse.Query(Parse.User);
         const authorUser = await userQuery.get(authorPointer.id);
+
+        const profilePictureFile = authorUser.get("profile_picture");
+        const profilePicUrl = profilePictureFile && typeof profilePictureFile.url === "function" 
+          ? profilePictureFile.url() 
+          : null;
 
         const Comment = Parse.Object.extend("Comments");
         const commentQuery = new Parse.Query(Comment);
@@ -48,7 +52,7 @@ async function getFeedPosts() {
             username: authorUser.get("username"),
             user_firstname: authorUser.get("user_firstname"),
             user_surname: authorUser.get("user_surname"),
-            profile_pic: authorUser.get("profile_picture")?._url,
+            profile_pic: profilePicUrl,
           },
           createdAt: post.get("createdAt"),
           participants: post.get("participants") || [],

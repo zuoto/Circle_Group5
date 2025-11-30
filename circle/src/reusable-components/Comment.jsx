@@ -1,4 +1,3 @@
-import profilepic from "/avatars/default.png";
 import { formatTimeAgo } from "../utils/timeHelper.js";
 
 export default function Comment({ comment }) {
@@ -18,7 +17,16 @@ export default function Comment({ comment }) {
     ? commentAuthor.get("profile_picture")
     : commentAuthor?.profile_picture;
 
-  const avatar = profilePictureFile?._url || profilepic;
+  const getProfilePictureUrl = (profilePictureFile) => {
+    if (!profilePictureFile) return "/avatars/default.png";
+    if (typeof profilePictureFile === "string") return profilePictureFile;
+    if (typeof profilePictureFile.url === "function")
+      return profilePictureFile.url();
+    if (profilePictureFile._url) return profilePictureFile._url;
+    return "/avatars/default.png";
+  };
+
+  const avatar = getProfilePictureUrl(profilePictureFile);
 
   const text = comment.get ? comment.get("text") : comment.text;
 
