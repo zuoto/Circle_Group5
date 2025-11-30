@@ -5,7 +5,6 @@ import CommentButton from "./CommentButton.jsx";
 import ImInButton from "./ImInButton.jsx";
 import AttendeesTooltip from "../components/AttendeesTooltip.jsx";
 import { formatMeetupTime, formatTimeAgo } from "../utils/timeHelper.js";
-import profilepic from "../../public/avatars/default.png";
 
 function Post({ post, isGroupPost }) {
   if (!post) {
@@ -23,22 +22,19 @@ function Post({ post, isGroupPost }) {
   const Parse = window.Parse;
   const currentUser = Parse.User.current();
 
-  // Check if current user is already in participants
   const isUserJoined = participants.some((p) => p.id === currentUser?.id);
 
   const handleParticipantToggle = (joined) => {
     if (joined) {
-      //add current user to participants
       setParticipants([...participants, currentUser]);
     } else {
-      // remove current user from participants
       setParticipants(participants.filter((p) => p.id !== currentUser.id));
     }
   };
 
   const handleCommentAdded = (newComment) => {
     setComments([...comments, newComment]);
-    setCommentText(""); // Clear input after adding comment
+    setCommentText("");
   };
 
   useEffect(() => {
@@ -51,7 +47,6 @@ function Post({ post, isGroupPost }) {
 
       query.equalTo("comment_post", postObj);
       query.include("comment_author");
-      query.include("comment_author.profile_picture");
       query.ascending("createdAt");
 
       const fetchedComments = await query.find();
@@ -60,6 +55,8 @@ function Post({ post, isGroupPost }) {
 
     fetchComments();
   }, [post.id]);
+
+  const authorProfilePic = author.profile_pic || "/avatars/default.png";
 
   return (
     <div className="post">
@@ -79,11 +76,7 @@ function Post({ post, isGroupPost }) {
       )}
 
       <div className="user-info">
-        <img
-          src={author.profile_picture ? author.profile_picture : profilepic}
-          alt="User Avatar"
-          className="avatar"
-        />
+        <img src={authorProfilePic} alt="User Avatar" className="avatar" />
         <div className="name-and-timestamp-wrapper">
           <div className="name">
             {author.user_firstname} {author.user_surname}
