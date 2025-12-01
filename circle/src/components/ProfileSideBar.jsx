@@ -1,12 +1,31 @@
 import React from "react";
 import Card from "./ProfileCard.jsx";
-import ProfileGroupLink from "./ProfileGroupLink.jsx";
+import ProfileGroupLink from "./ProfileGroupLink";
+import FriendRequest from "./FriendRequest";
 
-export default function ({ user }) {
+export default function ({ user, pendingRequests = [], loadRequests }) {
   if (!user) return null;
 
   return (
     <div className="profile-sidebar-column">
+      {pendingRequests.length > 0 && (
+        <Card
+          title={`Pending Requests (${pendingRequests.length})`}
+          isRequests={true}
+        >
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+          >
+            {pendingRequests.map((req) => (
+              <FriendRequest
+                key={req.id}
+                friendRequest={req}
+                onUpdate={() => loadRequests(user.id)}
+              />
+            ))}
+          </div>
+        </Card>
+      )}
       <Card title="Bio">
         <p className="long-text">{user.bio}</p>
       </Card>
