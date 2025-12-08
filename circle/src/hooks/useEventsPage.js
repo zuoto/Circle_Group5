@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from "react";
-import { mapParseEvent } from "../utils/eventHelpers.js";
 
 const Parse = window.Parse;
 
@@ -13,22 +12,17 @@ export function useEventsPage() {
   const currentUser = Parse.User.current();
   const currentUserId = currentUser ? currentUser.id : null;
 
-  // Load events from backend
+  // Load events via cloud function
   const loadEvents = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const EventClass = Parse.Object.extend("Event");
-      const query = new Parse.Query(EventClass);
-
-      query.include("event_host");
-      query.include("parent_group");
-      query.ascending("event_date");
-
-      const rows = await query.find();
-      const mapped = rows.map(mapParseEvent);
-      setEvents(mapped);
+      // This calls the backend cloud function defined in main.js
+      const rows = await Parse.Cloud.run("optimizeGetAllEvents");
+      // rows already have the shape EventCard expects:
+      // { id, title, description, date, location, hostName, hostAvatar, groupName, cover, attendees, tags }
+      setEvents(rows);
     } catch (err) {
       console.error("Error loading events:", err);
       setError("Failed to load events.");
@@ -94,7 +88,7 @@ export function useEventsPage() {
 
         await eventObj.save();
 
-        // Update local state
+        // Update local state to reflect the change immediately
         setEvents((prev) =>
           prev.map((ev) => {
             if (ev.id !== eventId) return ev;
@@ -125,48 +119,52 @@ export function useEventsPage() {
   );
 
   // Create new event
-  const handleCreateEvent = useCallback(async (formData) => {
-    try {
-      const EventClass = Parse.Object.extend("Event");
-      const event = new EventClass();
+  const handleCreateEvent = useCallback(
+    async (formData) => {
+      try {
+        const EventClass = Parse.Object.extend("Event");
+        const event = new EventClass();
 
-      event.set("event_name", formData.title);
-      event.set("event_info", formData.description);
-      event.set("event_date", formData.date);
-      event.set("event_location_text", formData.location);
+        event.set("event_name", formData.title);
+        event.set("event_info", formData.description);
+        event.set("event_date", formData.date);
+        event.set("event_location_text", formData.location);
 
-      const host = Parse.User.current();
-      if (host) {
-        event.set("event_host", host);
+        const host = Parse.User.current();
+        if (host) {
+          event.set("event_host", host);
+        }
+
+        // optional: connect to group if your form sends groupId
+        if (formData.groupId) {
+          const GroupClass = Parse.Object.extend("Group");
+          const groupPtr = new GroupClass();
+          groupPtr.id = formData.groupId;
+          event.set("parent_group", groupPtr);
+        }
+
+        // cover file (browser File → Parse.File)
+        if (formData.coverFile) {
+          const parseFile = new Parse.File(
+            formData.coverFile.name,
+            formData.coverFile
+          );
+          await parseFile.save();
+          event.set("event_cover", parseFile);
+        }
+
+        await event.save();
+
+        // reload from cloud so we get consistent data (hostAvatar, attendees, etc.)
+        await loadEvents();
+        setIsModalOpen(false);
+      } catch (err) {
+        console.error("Error creating event:", err);
+        alert("Failed to create event.");
       }
-
-      // optional: connect to group if your form sends groupId
-      if (formData.groupId) {
-        const GroupClass = Parse.Object.extend("Group");
-        const groupPtr = new GroupClass();
-        groupPtr.id = formData.groupId;
-        event.set("parent_group", groupPtr);
-      }
-
-      // cover file (browser File → Parse.File)
-      if (formData.coverFile) {
-        const parseFile = new Parse.File(
-          formData.coverFile.name,
-          formData.coverFile
-        );
-        await parseFile.save();
-        event.set("event_cover", parseFile);
-      }
-
-      const saved = await event.save();
-
-      setEvents((prev) => [...prev, mapParseEvent(saved)]);
-      setIsModalOpen(false);
-    } catch (err) {
-      console.error("Error creating event:", err);
-      alert("Failed to create event.");
-    }
-  }, []);
+    },
+    [loadEvents]
+  );
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);

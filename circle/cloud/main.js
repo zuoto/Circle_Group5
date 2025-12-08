@@ -16,6 +16,74 @@ function mapParseEventToUi(e) {
     };
 }
 
+Parse.Cloud.define("optimizeGetAllEvents", async (request) => {
+  const currentUser = request.user;
+
+  const EventClass = Parse.Object.extend("Event");
+  const query = new Parse.Query(EventClass);
+
+  query.include("event_host");
+  query.include("parent_group");
+  query.ascending("event_date");
+
+  try {
+    const events = await query.find({ useMasterKey: true });
+
+    const result = await Promise.all(
+      events.map(async (e) => {
+        const date = e.get("event_date");
+        const host = e.get("event_host");
+        const group = e.get("parent_group");
+        const coverFile = e.get("event_cover");
+
+        // attendee relation
+        const relation = e.relation("event_attendees");
+        const attendeeQuery = relation.query();
+        const attendeeCount = await attendeeQuery.count({ useMasterKey: true });
+
+        // is current user attending?
+        let isUserAttending = false;
+        if (currentUser) {
+          const userCheckQuery = relation.query();
+          userCheckQuery.equalTo("objectId", currentUser.id);
+          isUserAttending =
+            (await userCheckQuery.count({ useMasterKey: true })) > 0;
+        }
+
+        return {
+          id: e.id,
+          title: e.get("event_name"),
+          description: e.get("event_info"),
+          date: date ? date.toISOString() : null,
+          location: e.get("event_location_text") || "",
+
+          // host info (simple but good enough)
+          hostId: host ? host.id : null,
+          hostName:
+            (host &&
+              (host.get("user_firstname") || host.get("username"))) ||
+            "Unknown",
+
+          // group info
+          groupId: group ? group.id : null,
+          groupName: group ? group.get("group_name") : null,
+
+          cover: coverFile ? coverFile.url() : null,
+
+          attendeeCount,
+          isUserAttending,
+        };
+      })
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Cloud Function Error (optimizeGetAllEvents): ", error);
+    throw new Parse.Error(500, "Error fetching events.");
+  }
+});
+
+
 async function fetchPostComments(post) {
     // fetch comments for posts
     const Comment = Parse.Object.extend("Comments");
