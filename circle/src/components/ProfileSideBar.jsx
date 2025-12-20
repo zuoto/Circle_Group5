@@ -3,7 +3,11 @@ import Card from "./ProfileCard.jsx";
 import ProfileGroupLink from "./ProfileGroupLink";
 import FriendRequest from "./FriendRequest";
 
-export default function ({ user, pendingRequests = [], loadRequests }) {
+export default function ProfileSideBar({
+  user,
+  pendingRequests = [],
+  loadRequests,
+}) {
   if (!user) return null;
 
   return (
