@@ -31,7 +31,10 @@ export default function Groups() {
       </div>
 
       <div className="main-content">
-      {groups
+      {groups.length === 0 ? (
+        <div className="empty-state-message">No groups yet</div>
+      ) : (
+        groups
         .filter(group => group && group.id)
         .map(group => (
        <GroupCard
@@ -44,7 +47,7 @@ export default function Groups() {
           coverPhotoUrl={group.coverPhotoUrl || '/covers/default-cover.jpg'}
        />
 
-       ))}
+       )))}
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
