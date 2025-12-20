@@ -1,16 +1,13 @@
-// UserResultCard.jsx (MODIFIED)
-
 import { useNavigate } from "react-router-dom";
 import profilepic from "/avatars/default.png";
 import React, { useState } from "react";
-import { sendFriendRequest } from "../services/FriendRequestService";
+import { sendFriendRequest } from "../services/FriendRequestService.js";
 
 function UserResultCard({ user }) {
   const navigate = useNavigate();
   const [requestStatus, setRequestStatus] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // MODIFIED: Check if the user object has a .get() method. If so, use it; otherwise, use direct property access.
   const profilePicture = user.get
     ? user.get("profile_picture") || profilepic
     : user.profile_picture || profilepic;

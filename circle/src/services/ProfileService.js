@@ -1,4 +1,4 @@
-const Parse = window.Parse;
+import Parse from "../utils/parseClient.js";
 
 export const updateProfile = async (userId, newBio, photoFile) => {
   try {
