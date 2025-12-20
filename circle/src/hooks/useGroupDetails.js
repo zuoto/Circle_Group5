@@ -9,6 +9,7 @@ export const useGroupDetails = () => {
      // State: starts as null for the single group object
         const [group, setGroup] = useState(null);
         const [loading, setLoading] = useState(true);
+        const [error, setError] = useState(null);
         const [isPostModalOpen, setIsPostModalOpen] = useState(false);
         const [groupMembers, setGroupMembers] = useState([]);
         const [showMembersTooltip, setShowMembersTooltip] = useState(false);
@@ -16,9 +17,19 @@ export const useGroupDetails = () => {
         // fetch data for specific group 
         const loadGroupDetails = useCallback(async () => {
             setLoading(true);
-            const fetchedGroup = await getGroupById(groupId);
-            setGroup(fetchedGroup);
-            setLoading(false);
+            setError(null); // reset error before a new attempt
+            try {
+                const fetchedGroup = await getGroupById(groupId);
+                if (!fetchGroup) {
+                    throw new Error("Group not found.");
+                }
+                setGroup(fetchedGroup);
+            } catch (err) {
+                console.error("Error fetching group details: ", err);
+                setError(err.message || "Failed to load group details.");
+            } finally {
+                setLoading(false);
+            }
         }, [groupId]);
         
         // Hook for initial data load that runs if groupId changes
@@ -73,6 +84,7 @@ export const useGroupDetails = () => {
     return {
         group,
         loading,
+        error,
         groupMembers,
         showMembersTooltip,
         isPostModalOpen,

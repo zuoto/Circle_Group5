@@ -15,6 +15,7 @@ export default function GroupDetail() {
     const {
         group,
         loading,
+        error,
         groupMembers,
         showMembersTooltip,
         isPostModalOpen,
@@ -38,10 +39,23 @@ export default function GroupDetail() {
         return <div className="page-wrapper">Loading group...</div>;
     }
 
+    if (error) {
+        return (
+            <div className="page-wrapper">
+                <div className="error-container">
+                    <h1>Oops! Something went wrong</h1>
+                    <p>{error}</p>
+                    <button onClick={handleBackClick} className="back-button">← Back</button>
+                </div>
+            </div>
+        );
+    }
+
     if (!group) {
         return (
             <div className="page-wrapper">
                 <h1>Group Not Found</h1>
+                <button onClick={handleBackClick} className="back-button">← Back</button>
             </div>
         );
     }
