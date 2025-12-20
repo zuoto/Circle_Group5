@@ -20,7 +20,7 @@ export const useGroupDetails = () => {
             setError(null); // reset error before a new attempt
             try {
                 const fetchedGroup = await getGroupById(groupId);
-                if (!fetchGroup) {
+                if (!fetchedGroup) {
                     throw new Error("Group not found.");
                 }
                 setGroup(fetchedGroup);
