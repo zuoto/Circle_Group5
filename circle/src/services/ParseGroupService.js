@@ -109,23 +109,11 @@ export async function toggleGroupMembership(groupId, isJoining) {
 
 export async function fetchGroupMembers(groupId) {
     const Parse = window.Parse;
-    const GroupClass = Parse.Object.extend("Group");
-    const query = new Parse.Query(GroupClass);
 
     try {
-        const group = await query.get(groupId);
-        const membersRelation = group.relation('group_members');    // get the members relation
-        const memberQuery = membersRelation.query();
-        const parseUsers = await memberQuery.find();
-
-        // map the parse user object to javascript objects
-        const mappedMembers = parseUsers.map(user => ({
-            id: user.id,
-            username: user.get('username'),
-            user_firstname: user.get('user_firstname'),
-            user_surname: user.get('user_surname'),
-        }));
-        return mappedMembers;
+        // query group members with cloud function
+        const members = await Parse.Cloud.run("getGroupMemberNames", { groupId });
+        return members;
     } catch (error) {
         console.error("Error fetching group members: ", error);
         return [];
