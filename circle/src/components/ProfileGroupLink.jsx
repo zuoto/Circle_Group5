@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function ({ group }) {
+export default function ProfileGroupLink({ group }) {
   return (
     <Link
       key={group.id}

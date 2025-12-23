@@ -7,7 +7,6 @@ import User from "./User";
 export default function ProfileHeader({
   user,
   profilePictureURL,
-  //onProfileUpdate, -> not in use for now
   isViewingSelf,
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,8 +24,6 @@ export default function ProfileHeader({
   };
 
   if (!user) return null;
-
-  //const showEditButton = isViewingSelf; -> not in use for now
 
   return (
     <div className="profile-main-column">

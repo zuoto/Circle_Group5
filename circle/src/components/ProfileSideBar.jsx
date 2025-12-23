@@ -1,5 +1,5 @@
 import React from "react";
-import Card from "./ProfileCard.jsx";
+import Card from "./ProfileCard";
 import ProfileGroupLink from "./ProfileGroupLink";
 import FriendRequest from "./FriendRequest";
 
