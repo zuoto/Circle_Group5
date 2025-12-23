@@ -20,6 +20,7 @@ function SearchPage() {
         setLoading(true);
         try {
           const searchResults = await performSearch(searchQuery);
+
           setResults(searchResults);
         } catch (error) {
           console.error("Search error:", error);

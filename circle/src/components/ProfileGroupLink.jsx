@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function ({ group }) {
+export default function ProfileGroupLink({ group }) {
   return (
     <Link
       key={group.id}
@@ -10,10 +10,6 @@ export default function ({ group }) {
     >
       <div className="group-card-compact">
         <h3 style={{ margin: 0 }}>{group.name}</h3>
-        <div className="member-count-box">
-          <span className="member-count-number">{group.memberCount}</span>
-          <span className="member-count-text">members</span>
-        </div>
       </div>
     </Link>
   );

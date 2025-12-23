@@ -1,8 +1,6 @@
-import profilepic from "/avatars/default.png";
 import { formatTimeAgo } from "../utils/timeHelper.js";
 
 export default function Comment({ comment }) {
-  // Handle both Parse objects and plain objects
   const commentAuthor = comment.get
     ? comment.get("comment_author")
     : comment.comment_author;
@@ -15,9 +13,20 @@ export default function Comment({ comment }) {
     ? commentAuthor.get("user_surname")
     : commentAuthor?.user_surname;
 
-  const avatar = commentAuthor?.get
+  const profilePictureFile = commentAuthor?.get
     ? commentAuthor.get("profile_picture")
     : commentAuthor?.profile_picture;
+
+  const getProfilePictureUrl = (profilePictureFile) => {
+    if (!profilePictureFile) return "/avatars/default.png";
+    if (typeof profilePictureFile === "string") return profilePictureFile;
+    if (typeof profilePictureFile.url === "function")
+      return profilePictureFile.url();
+    if (profilePictureFile._url) return profilePictureFile._url;
+    return "/avatars/default.png";
+  };
+
+  const avatar = getProfilePictureUrl(profilePictureFile);
 
   const text = comment.get ? comment.get("text") : comment.text;
 
@@ -26,11 +35,7 @@ export default function Comment({ comment }) {
   return (
     <div className="comment">
       <div className="comment-user-info">
-        <img
-          src={avatar || profilepic}
-          alt="User Avatar"
-          className="comment-avatar"
-        />
+        <img src={avatar} alt="User Avatar" className="comment-avatar" />
         <div className="name-and-timestamp-wrapper">
           <div className="comment-name">
             {firstName} {surname}

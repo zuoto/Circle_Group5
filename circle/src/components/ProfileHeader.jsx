@@ -1,9 +1,30 @@
-import React from "react";
-import Card from "./ProfileCard.jsx";
-import User from "./User.jsx";
+import React, { useState } from "react";
+import Modal from "../reusable-components/Modal";
+import EditProfileModal from "../reusable-components/EditProfileModal";
+import Card from "./ProfileCard";
+import User from "./User";
 
-export default function ({ user, profilePictureURL }) {
+export default function ProfileHeader({
+  user,
+  profilePictureURL,
+  isViewingSelf,
+}) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleEdit = () => {
+    if (isViewingSelf) {
+      setIsModalOpen(true);
+    } else {
+      console.warn("Cannot edit another user's profile.");
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   if (!user) return null;
+
   return (
     <div className="profile-main-column">
       <Card>
@@ -33,9 +54,14 @@ export default function ({ user, profilePictureURL }) {
         </div>
 
         <div style={{ textAlign: "center" }}>
-          <button className="secondary-button">Edit Profile</button>
+          <button className="secondary-button" onClick={handleEdit}>
+            Edit Profile
+          </button>
         </div>
       </Card>
+      <Modal isOpen={isModalOpen} onClose={handleModalClose}>
+        <EditProfileModal user={user} onClose={handleModalClose} />
+      </Modal>
     </div>
   );
 }
