@@ -1,16 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import profilepic from "/avatars/default.png";
+import defaultPic from "/avatars/default.png";
 import React, { useState } from "react";
 import { sendFriendRequest } from "../services/FriendRequestService.js";
+import Parse from "../utils/parseClient.js";
 
 function UserResultCard({ user }) {
   const navigate = useNavigate();
   const [requestStatus, setRequestStatus] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const profilePicture = user.get
-    ? user.get("profile_picture") || profilepic
-    : user.profile_picture || profilepic;
+  const currentUser = Parse.User.current();
+  const isSelf = currentUser && currentUser.id === user.id;
+
+  const { id, user_firstname, user_surname, username, profile_picture } = user;
+
+  const profileUrl = user.profile_picture || defaultPic;
 
   const onAddFriendClick = async (e) => {
     e.stopPropagation();
@@ -33,35 +37,34 @@ function UserResultCard({ user }) {
   return (
     <div
       className="user-result-card clickable"
-      onClick={() => navigate(`/profile/${user.id}`)}
+      onClick={() => navigate(`/profile/${id}`)}
     >
       <div className="user-card-header">
-        <img
-          src={profilePicture}
-          alt={user.get ? user.get("user_firstname") : user.user_firstname}
-          className="avatar-search"
-        />
+        <img src={profileUrl} alt={user_firstname} className="avatar-search" />
 
         <div className="user-card-content">
           <h3>
-            {/* will return to this at some point: check for .get() before accessing properties */}
-            {user.get ? user.get("user_firstname") : user.user_firstname}{" "}
-            {user.get ? user.get("user_surname") : user.user_surname}
+            {user_firstname}
+            {user_surname}
           </h3>
-          {/* will also return to this: check for .get() before accessing properties */}
-          <p>@{user.get ? user.get("username") : user.username}</p>
+          <p>@{username}</p>
         </div>
       </div>
 
-      {/* Button is outside the header, looks better */}
-      <button
-        className={requestStatus ? "secondary-button" : "primary-button"}
-        onClick={onAddFriendClick}
-        disabled={requestStatus || loading}
-        style={{ marginTop: "10px" }}
-      >
-        {loading ? "Sending..." : requestStatus ? "Request Sent" : "Add Friend"}
-      </button>
+      {!isSelf && (
+        <button
+          className={requestStatus ? "secondary-button" : "primary-button"}
+          onClick={onAddFriendClick}
+          disabled={requestStatus || loading}
+          style={{ marginTop: "10px" }}
+        >
+          {loading
+            ? "Sending..."
+            : requestStatus
+            ? "Request Sent"
+            : "Add Friend"}
+        </button>
+      )}
     </div>
   );
 }

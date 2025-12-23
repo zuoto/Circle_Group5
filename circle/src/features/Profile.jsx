@@ -18,7 +18,6 @@ function Profile() {
   const [error, setError] = useState(null);
 
   const [pendingRequests, setPendingRequests] = useState([]);
-  // Modal should not show on initial render, only after requests are loaded
   const [showModal, setShowModal] = useState(false);
 
   /**
@@ -31,7 +30,7 @@ function Profile() {
 
     try {
       const query = new Parse.Query(Parse.User);
-      // Ensure profile_picture is fetched
+
       query.include("profile_picture");
 
       // Fetch the user object
@@ -43,14 +42,12 @@ function Profile() {
 
       const pictureUrl = isParseFile ? profilePictureFile.url() : null;
 
-      // Fetch groups joined via the relation
       const groupsJoinedRelation = parseUser.relation("groups_joined");
       const groupsQuery = groupsJoinedRelation.query();
       const groupsResults = await groupsQuery.find();
 
-      // Note: Friend relations are often queried separately or managed by the client.
-      // Assuming 'user.friends' will be populated elsewhere or its count is accurate
-      // upon the ParseUser object's fetch/update from the server.
+      const friendsRelation = parseUser.relation("user_friends");
+      const friendsCount = await friendsRelation.query().count();
 
       const structuredUser = {
         id: parseUser.id,
@@ -58,7 +55,7 @@ function Profile() {
         surname: parseUser.get("user_surname"),
         bio: parseUser.get("bio") || "No bio yet.",
         picture: pictureUrl,
-        friends: [], // Keep this array, assuming friend objects are fetched elsewhere
+        friends: new Array(friendsCount),
         groups: groupsResults.map((group) => ({
           id: group.id,
           name: group.get("group_name"),
@@ -100,7 +97,6 @@ function Profile() {
   };
 
   const loadProfileAndRequests = async (targetUserId) => {
-    // 1. Re-fetch the entire profile data (updates the friend count)
     const success = await fetchProfileData(targetUserId);
 
     if (success) {
@@ -174,7 +170,7 @@ function Profile() {
     return <div className="page-wrapper">Profile data unavailable.</div>;
   }
 
-  const defaultProfilePicUrl = "new_default_pic.png";
+  const defaultProfilePicUrl = "/new_default_pic.png";
   const profilePictureUrl = user.picture || defaultProfilePicUrl;
 
   const isViewingSelf = currentUser?.id === user.id;

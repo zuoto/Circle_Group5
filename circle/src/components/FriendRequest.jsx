@@ -8,9 +8,18 @@ function FriendRequest({ friendRequest, onUpdate }) {
   }
 
   const requester = friendRequest.get("requester");
-  const requesterName = `${requester.get("user_firstname")} ${requester.get(
-    "user_surname"
-  )}`;
+
+  if (!requester || !requester.id) {
+    console.warn(
+      "Friend Request found, but requester data is missing (likely ACL issue)."
+    );
+    return null;
+  }
+
+  const firstName = requester.get("user_firstname") || "Unknown";
+  const surname = requester.get("user_surname") || "User";
+
+  const requesterName = `${firstName} ${surname}`;
   const requesterId = requester.id;
 
   const handleAction = async (action) => {

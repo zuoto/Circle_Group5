@@ -51,7 +51,6 @@ export const sendFriendRequest = async (recipientId) => {
 export const fetchPendingFriendRequests = async () => {
   const currentUser = Parse.User.current();
   if (!currentUser) {
-    // Always return a result if the user isn't logged in, avoids errors
     return [];
   }
 
@@ -71,14 +70,8 @@ export const fetchPendingFriendRequests = async () => {
   }
 };
 
-/**
- * Calls the secure server-side function to accept or reject a request.
- * @param {string} requestId - The ID of the FriendRequest object.
- * @param {'accept' | 'reject'} action - The action to perform.
- */
 export const handleFriendRequest = async (requestId, action) => {
   try {
-    // 💡 Learning: This is the client-side entry point for the secure logic
     return await Parse.Cloud.run("handleFriendRequest", { requestId, action });
   } catch (error) {
     console.error(`Error handling request on client side:`, error);

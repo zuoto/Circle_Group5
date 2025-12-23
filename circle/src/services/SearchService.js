@@ -1,5 +1,7 @@
+import Parse from "../utils/parseClient.js";
+
 export const performSearch = async (query) => {
-  const Parse = window.Parse;
+  //const Parse = window.Parse;
   const lowerQuery = query.toLowerCase();
   const caseSensitiveQuery = query;
 
