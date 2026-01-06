@@ -50,6 +50,8 @@ export function AuthProvider({ children }) {
     password,
     dateOfBirth,
     location,
+    bio,
+    profilePicture,
   }) => {
     const Parse = getParse();
     try {
@@ -60,6 +62,7 @@ export function AuthProvider({ children }) {
       user.set("user_surname", surname);
       user.set("email", email);
       user.set("password", password);
+      user.set("bio", bio || "");
 
       if (dateOfBirth) {
         user.set("dateOfBirth", new Date(dateOfBirth));
@@ -69,6 +72,18 @@ export function AuthProvider({ children }) {
         user.set("locationText", location);
       }
       await user.signUp();
+
+      if (profilePicture) {
+        try {
+          const parseFile = new Parse.File(profilePicture.name, profilePicture);
+          await parseFile.save();
+
+          user.set("profile_picture", parseFile);
+          await user.save();
+        } catch (picError) {
+          console.error("User created, but picture failed:", picError);
+        }
+      }
 
       setCurrentUser(user);
       return user;
