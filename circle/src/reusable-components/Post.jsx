@@ -84,7 +84,7 @@ function Post({ post, isGroupPost }) {
         <img src={authorProfilePic} alt="User Avatar" className="avatar" />
         <div className="name-and-timestamp-wrapper">
           <div className="name">
-            {author.user_firstname} {author.user_surname}
+            {author.name || "Unknown User"}
           </div>
           <div className="timestamp">{formatTimeAgo(post.createdAt)}</div>
         </div>

@@ -26,15 +26,16 @@ async function getFeedPosts() {
     const postsWithComments = await Promise.all(
       parsePosts.map(async (post) => {
         const authorUser = post.get("author");
+        // handle deleted users:
+        if (!authorUser) return null;
         const groupObject = post.get("group");
 
-        const firstName = authorUser.get("user_firstname");
-        const surname = authorUser.get("user_surname");
+        const firstName = authorUser.get("user_firstname") || "";
+        const surname = authorUser.get("user_surname") || "";
+        const fullName = `${firstName} ${surname}`.trim() || authorUser.get("username"); 
 
         const profilePictureFile = authorUser.get("profile_picture");
-        const profilePicUrl = profilePictureFile && typeof profilePictureFile.url === "function" 
-          ? profilePictureFile.url() 
-          : null;
+        const profilePicUrl = profilePictureFile?.url ? profilePictureFile.url() : null;
 
         const Comment = Parse.Object.extend("Comments");
         const commentQuery = new Parse.Query(Comment);
@@ -52,35 +53,41 @@ async function getFeedPosts() {
           groupName: groupObject ? groupObject.get("group_name") : null,
           author: {
             id: authorUser.id,
+            name: fullName,
             username: authorUser.get("username"),
-            user_firstname: firstName,
-            user_surname: surname,
-            profile_pic: profilePicUrl,
+            profile_picture: profilePicUrl,
           },
           createdAt: post.get("createdAt"),
           participants: post.get("participants") || [],
           comments: comments.map((comment) => {
             const commentAuthor = comment.get("comment_author");
+
+            // handle comment author's name and profile pic
+            const cFirst = commentAuthor?.get("user_firstname") || "";
+            const cLast = commentAuthor?.get("user_surname") || "";
+            const cName = `${cFirst} ${cLast}`.trim() || commentAuthor?.get("username") || "Unknown";
+
+            const cPic = commentAuthor?.get("profile_picture");
             
             return {
               id: comment.id,
-              content: comment.get("text"),
-              author: {
+              text: comment.get("text"),
+              comment_author: {
                 id: commentAuthor?.id,
+                name: cName,
                 username: commentAuthor?.get("username"),
-                user_firstname: commentAuthor?.get("user_firstname"),
-                user_surname: commentAuthor?.get("user_surname"),
+                profile_picture: cPic?.url ? cPic.url() : null
               },
               createdAt: comment.get("createdAt"),
             };
           }),
         };
-
         return postData;
       })
     );
 
     return postsWithComments;
+    
   } catch (error) {
     console.error("Error fetching feed:", error);
     throw error;
