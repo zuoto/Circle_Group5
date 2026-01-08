@@ -1,10 +1,12 @@
 import { formatTimeAgo } from "../utils/timeHelper.js";
 
 export default function Comment({ comment }) {
+  // get the author object
   const commentAuthor = comment.get
     ? comment.get("comment_author")
     : comment.comment_author;
 
+  // try to get specific name parts
   const firstName = commentAuthor?.get
     ? commentAuthor.get("user_firstname")
     : commentAuthor?.user_firstname;
@@ -12,6 +14,14 @@ export default function Comment({ comment }) {
   const surname = commentAuthor?.get
     ? commentAuthor.get("user_surname")
     : commentAuthor?.user_surname;
+
+    // check for combined 'name' field from cloud code
+    const cloudName = commentAuthor?.name;
+
+    // if there's a cloud name, use it. otherwise, combine first + last
+    const displayName = cloudName
+      ? cloudName
+      : `${firstName || ""} ${surname || ""}`.trim() || "Unknown user";
 
   const profilePictureFile = commentAuthor?.get
     ? commentAuthor.get("profile_picture")
@@ -38,7 +48,7 @@ export default function Comment({ comment }) {
         <img src={avatar} alt="User Avatar" className="comment-avatar" />
         <div className="name-and-timestamp-wrapper">
           <div className="comment-name">
-            {firstName} {surname}
+            {displayName}
           </div>
           <div className="comment-timestamp">{formatTimeAgo(createdAt)}</div>
         </div>

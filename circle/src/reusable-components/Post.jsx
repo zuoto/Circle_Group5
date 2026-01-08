@@ -38,6 +38,11 @@ function Post({ post, isGroupPost }) {
   };
 
   useEffect(() => {
+    // stop component from fetching data if cloud code already did it
+    if (post.comments && post.comments.length > 0) {
+      return;
+    }
+
     const fetchComments = async () => {
       const Parse = window.Parse;
       const CommentClass = Parse.Object.extend("Comments");
@@ -54,9 +59,9 @@ function Post({ post, isGroupPost }) {
     };
 
     fetchComments();
-  }, [post.id]);
+  }, [post.id, post.comments]);
 
-  const authorProfilePic = author.profile_pic || "/avatars/default.png";
+  const authorProfilePic = author.profile_picture || "/avatars/default.png";
 
   return (
     <div className="post">
