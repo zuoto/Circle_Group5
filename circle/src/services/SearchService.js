@@ -1,39 +1,82 @@
-import Parse from "../utils/parseClient.js";
-
 export const performSearch = async (query) => {
-  //const Parse = window.Parse;
-  const lowerQuery = query.toLowerCase();
-  const caseSensitiveQuery = query;
-
-  let users = [];
+  const lowerQuery = query.toLowerCase().trim();
 
   try {
-    users = await Parse.Cloud.run("searchUsers", { query: caseSensitiveQuery });
+    const users = await Parse.Cloud.run("searchUsers", { query });
 
-    // groups
     const GroupClass = Parse.Object.extend("Group");
-    const GroupQuery = new Parse.Query(GroupClass);
-    GroupQuery.matches("group_name", new RegExp(lowerQuery, "i"));
-    GroupQuery.include("group_admin");
-    GroupQuery.include("members");
-    GroupQuery.limit(10);
-    const groups = await GroupQuery.find();
+    const parts = lowerQuery.split(/\s+/);
+    
+    let groupQuery;
+    
+    if (parts.length === 1) {
+      groupQuery = new Parse.Query(GroupClass);
+      groupQuery.matches("group_name", new RegExp(parts[0], "i"));
+    } else {
+      const queries = parts.map(part => {
+        const q = new Parse.Query(GroupClass);
+        q.matches("group_name", new RegExp(part, "i"));
+        return q;
+      });
+      
+      const fullPhraseQuery = new Parse.Query(GroupClass);
+      fullPhraseQuery.matches("group_name", new RegExp(lowerQuery, "i"));
+      
+      queries.push(fullPhraseQuery);
+      
+      groupQuery = Parse.Query.or(...queries);
+    }
+    
+    groupQuery.include("group_admin");
+    groupQuery.include("members");
+    groupQuery.limit(10);
+    const groups = await groupQuery.find();
 
-    // events
     const EventClass = Parse.Object.extend("Event");
-    const EventNameQuery = new Parse.Query(EventClass);
-    EventNameQuery.contains("event_name", lowerQuery);
+    
+    let eventQuery;
+    
+    if (parts.length === 1) {
+      const EventNameQuery = new Parse.Query(EventClass);
+      EventNameQuery.contains("event_name", parts[0]);
 
-    const EventInfoQuery = new Parse.Query(EventClass);
-    EventInfoQuery.contains("event_info", lowerQuery);
+      const EventInfoQuery = new Parse.Query(EventClass);
+      EventInfoQuery.contains("event_info", parts[0]);
 
-    const eventCompoundQuery = Parse.Query.or(EventNameQuery, EventInfoQuery);
-    eventCompoundQuery.include("event_host");
-    eventCompoundQuery.include("parent_group");
-    eventCompoundQuery.ascending("event_date");
-    eventCompoundQuery.limit(10);
+      eventQuery = Parse.Query.or(EventNameQuery, EventInfoQuery);
+    } else {
+      const nameQueries = parts.map(part => {
+        const q = new Parse.Query(EventClass);
+        q.contains("event_name", part);
+        return q;
+      });
+      
+      const infoQueries = parts.map(part => {
+        const q = new Parse.Query(EventClass);
+        q.contains("event_info", part);
+        return q;
+      });
+      
+      const fullNameQuery = new Parse.Query(EventClass);
+      fullNameQuery.contains("event_name", lowerQuery);
+      
+      const fullInfoQuery = new Parse.Query(EventClass);
+      fullInfoQuery.contains("event_info", lowerQuery);
+      
+      eventQuery = Parse.Query.or(
+        ...nameQueries,
+        ...infoQueries,
+        fullNameQuery,
+        fullInfoQuery
+      );
+    }
+    
+    eventQuery.include("event_host");
+    eventQuery.include("parent_group");
+    eventQuery.ascending("event_date");
+    eventQuery.limit(10);
 
-    const events = await eventCompoundQuery.find();
+    const events = await eventQuery.find();
 
     console.log("Search results:", {
       users: users.length,

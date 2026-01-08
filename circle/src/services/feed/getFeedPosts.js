@@ -25,16 +25,11 @@ async function getFeedPosts() {
 
     const postsWithComments = await Promise.all(
       parsePosts.map(async (post) => {
-        const authorPointer = post.get("author");
+        const authorUser = post.get("author");
         const groupObject = post.get("group");
-        
-        const userQuery = new Parse.Query(Parse.User);
-        const authorUser = await userQuery.get(authorPointer.id);
 
-        console.log("All attributes:", authorUser.attributes);
-
-        const firstName = authorUser.attributes.user_firstname || authorUser.get("user_firstname");
-        const surname = authorUser.attributes.user_surname || authorUser.get("user_surname");
+        const firstName = authorUser.get("user_firstname");
+        const surname = authorUser.get("user_surname");
 
         const profilePictureFile = authorUser.get("profile_picture");
         const profilePicUrl = profilePictureFile && typeof profilePictureFile.url === "function" 
@@ -66,8 +61,6 @@ async function getFeedPosts() {
           participants: post.get("participants") || [],
           comments: comments.map((comment) => {
             const commentAuthor = comment.get("comment_author");
-            const commentFirstName = commentAuthor?.attributes?.user_firstname || commentAuthor?.get("user_firstname");
-            const commentSurname = commentAuthor?.attributes?.user_surname || commentAuthor?.get("user_surname");
             
             return {
               id: comment.id,
@@ -75,8 +68,8 @@ async function getFeedPosts() {
               author: {
                 id: commentAuthor?.id,
                 username: commentAuthor?.get("username"),
-                user_firstname: commentFirstName,
-                user_surname: commentSurname,
+                user_firstname: commentAuthor?.get("user_firstname"),
+                user_surname: commentAuthor?.get("user_surname"),
               },
               createdAt: comment.get("createdAt"),
             };
