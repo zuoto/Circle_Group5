@@ -1,5 +1,5 @@
-// Helper functions
 
+// Helper functions
 function mapParseEventToUi(e) {
   const date = e.get("event_date");
   if (!date) {
@@ -38,40 +38,76 @@ function mapPostToUi(post, commentsForPost) {
 // format mapped comments
   const formattedComments = commentsForPost.map(c => {
     const commentAuthor = c.get("comment_author");
+
+    let authorName = 'Unknown User';
+    if (commentAuthor) {
+      const first = commentAuthor.get("user_firstname");
+      const last = commentAuthor.get("user_surname");
+      if (first || last) {
+        authorName = `${first || ""} ${last || ""}`.trim();
+      } else {
+        authorName = commentAuthor.get("username");
+      }
+    }
+    
     return {
       id: c.id,
       content: c.get("text"),
-      author: commentAuthor ? {
-          id: commentAuthor.id,
-          name: commentAuthor.get("username")
+      comment_author: commentAuthor ? {
+        id: commentAuthor.id,
+        name: authorName, // this sends now 'First Last'
+        username: commentAuthor.get("username"),
+        profile_picture: commentAuthor.get("profile_picture") ? commentAuthor.get("profile_picture").url() : null
     } : {
         id: 'unknown',
-        name: 'Unknown User'
+        name: 'Unknown User',
+        profile_picture: null
     },
       createdAt: c.get("createdAt")
     };
   });
 
-  const authorData = author ? {
+  // Format post author:
+
+  // safe defaults for worst-case scenario when an account has been deleted
+  let postAuthorName = 'Deleted User';
+  let postAuthorPic = null;
+  let postAuthorId = 'deleted';
+  let postAuthorData = { id: 'deleted', name: 'Deleted User', profile_picture: null };
+
+  if (author) {
+    postAuthorId = author.id;
+    postAuthorPic = author.get("profile_picture") ? author.get("profile_picture").url() : null;
+
+    const first = author.get("user_firstname");
+    const last = author.get("user_surname");
+      if (first || last) {
+        postAuthorName = `${first || ""} ${last || ""}`.trim();
+      } else {
+        postAuthorName = author.get("username");
+      }
+
+  postAuthorData = {
       id: author.id,
-          name: author.get("username"),
-          user_firstname: author.get("user_firstname"),
-          user_surname: author.get("user_surname"),
-          profile_picture: author.get("profile_picture") ? author.get("profile_picture").url() : null 
-      } : { id: 'deleted', name: 'Deleted User', profile_picture: null };
+      name: postAuthorName, // this sends now 'First Last'
+      username: author.get("username"),
+      user_firstname: author.get("user_firstname"),
+      user_surname: author.get("user_surname"),
+      profile_picture: postAuthorPic
+    };
+  }
 
   return {
       id: post.id,
       content: post.get("post_content"),
       hangoutTime: post.get("hangoutTime"),
-      authorId: authorData.id,
-      author: authorData,
+      authorId: postAuthorId,
+      author: postAuthorData,
       createdAt: post.get("createdAt"),
       participants: post.get("participants") || [],
       comments: formattedComments
   };
 }
-
 
 Parse.Cloud.define("optimizeGetAllGroups", async (request) => {
 const currentUser = request.user;
@@ -180,7 +216,6 @@ Parse.Cloud.define("getGroupDetailData", async (request) => {
       const parsePosts = await postQuery.find({ useMasterKey: true });
 
       // fetch all comments for these posts with 1 query
-      // query for comments
       const CommentClass = Parse.Object.extend("Comments");
       const commentQuery = new Parse.Query(CommentClass);
 
@@ -191,6 +226,21 @@ Parse.Cloud.define("getGroupDetailData", async (request) => {
 
       const allComments = await commentQuery.find({ useMasterKey: true });
 
+      // Force-fetch authors with master key, i.e. ensure names/pics are loaded 
+      // even if the current user is not friends with the author
+
+      // fetch post authors
+      const postAuthors = parsePosts.map(p => p.get("author")).filter(a => !!a);
+      if (postAuthors.length > 0) {
+        await Parse.Object.fetchAllIfNeeded(postAuthors, { useMasterKey: true });
+      }
+
+      // fetch comment authors
+      const commentAuthors = allComments.map(c => c.get("comment_author")).filter(a => !!a);
+      if (commentAuthors.length > 0) {
+        await Parse.Object.fetchAllIfNeeded(commentAuthors, { useMasterKey: true });
+      }
+
       // map posts and comments
       const mappedPosts = parsePosts.map(post => {
         // filter list of comments for only the ones for this specific post
@@ -198,8 +248,8 @@ Parse.Cloud.define("getGroupDetailData", async (request) => {
         return mapPostToUi(post, commentsForPost);
       });
 
-  // fetch upcoming event
-  let nextEvent = null;
+      // fetch upcoming event
+      let nextEvent = null;
       const EventClass = Parse.Object.extend("Event");
       const eventQuery = new Parse.Query(EventClass);
       eventQuery.include("event_host");
@@ -229,6 +279,64 @@ Parse.Cloud.define("getGroupDetailData", async (request) => {
       requireUser: false
 });
 
+Parse.Cloud.beforeSave("FriendRequest", async (request) => {
+const obj = request.object;
+if (!obj.isNew()) return;
+
+const requester = obj.get("requester");
+const recipient = obj.get("recipient");
+
+const query = new Parse.Query("FriendRequest");
+query.equalTo("requester", requester);
+query.equalTo("recipient", recipient);
+query.equalTo("status", "pending");
+
+const existing = await query.first({ useMasterKey: true });
+
+if (existing) {
+  throw new Parse.Error(400, "NO DUPLICATES: A request is already pending.");
+}
+});
+
+Parse.Cloud.define("handleFriendRequest", async (request) => {
+const { requestId, action } = request.params;
+
+if (!requestId) throw new Parse.Error(400, "Missing requestId parameter.");
+
+try {
+  const FriendRequest = Parse.Object.extend("FriendRequest");
+  const query = new Parse.Query(FriendRequest);
+
+  const req = await query.get(requestId, { useMasterKey: true });
+
+  if (req.get("status") !== "pending") {
+    throw new Error("This request has already been handled.");
+  }
+
+  req.set("status", action === "accept" ? "accepted" : "rejected");
+
+  if (action === "accept") {
+    const requester = req.get("requester");
+    const recipient = req.get("recipient");
+
+    const u1 = await requester.fetch({ useMasterKey: true });
+    const u2 = await recipient.fetch({ useMasterKey: true });
+
+    u1.relation("user_friends").add(u2);
+    u2.relation("user_friends").add(u1);
+
+    await Parse.Object.saveAll([u1, u2, req], { useMasterKey: true });
+  } else {
+    await req.save(null, { useMasterKey: true });
+  }
+
+  return { success: true, message: "Request processed successfully." };
+
+} catch (error) {
+  console.error("Handle Error:", error);
+  throw new Parse.Error(500, "Error handling friend request: " + error.message);
+}
+});
 
 Parse.Cloud.define("getGroupMemberNames", async (request) => {
   const { groupId } = request.params;
@@ -251,49 +359,6 @@ Parse.Cloud.define("getGroupMemberNames", async (request) => {
   } catch (error) {
       throw new Parse.Error(500, "Failed to fetch member names: " + error.message);
   }
-});
-
-
-Parse.Cloud.define("searchUsers", async (request) => {
-const query = request.params.query;
-
-const regex = new RegExp(query, "i");
-
-// Use the Master Key to ensure we can search all users
-Parse.Cloud.useMasterKey();
-
-const UserQuery = new Parse.Query(Parse.User);
-UserQuery.matches("user_firstname", regex);
-
-const UserQuery2 = new Parse.Query(Parse.User);
-UserQuery2.matches("user_surname", regex);
-
-const UserQuery3 = new Parse.Query(Parse.User);
-UserQuery3.matches("username", regex);
-
-const UserQuery4 = new Parse.Query(Parse.User);
-UserQuery4.matches("user_firstname" + "user_surname", regex);
-
-const userCompoundQuery = Parse.Query.or(UserQuery, UserQuery2, UserQuery3, UserQuery4);
-userCompoundQuery.limit(20);
-
-try {
-  const users = await userCompoundQuery.find();
-
-  return users.map((user) => ({
-    id: user.id,
-    user_firstname: user.get("user_firstname"),
-    user_surname: user.get("user_surname"),
-    username: user.get("username"),
-    profile_picture: user.get("profile_picture")?.url() || null, 
-  }));
-} catch (error) {
-  console.error("Cloud Search Error:", error);
-  throw new Parse.Error(
-    Parse.Error.INTERNAL_SERVER_ERROR,
-    "User search failed on server."
-  );
-}
 });
 
 
@@ -349,48 +414,69 @@ Parse.Cloud.define("cleanupMissingAuthors", async (request) => {
   }
 });
 
-Parse.Cloud.define("handleFriendRequest", async (request) => {
-// Use the Master Key to allow changes to user relations
-Parse.Cloud.useMasterKey();
 
-const { requestId, action } = request.params; 
+Parse.Cloud.define("searchUsers", async (request) => {
+const query = request.params.query;
+if (!query) return [];
+
+const lowerQuery = query.toLowerCase().trim();
+const parts = lowerQuery.split(/\s+/);
+
+let userCompoundQuery;
+
+if (parts.length === 1) {
+  // Single word: search firstname OR surname OR username
+  const regex = new RegExp(parts[0], "i");
+  
+  const UserQuery = new Parse.Query(Parse.User);
+  UserQuery.matches("user_firstname", regex);
+
+  const UserQuery2 = new Parse.Query(Parse.User);
+  UserQuery2.matches("user_surname", regex);
+
+  const UserQuery3 = new Parse.Query(Parse.User);
+  UserQuery3.matches("username", regex);
+
+  userCompoundQuery = Parse.Query.or(UserQuery, UserQuery2, UserQuery3);
+} else {
+  // Multiple words: assume "firstname surname"
+  const [firstName, ...restParts] = parts;
+  const lastName = restParts.join(" ");
+
+  // Search firstname AND surname
+  const BothQuery = new Parse.Query(Parse.User);
+  BothQuery.matches("user_firstname", new RegExp(firstName, "i"));
+  BothQuery.matches("user_surname", new RegExp(lastName, "i"));
+
+  // Fallback: full query in firstname OR surname OR username
+  const fullRegex = new RegExp(lowerQuery, "i");
+
+  const UserQuery = new Parse.Query(Parse.User);
+  UserQuery.matches("user_firstname", fullRegex);
+
+  const UserQuery2 = new Parse.Query(Parse.User);
+  UserQuery2.matches("user_surname", fullRegex);
+
+  const UserQuery3 = new Parse.Query(Parse.User);
+  UserQuery3.matches("username", fullRegex);
+
+  userCompoundQuery = Parse.Query.or(BothQuery, UserQuery, UserQuery2, UserQuery3);
+}
+
+userCompoundQuery.limit(20);
 
 try {
-  const FriendRequest = Parse.Object.extend("FriendRequest");
-  // Fetch the request and include the users it points to
-  const req = await new Parse.Query(FriendRequest)
-    .include("requester")
-    .include("recipient")
-    .get(requestId);
-    
-  if (req.get("status") !== "pending") {
-    throw new Error("Request already handled.");
-  }
-  
-  // Set status to accepted/rejected and save the request object
-  req.set("status", action === "accept" ? "accepted" : "rejected");
+  const users = await userCompoundQuery.find({ useMasterKey: true });
 
-  if (action === "accept") {
-    const requester = req.get("requester");
-    const recipient = req.get("recipient");
-  
-    // 1. Add recipient to requester's friends
-    requester.relation("user_friends").add(recipient);
-    
-    // 2. Add requester to recipient's friends (makes it mutual)
-    recipient.relation("user_friends").add(requester);
-    
-    // Save all three objects at once to ensure consistency
-    await Parse.Object.saveAll([requester, recipient, req]);
-  } else { 
-    // If rejected, just save the status update on the request object
-    await req.save();
-  }
-  
-  return { success: true, message: `Request ${action}ed.` };
+  return users.map((user) => ({
+    id: user.id,
+    user_firstname: user.get("user_firstname"),
+    user_surname: user.get("user_surname"),
+    username: user.get("username"),
+    profile_picture: user.get("profile_picture")?.url() || null,
+  }));
 } catch (error) {
-  console.error(`Error handling friend request (${action}):`, error);
-  throw new Parse.Error(Parse.Error.INTERNAL_SERVER_ERROR, `Failed to handle request: ${error.message}`);
+  throw new Parse.Error(500, "User search failed.");
 }
 });
 
