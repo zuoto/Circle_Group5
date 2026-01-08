@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
 export default function LogIn() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { login } = useAuth();
 
   const [form, setForm] = useState({
@@ -13,10 +12,6 @@ export default function LogIn() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  //TODO: USE TANSTACK MAYBE???
-
-  const from = location.state?.from?.pathname || "/"; //keeping track of where the user came from
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,7 +34,7 @@ export default function LogIn() {
 
     try {
       await login({ email: form.email, password: form.password });
-      navigate(from, { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {

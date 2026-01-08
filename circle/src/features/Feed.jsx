@@ -32,11 +32,8 @@ export default function Feed() {
   };
 
   const handleSubmitPost = async () => {
-    console.log("Post submitted!");
     handleCloseModal();
-    console.log("Reloading posts...");
     await loadFeedPosts();
-    console.log("Posts reloaded:", posts);
   };
 
   return (
@@ -60,7 +57,7 @@ export default function Feed() {
 
         <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
           <NewPostForm
-            onSubmit={handleSubmitPost}
+            onSubmitSuccess={handleSubmitPost}
             onCancel={handleCloseModal}
           />
         </Modal>

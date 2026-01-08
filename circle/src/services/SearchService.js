@@ -1,52 +1,87 @@
 export const performSearch = async (query) => {
-  const Parse = window.Parse;
-  const lowerQuery = query.toLowerCase();
+  const lowerQuery = query.toLowerCase().trim();
 
   try {
-    // users
-    const UserQuery = new Parse.Query(Parse.User);
-    UserQuery.matches("user_firstname", new RegExp(lowerQuery, "i"));
+    const users = await Parse.Cloud.run("searchUsers", { query });
 
-    const UserQuery2 = new Parse.Query(Parse.User);
-    UserQuery2.matches("user_surname", new RegExp(lowerQuery, "i"));
-
-    const UserQuery3 = new Parse.Query(Parse.User);
-    UserQuery3.matches("username", new RegExp(lowerQuery, "i"));
-
-    const userCompoundQuery = Parse.Query.or(UserQuery, UserQuery2, UserQuery3);
-    userCompoundQuery.limit(10);
-    const users = await userCompoundQuery.find();
-
-    // groups
     const GroupClass = Parse.Object.extend("Group");
-    const GroupQuery = new Parse.Query(GroupClass);
-    GroupQuery.matches("group_name", new RegExp(lowerQuery, "i"));
-    GroupQuery.include("group_admin");
-    GroupQuery.include("members");
-    GroupQuery.limit(10);
-    const groups = await GroupQuery.find();
-
-
-    // events
-    const EventClass = Parse.Object.extend("Event");
-    const EventNameQuery = new Parse.Query(EventClass);
-    EventNameQuery.contains("event_name", lowerQuery);
-
-    const EventInfoQuery = new Parse.Query(EventClass);
-    EventInfoQuery.contains("event_info", lowerQuery);
-
-    const eventCompoundQuery = Parse.Query.or(EventNameQuery, EventInfoQuery);
-    eventCompoundQuery.include("event_host");
-    eventCompoundQuery.include("parent_group");
-    eventCompoundQuery.ascending("event_date");
-    eventCompoundQuery.limit(10);
+    const parts = lowerQuery.split(/\s+/);
     
-    const events = await eventCompoundQuery.find();
+    let groupQuery;
+    
+    if (parts.length === 1) {
+      groupQuery = new Parse.Query(GroupClass);
+      groupQuery.matches("group_name", new RegExp(parts[0], "i"));
+    } else {
+      const queries = parts.map(part => {
+        const q = new Parse.Query(GroupClass);
+        q.matches("group_name", new RegExp(part, "i"));
+        return q;
+      });
+      
+      const fullPhraseQuery = new Parse.Query(GroupClass);
+      fullPhraseQuery.matches("group_name", new RegExp(lowerQuery, "i"));
+      
+      queries.push(fullPhraseQuery);
+      
+      groupQuery = Parse.Query.or(...queries);
+    }
+    
+    groupQuery.include("group_admin");
+    groupQuery.include("members");
+    groupQuery.limit(10);
+    const groups = await groupQuery.find();
+
+    const EventClass = Parse.Object.extend("Event");
+    
+    let eventQuery;
+    
+    if (parts.length === 1) {
+      const EventNameQuery = new Parse.Query(EventClass);
+      EventNameQuery.contains("event_name", parts[0]);
+
+      const EventInfoQuery = new Parse.Query(EventClass);
+      EventInfoQuery.contains("event_info", parts[0]);
+
+      eventQuery = Parse.Query.or(EventNameQuery, EventInfoQuery);
+    } else {
+      const nameQueries = parts.map(part => {
+        const q = new Parse.Query(EventClass);
+        q.contains("event_name", part);
+        return q;
+      });
+      
+      const infoQueries = parts.map(part => {
+        const q = new Parse.Query(EventClass);
+        q.contains("event_info", part);
+        return q;
+      });
+      
+      const fullNameQuery = new Parse.Query(EventClass);
+      fullNameQuery.contains("event_name", lowerQuery);
+      
+      const fullInfoQuery = new Parse.Query(EventClass);
+      fullInfoQuery.contains("event_info", lowerQuery);
+      
+      eventQuery = Parse.Query.or(
+        ...nameQueries,
+        ...infoQueries,
+        fullNameQuery,
+        fullInfoQuery
+      );
+    }
+    
+    eventQuery.include("event_host");
+    eventQuery.include("parent_group");
+    eventQuery.ascending("event_date");
+    eventQuery.limit(10);
+
+    const events = await eventQuery.find();
 
     console.log("Search results:", {
       users: users.length,
       groups: groups.length,
-      events: events.length
+      events: events.length,
     });
 
     return { users, groups, events };
