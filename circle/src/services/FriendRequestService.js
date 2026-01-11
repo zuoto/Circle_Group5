@@ -16,14 +16,14 @@ export const sendFriendRequest = async (recipientId) => {
 
   const recipientPointer = Parse.User.createWithoutData(recipientId);
 
-  //checks if request has been sent to recipient(once)
+  //checks if request has been sent to recipient
   const existingQuery = new Parse.Query(FriendRequest);
   existingQuery.equalTo("requester", currentUser);
   existingQuery.equalTo("recipient", recipientPointer);
   existingQuery.equalTo("status", "pending");
   const existingRequest = await existingQuery.first();
 
-  //checks if request has been sent from the reqester(once)
+  //checks if request has been sent from the reqester
   const reverseQuery = new Parse.Query(FriendRequest);
   reverseQuery.equalTo("requester", recipientPointer);
   reverseQuery.equalTo("recipient", currentUser);
@@ -54,19 +54,12 @@ export const fetchPendingFriendRequests = async () => {
     return [];
   }
 
-  const FriendRequest = Parse.Object.extend("FriendRequest");
-  const query = new Parse.Query(FriendRequest);
-
-  query.equalTo("recipient", currentUser);
-  query.equalTo("status", "pending");
-
-  query.include("requester");
-
   try {
-    return await query.find();
+    const results = await Parse.Cloud.run("getMyPendingRequests");
+    return results;
   } catch (error) {
     console.error("Error fetching pending friend requests:", error);
-    throw error;
+    return [];
   }
 };
 
