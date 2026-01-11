@@ -7,25 +7,16 @@ function FriendRequest({ friendRequest, onUpdate }) {
     return null;
   }
 
-  const requester = friendRequest.get("requester");
+  const requester = friendRequest.requester;
 
-  if (!requester || !requester.id) {
-    console.warn(
-      "Friend Request found, but requester data is missing (likely ACL issue)."
-    );
-    return null;
-  }
+  if (!requester || !requester.id) return null;
 
-  const firstName = requester.get("user_firstname") || "Unknown";
-  const surname = requester.get("user_surname") || "User";
-
-  const requesterName = `${firstName} ${surname}`;
-  const requesterId = requester.id;
+  const requesterName = requester.name || requester.username || "Unknown User";
 
   const handleAction = async (action) => {
     try {
       await handleFriendRequest(friendRequest.id, action);
-      onUpdate();
+      if (onUpdate) onUpdate();
     } catch (error) {
       console.error(`Failed to ${action} request:`, error);
     }
@@ -33,11 +24,13 @@ function FriendRequest({ friendRequest, onUpdate }) {
 
   return (
     <div className="sidebar-box meetup-box" style={{ padding: "15px" }}>
-      <strong style={{ margin: "5px 0" }}>New Friend Request!</strong>
-      <span>
+      <strong style={{ margin: "5px 0", display: "block" }}>
+        New Friend Request!
+      </strong>
+      <span style={{ fontSize: "0.9em" }}>
         From:
         <Link
-          to={`/profile/${requesterId}`}
+          to={`/profile/${requester.id}`}
           style={{ color: "white", fontWeight: "bold", marginLeft: "5px" }}
         >
           {requesterName}
@@ -48,13 +41,14 @@ function FriendRequest({ friendRequest, onUpdate }) {
         <button
           className="primary-button joined-button-small"
           onClick={() => handleAction("accept")}
-          style={{ backgroundColor: "#569c74", color: "white" }}
+          style={{ backgroundColor: "#569c74", color: "white", flex: 1 }}
         >
           Accept
         </button>
         <button
           className="secondary-button joined-button-small"
           onClick={() => handleAction("reject")}
+          style={{ flex: 1 }}
         >
           Reject
         </button>
